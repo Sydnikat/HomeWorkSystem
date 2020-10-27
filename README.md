@@ -1,2 +1,2 @@
 # HomeWorkSystem
-Szoftverarchitektúrák házi feladat 2020
+Szoftverarchitektúrák házi feladat 2020 ads
