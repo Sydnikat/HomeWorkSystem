@@ -14,7 +14,7 @@ router.post("/signin", async (req: Request, res: Response) => {
       return res.status(500).send();
     }
     if (user === null) {
-      res.status(401).send();
+      return res.status(401).send();
     } else {
       if (await bcrypt.compare(req.body.password, user.password)) {
         const accessToken = jwt.sign(
