@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { User } from "../schema/user";
 
@@ -11,9 +11,8 @@ router.post("/signin", async (req: Request, res: Response) => {
   User.findOne(query, async (err, user) => {
     if (err) {
       console.log(err);
-      res.status(500).send();
+      return res.status(500).send();
     }
-
     if (user === null) {
       res.status(401).send();
     } else {
@@ -21,17 +20,25 @@ router.post("/signin", async (req: Request, res: Response) => {
         const accessToken = jwt.sign(
           user.toJSON(),
           process.env.ACCESS_TOKEN_SECRET!,
+          { expiresIn: "1h" }
+        );
+
+        const refreshToken = jwt.sign(
+          user.toJSON(),
+          process.env.REFRESH_TOKEN_SECRET!,
           { expiresIn: "6h" }
         );
-        res.json({
+
+        return res.json({
           id: user.id,
           userName: user.userName,
           userFullName: user.userFullName,
           role: user.role,
           accessToken: accessToken,
+          refreshToken: refreshToken,
         });
       } else {
-        res.status(401).send();
+        return res.status(401).send();
       }
     }
   });
@@ -42,7 +49,7 @@ router.post("/signup", async (req: Request, res: Response) => {
   User.findOne(query, async (err, user) => {
     if (err) {
       console.log(err);
-      res.status(500).send();
+      return res.status(500).send();
     }
 
     if (user === null) {
@@ -60,15 +67,40 @@ router.post("/signup", async (req: Request, res: Response) => {
       newUser.save((err) => {
         if (err) {
           console.log(err);
-          res.status(500).send();
-        } else {
-          res.status(201).send();
+          return res.status(500).send();
         }
+
+        return res.status(201).send();
       });
     } else {
-      res.status(409).send();
+      return res.status(409).send();
     }
   });
+});
+
+router.post("/refresh", async (req: Request, res: Response) => {
+  const refreshToken = req.body.refreshToken as string;
+  if (refreshToken === null) {
+    return res.status(401).send();
+  }
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET as Secret,
+    (err, user) => {
+      if (err) {
+        return res.status(401).send();
+      }
+
+      const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET!, {
+        expiresIn: "1h",
+      });
+
+      return res.json({
+        token: accessToken,
+      });
+    }
+  );
 });
 
 export default router;
