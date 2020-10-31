@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import userService from "./service/userService";
+import authService from "./service/authService";
 
 dotenv.config();
 const app = express();
@@ -20,7 +20,7 @@ db.once("open", () =>
 app.use(cors());
 app.use(express.json());
 
-app.use("/users", userService);
+app.use("/auth", authService);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server started at port: ${process.env.PORT}`);
