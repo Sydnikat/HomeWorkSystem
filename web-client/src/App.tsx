@@ -1,13 +1,62 @@
 import React from "react";
-import { Button } from "react-bootstrap";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import "./App.css";
+import StudentHome from "./components/StudentHome";
+import TeacherHome from "./components/TeacherHome";
+import Signin from "./components/Signin";
+import Signup from "./components/Signup";
+import { RootState } from "./store/rootReducer";
+import { useSelector } from "react-redux";
 
 const App: React.FC = () => {
+  const user = useSelector((state: RootState) => state.userReducer.user);
   return (
-    <div className="App">
-      <h1>HomeWorkSystem</h1>
-      <Button>Gomb</Button>
-    </div>
+    <Router>
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={() =>
+            !user ? (
+              <Redirect to="/signin" />
+            ) : user.role === "student" ? (
+              <Redirect to="/student" />
+            ) : user.role === "teacher" ? (
+              <Redirect to="/teacher" />
+            ) : (
+              <Redirect to="/signin" />
+            )
+          }
+        />
+        <Route exact path="/signin" component={Signin} />
+        <Route exact path="/signup" component={Signup} />
+        <Route
+          path="/student"
+          render={() =>
+            user && user.role === "student" ? (
+              <StudentHome />
+            ) : (
+              <Redirect to="/signin" />
+            )
+          }
+        />
+        <Route
+          path="/teacher"
+          render={() =>
+            user && user.role === "teacher" ? (
+              <TeacherHome />
+            ) : (
+              <Redirect to="/signin" />
+            )
+          }
+        />
+      </Switch>
+    </Router>
   );
 };
 

@@ -53,25 +53,29 @@ router.post("/signup", async (req: Request, res: Response) => {
     }
 
     if (user === null) {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      if (req.body.password !== req.body.repassword) {
+        return res.status(400).send();
+      } else {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-      const newUser = new User({
-        id: uuidv4(),
-        userName: req.body.userName,
-        userFullName: req.body.userFullName,
-        password: hashedPassword,
-        role: req.body.role,
-      });
+        const newUser = new User({
+          id: uuidv4(),
+          userName: req.body.userName,
+          userFullName: req.body.userFullName,
+          password: hashedPassword,
+          role: req.body.role,
+        });
 
-      newUser.save((err) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).send();
-        }
+        newUser.save((err) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).send();
+          }
 
-        return res.status(201).send();
-      });
+          return res.status(201).send();
+        });
+      }
     } else {
       return res.status(409).send();
     }
