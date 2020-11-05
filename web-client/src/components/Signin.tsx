@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { authService } from "../service/authService";
+import { authService } from "../services/authService";
 import { setUser } from "../store/userStore";
+import CommonAlert from "./CommonAlert";
 
 enum inputType {
   USERNAME,
@@ -19,16 +20,14 @@ const Signin: React.FC = () => {
   const [signinError, setSigninError] = useState<boolean>(false);
 
   const onFormControlChange = (type: inputType) => (
-    event: React.BaseSyntheticEvent
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     switch (type) {
       case inputType.USERNAME:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setUserName(event.currentTarget.value as string);
+        setUserName(event.target.value);
         break;
       case inputType.PASSWORD:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setPassword(event.currentTarget.value as string);
+        setPassword(event.target.value);
         break;
       default:
         break;
@@ -54,48 +53,55 @@ const Signin: React.FC = () => {
     <Container fluid>
       <Row>
         <Col md={{ span: 4, offset: 4 }}>
-          <h1>Bejelentkezés</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={{ span: 4, offset: 4 }}>
-          <Form>
-            <Form.Group controlId="username">
-              <Form.Label>Felhasználónév</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="kovacs88"
-                value={userName}
-                onChange={onFormControlChange(inputType.USERNAME)}
-              />
-            </Form.Group>
-            <Form.Group controlId="password">
-              <Form.Label>Jelszó</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Jelszó"
-                value={password}
-                onChange={onFormControlChange(inputType.PASSWORD)}
-              />
-            </Form.Group>
-            <Button onClick={onSignin}>Bejelentkezés</Button>
-          </Form>
-        </Col>
-      </Row>
-      {signinError && (
-        <Row>
-          <Col md={{ span: 4, offset: 4 }}>
-            <Alert variant="danger">Hiba a bejelentkezés közben</Alert>
-          </Col>
-        </Row>
-      )}
-      <br />
-      <Row>
-        <Col md={{ span: 4, offset: 4 }}>Nincs még felhasználói fiókja?</Col>
-      </Row>
-      <Row>
-        <Col md={{ span: 4, offset: 4 }}>
-          <Button onClick={onSignup}>Regisztráció</Button>
+          <Row>
+            <Col>
+              <h1>Bejelentkezés</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form>
+                <Form.Group controlId="username">
+                  <Form.Label>Felhasználónév</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Pl.: kovacs88"
+                    value={userName}
+                    onChange={onFormControlChange(inputType.USERNAME)}
+                  />
+                </Form.Group>
+                <Form.Group controlId="password">
+                  <Form.Label>Jelszó</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Jelszó"
+                    value={password}
+                    onChange={onFormControlChange(inputType.PASSWORD)}
+                  />
+                </Form.Group>
+                <Button onClick={onSignin}>Bejelentkezés</Button>
+              </Form>
+            </Col>
+          </Row>
+          {signinError && (
+            <Row className="mt-2">
+              <Col>
+                <CommonAlert
+                  variant="danger"
+                  text="Hiba a bejelentkezés közben"
+                />
+              </Col>
+            </Row>
+          )}
+          <br />
+          <Row>
+            <Col>Nincs még felhasználói fiókja?</Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button onClick={onSignup}>Regisztráció</Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
     </Container>

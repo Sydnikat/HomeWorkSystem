@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   Button,
   Col,
   Container,
@@ -12,14 +11,9 @@ import {
 import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import { authService } from "../service/authService";
-
-enum inputType {
-  USERNAME,
-  PASSWORD,
-  REPASSWORD,
-  USERFULLNAME,
-}
+import { authService } from "../services/authService";
+import { inputType } from "../shared/enums";
+import CommonAlert from "./CommonAlert";
 
 const roles = {
   student: {
@@ -37,7 +31,7 @@ const Signup: React.FC = () => {
 
   const [userName, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [repassword, setRepassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [userFullName, setUserFullName] = useState<string>("");
   const [role, setRole] = useState<{ value: string; name: string }>(
     roles.student
@@ -45,24 +39,20 @@ const Signup: React.FC = () => {
   const [signupError, setSignupError] = useState<boolean>(false);
 
   const onFormControlChange = (type: inputType) => (
-    event: React.BaseSyntheticEvent
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     switch (type) {
       case inputType.USERNAME:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setUserName(event.currentTarget.value as string);
+        setUserName(event.target.value);
         break;
       case inputType.PASSWORD:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setPassword(event.currentTarget.value as string);
+        setPassword(event.target.value);
         break;
-      case inputType.REPASSWORD:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setRepassword(event.currentTarget.value as string);
+      case inputType.CONFIRMPASSWORD:
+        setConfirmPassword(event.target.value);
         break;
       case inputType.USERFULLNAME:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setUserFullName(event.currentTarget.value as string);
+        setUserFullName(event.target.value);
         break;
       default:
         break;
@@ -84,7 +74,7 @@ const Signup: React.FC = () => {
     const success = await authService.signup(
       userName,
       password,
-      repassword,
+      confirmPassword,
       userFullName,
       role.value
     );
@@ -99,7 +89,7 @@ const Signup: React.FC = () => {
   return (
     <Container fluid>
       <Row>
-        <Col md={4}>
+        <Col md={4} className="mt-2">
           <Button onClick={onBack}>
             <FontAwesomeIcon icon={faArrowCircleLeft} />
           </Button>
@@ -110,62 +100,71 @@ const Signup: React.FC = () => {
       </Row>
       <Row>
         <Col md={{ span: 4, offset: 4 }}>
-          <Form>
-            <Form.Group controlId="username">
-              <Form.Label>Felhasználónév</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="kovacs88"
-                value={userName}
-                onChange={onFormControlChange(inputType.USERNAME)}
-              />
-            </Form.Group>
-            <Form.Group controlId="password">
-              <Form.Label>Jelszó</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Jelszó"
-                value={password}
-                onChange={onFormControlChange(inputType.PASSWORD)}
-              />
-            </Form.Group>
-            <Form.Group controlId="repassword">
-              <Form.Label>Jelszó még egyszer</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Jelszó még egyszer"
-                value={repassword}
-                onChange={onFormControlChange(inputType.REPASSWORD)}
-              />
-            </Form.Group>
-            <Form.Group controlId="userfullname">
-              <Form.Label>Teljes név</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Dr. Kovács Tamás"
-                value={userFullName}
-                onChange={onFormControlChange(inputType.USERFULLNAME)}
-              />
-            </Form.Group>
-            <DropdownButton id="role" title={role.name}>
-              <Dropdown.Item onSelect={onRoleSelect(roles.student)}>
-                Hallgató
-              </Dropdown.Item>
-              <Dropdown.Item onSelect={onRoleSelect(roles.teacher)}>
-                Oktató
-              </Dropdown.Item>
-            </DropdownButton>
-            <Button onClick={onSignup}>Regisztráció</Button>
-          </Form>
+          <Row>
+            <Col>
+              <Form>
+                <Form.Group controlId="username">
+                  <Form.Label>Felhasználónév</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Pl.: kovacs88"
+                    value={userName}
+                    onChange={onFormControlChange(inputType.USERNAME)}
+                  />
+                </Form.Group>
+                <Form.Group controlId="password">
+                  <Form.Label>Jelszó</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Jelszó"
+                    value={password}
+                    onChange={onFormControlChange(inputType.PASSWORD)}
+                  />
+                </Form.Group>
+                <Form.Group controlId="confirmPassword">
+                  <Form.Label>Jelszó még egyszer</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Jelszó még egyszer"
+                    value={confirmPassword}
+                    onChange={onFormControlChange(inputType.CONFIRMPASSWORD)}
+                  />
+                </Form.Group>
+                <Form.Group controlId="userfullname">
+                  <Form.Label>Teljes név</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Pl.: Dr. Kovács Tamás"
+                    value={userFullName}
+                    onChange={onFormControlChange(inputType.USERFULLNAME)}
+                  />
+                </Form.Group>
+                <DropdownButton id="role" title={role.name}>
+                  <Dropdown.Item onSelect={onRoleSelect(roles.student)}>
+                    Hallgató
+                  </Dropdown.Item>
+                  <Dropdown.Item onSelect={onRoleSelect(roles.teacher)}>
+                    Oktató
+                  </Dropdown.Item>
+                </DropdownButton>
+                <Button className="mt-2" onClick={onSignup}>
+                  Regisztráció
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+          {signupError && (
+            <Row className="mt-2">
+              <Col>
+                <CommonAlert
+                  variant="danger"
+                  text="Hiba a regisztráció közben"
+                />
+              </Col>
+            </Row>
+          )}
         </Col>
       </Row>
-      {signupError && (
-        <Row>
-          <Col md={{ span: 4, offset: 4 }}>
-            <Alert variant="danger">Hiba a regisztráció közben</Alert>
-          </Col>
-        </Row>
-      )}
     </Container>
   );
 };
