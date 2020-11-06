@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace homework_service.Controllers
 {
+    // ToDo: JWT
     [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
@@ -22,6 +23,7 @@ namespace homework_service.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
             var users = await userService.GetUsers().ConfigureAwait(false);
