@@ -10,6 +10,8 @@ namespace homework_service.Services
     {
         Task<User> GetUser(Guid id);
 
+        Task<User> GetUser(string userName);
+
         Task<IEnumerable<User>> GetUsers(IEnumerable<Guid> ids);
 
         Task<IEnumerable<User>> GetUsers();

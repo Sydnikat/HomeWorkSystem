@@ -44,5 +44,15 @@ namespace homework_service.Dal.Repositories
             else
                 return result.toDomain();
         }
+
+        public async Task<Domain.User> FindByUserName(string userName)
+        {
+            var query = await _users.FindAsync(user => user.UserName == userName);
+            var result = query.FirstOrDefault();
+            if (result == null)
+                return null;
+            else
+                return result.toDomain();
+        }
     }
 }

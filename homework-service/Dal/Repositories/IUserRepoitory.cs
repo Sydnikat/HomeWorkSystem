@@ -10,6 +10,8 @@ namespace homework_service.Dal.Repositories
     {
         Task<User> FindById(Guid id);
 
+        Task<User> FindByUserName(string userName);
+
         Task<IEnumerable<User>> FindAllById(IEnumerable<Guid> ids);
 
         Task<IEnumerable<User>> FindAll();

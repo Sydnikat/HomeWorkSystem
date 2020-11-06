@@ -21,6 +21,11 @@ namespace homework_service.Services
             return await userRepoitory.FindById(id);
         }
 
+        public async Task<User> GetUser(string userName)
+        {
+            return await userRepoitory.FindByUserName(userName);
+        }
+
         public async Task<IEnumerable<User>> GetUsers(IEnumerable<Guid> ids)
         {
             return await userRepoitory.FindAllById(ids);
