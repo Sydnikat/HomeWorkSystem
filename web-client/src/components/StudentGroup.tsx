@@ -9,11 +9,12 @@ import {
 import { IAssignmentResponse } from "../models/assignment";
 import { IGroupResponse } from "../models/group";
 import { IHomeworkResponse } from "../models/homework";
-import { commentScope } from "../shared/enums";
+import { CommentScope } from "../shared/enums";
 import Comments from "./modals/Comments";
 import FurtherHomeworks from "./modals/FurtherHomeworks";
 import HomeworkDetails from "./modals/HomeworkDetails";
 import Confirm from "./modals/ConfirmApplyHw";
+import { assignmentService } from "../services/assignmentService";
 
 interface StudentGroupProps {
   group: IGroupResponse;
@@ -24,42 +25,43 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
   const [showHomeworkDetails, setShowHomeworkDetails] = useState<boolean>(
     false
   );
-  const [homeworkToShow, setHomeworkToShow] = useState<IHomeworkResponse>();
-
-  const onDetailsClick = (homeworkId: string) => () => {
-    setShowHomeworkDetails(true);
-
-    const homeworkToShow = group.homeworks.find((h) => h.id === homeworkId);
-    if (homeworkToShow) {
-      setHomeworkToShow(homeworkToShow);
-    }
-  };
-
+  const [homeworkToShow, setHomeworkToShow] = useState<IHomeworkResponse>(
+    {} as IHomeworkResponse
+  );
   const [showComments, setShowComments] = useState<boolean>(false);
-  const [scope, setScope] = useState<commentScope>(commentScope.GROUP);
+  const [scope, setScope] = useState<CommentScope>(CommentScope.GROUP);
   const [scopeId, setScopeId] = useState<string>("");
-
-  const onCommentsClick = (scope: commentScope, id: string) => () => {
-    setShowComments(true);
-    setScope(scope);
-    setScopeId(id);
-  };
-
   const furtherHomeworks = useMemo(() => {
     return group.homeworks.filter(
       (h) => !assignments.some((a) => a.homeworkId === h.id)
     );
   }, [group, assignments]);
-
   const [showFurtherHomeworks, setShowFurtherHomeworks] = useState<boolean>(
     false
   );
+  const [showConfirmApplyHw, setShowConfirmApplyHw] = useState<boolean>(false);
+
+  const onDetailsClick = (homeworkId: string) => () => {
+    setShowHomeworkDetails(true);
+    const homeworkToShow = group.homeworks.find((h) => h.id === homeworkId);
+    if (homeworkToShow !== undefined) {
+      setHomeworkToShow(homeworkToShow);
+    }
+  };
+
+  const onCommentsClick = (scope: CommentScope, id: string) => () => {
+    setShowComments(true);
+    setScope(scope);
+    setScopeId(id);
+  };
 
   const onFurtherHomeworksClick = () => {
     setShowFurtherHomeworks(true);
   };
 
-  const [showConfirmApplyHw, setShowConfirmApplyHw] = useState<boolean>(false);
+  const onUploadClick = (assignmentId: string) => async () => {
+    await assignmentService.upload(assignmentId);
+  };
 
   return (
     <div className="mt-5">
@@ -76,7 +78,7 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
               <Button
                 variant="info"
                 size="sm"
-                onClick={onCommentsClick(commentScope.GROUP, group.id)}
+                onClick={onCommentsClick(CommentScope.GROUP, group.id)}
               >
                 <FontAwesomeIcon icon={faComments} className="mr-2" />
                 közlemények
@@ -95,53 +97,51 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
           </tr>
         </thead>
         <tbody>
-          {assignments.map(
-            (a: IAssignmentResponse) =>
-              a.groupId === group.id && (
-                <tr key={a.id} style={colStyle.hw}>
-                  <td>
-                    {a.homeworkTitle}
-                    <Button
-                      variant="info"
-                      size="sm"
-                      className="ml-2"
-                      onClick={onDetailsClick(a.homeworkId)}
-                    >
-                      <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
-                      részletek
-                    </Button>
-                    <Button
-                      variant="info"
-                      size="sm"
-                      className="ml-2"
-                      onClick={onCommentsClick(
-                        commentScope.HOMEWORK,
-                        a.homeworkId
-                      )}
-                    >
-                      <FontAwesomeIcon icon={faComments} className="mr-2" />
-                      közlemények
-                    </Button>
-                  </td>
-                  <td style={colStyle.deadline}>{a.submissionDeadline}</td>
-                  <td style={colStyle.file}>
-                    <div>{a.fileName}</div>
-                    <div>
-                      <input type="file" />
-                    </div>
-                    <div>
-                      <Button size="sm" className="mt-1">
-                        <FontAwesomeIcon icon={faUpload} className="mr-2" />
-                        Feltöltés
-                      </Button>
-                    </div>
-                  </td>
-                  <td style={{ ...colStyle.grade, wordBreak: "break-word" }}>
-                    {a.grade}
-                  </td>
-                </tr>
-              )
-          )}
+          {assignments.map((a: IAssignmentResponse) => (
+            <tr key={a.id} style={colStyle.hw}>
+              <td>
+                {a.homeworkTitle}
+                <Button
+                  variant="info"
+                  size="sm"
+                  className="ml-2"
+                  onClick={onDetailsClick(a.homeworkId)}
+                >
+                  <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
+                  részletek
+                </Button>
+                <Button
+                  variant="info"
+                  size="sm"
+                  className="ml-2"
+                  onClick={onCommentsClick(CommentScope.HOMEWORK, a.homeworkId)}
+                >
+                  <FontAwesomeIcon icon={faComments} className="mr-2" />
+                  közlemények
+                </Button>
+              </td>
+              <td style={colStyle.deadline}>{a.submissionDeadline}</td>
+              <td style={colStyle.file}>
+                <div>{a.fileName}</div>
+                <div>
+                  <input type="file" />
+                </div>
+                <div>
+                  <Button
+                    size="sm"
+                    className="mt-1"
+                    onClick={onUploadClick(a.id)}
+                  >
+                    <FontAwesomeIcon icon={faUpload} className="mr-2" />
+                    Feltöltés
+                  </Button>
+                </div>
+              </td>
+              <td style={{ ...colStyle.grade, wordBreak: "break-word" }}>
+                {a.grade}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </Table>
       <Row>

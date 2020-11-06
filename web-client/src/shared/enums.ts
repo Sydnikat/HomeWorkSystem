@@ -1,11 +1,11 @@
-export enum inputType {
+export enum InputType {
   USERNAME,
   PASSWORD,
   CONFIRMPASSWORD,
   USERFULLNAME,
 }
 
-export enum commentScope {
+export enum CommentScope {
   GROUP,
   HOMEWORK,
 }

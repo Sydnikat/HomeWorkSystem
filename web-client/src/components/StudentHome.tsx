@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,38 +10,19 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/userStore";
 import { IUser } from "../models/user";
 import StudentGroup from "./StudentGroup";
-import { assignmentService } from "../services/assignmentService";
-import { groupService } from "../services/groupService";
-import { IAssignmentResponse } from "../models/assignment";
 import { IGroupResponse } from "../models/group";
 import JoinGroup from "./modals/JoinGroup";
+import { useAssignments, useGroups } from "../shared/hooks";
 
 const StudentHome: React.FC = () => {
   const dispatch = useDispatch();
-
-  const [groups, setGroups] = useState<IGroupResponse[]>([]);
-  const [assignments, setAssignments] = useState<IAssignmentResponse[]>([]);
-
-  useEffect(() => {
-    const fetchGroups = () => {
-      const fetchedGroups = groupService.getGroups();
-      setGroups(fetchedGroups);
-    };
-
-    const fetchAssignments = () => {
-      const fetchedAssignments = assignmentService.getAssignments();
-      setAssignments(fetchedAssignments);
-    };
-
-    fetchGroups();
-    fetchAssignments();
-  }, []);
+  const groups = useGroups();
+  const assignments = useAssignments();
+  const [showJoinGroup, setShowJoinGroup] = useState<boolean>(false);
 
   const onSignout = () => {
     dispatch(setUser({} as IUser));
   };
-
-  const [showJoinGroup, setShowJoinGroup] = useState<boolean>(false);
 
   const onJoinClick = () => {
     setShowJoinGroup(true);
@@ -74,7 +55,7 @@ const StudentHome: React.FC = () => {
               <StudentGroup
                 key={group.id}
                 group={group}
-                assignments={assignments}
+                assignments={assignments.filter((a) => a.groupId === group.id)}
               />
             ))}
           </Col>

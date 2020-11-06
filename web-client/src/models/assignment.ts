@@ -9,4 +9,6 @@ export interface IAssignmentResponse {
   userFullName: string;
   homeworkTitle: string;
   groupName: string;
+  turnInDate?: string;
+  reservedBy?: string;
 }

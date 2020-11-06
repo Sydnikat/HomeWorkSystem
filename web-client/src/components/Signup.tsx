@@ -12,7 +12,7 @@ import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { authService } from "../services/authService";
-import { inputType } from "../shared/enums";
+import { InputType } from "../shared/enums";
 import CommonAlert from "./CommonAlert";
 
 const roles = {
@@ -38,20 +38,20 @@ const Signup: React.FC = () => {
   );
   const [signupError, setSignupError] = useState<boolean>(false);
 
-  const onFormControlChange = (type: inputType) => (
+  const onFormControlChange = (type: InputType) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     switch (type) {
-      case inputType.USERNAME:
+      case InputType.USERNAME:
         setUserName(event.target.value);
         break;
-      case inputType.PASSWORD:
+      case InputType.PASSWORD:
         setPassword(event.target.value);
         break;
-      case inputType.CONFIRMPASSWORD:
+      case InputType.CONFIRMPASSWORD:
         setConfirmPassword(event.target.value);
         break;
-      case inputType.USERFULLNAME:
+      case InputType.USERFULLNAME:
         setUserFullName(event.target.value);
         break;
       default:
@@ -109,7 +109,7 @@ const Signup: React.FC = () => {
                     type="text"
                     placeholder="Pl.: kovacs88"
                     value={userName}
-                    onChange={onFormControlChange(inputType.USERNAME)}
+                    onChange={onFormControlChange(InputType.USERNAME)}
                   />
                 </Form.Group>
                 <Form.Group controlId="password">
@@ -118,7 +118,7 @@ const Signup: React.FC = () => {
                     type="password"
                     placeholder="Jelszó"
                     value={password}
-                    onChange={onFormControlChange(inputType.PASSWORD)}
+                    onChange={onFormControlChange(InputType.PASSWORD)}
                   />
                 </Form.Group>
                 <Form.Group controlId="confirmPassword">
@@ -127,7 +127,7 @@ const Signup: React.FC = () => {
                     type="password"
                     placeholder="Jelszó még egyszer"
                     value={confirmPassword}
-                    onChange={onFormControlChange(inputType.CONFIRMPASSWORD)}
+                    onChange={onFormControlChange(InputType.CONFIRMPASSWORD)}
                   />
                 </Form.Group>
                 <Form.Group controlId="userfullname">
@@ -136,7 +136,7 @@ const Signup: React.FC = () => {
                     type="text"
                     placeholder="Pl.: Dr. Kovács Tamás"
                     value={userFullName}
-                    onChange={onFormControlChange(inputType.USERFULLNAME)}
+                    onChange={onFormControlChange(InputType.USERFULLNAME)}
                   />
                 </Form.Group>
                 <DropdownButton id="role" title={role.name}>

@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, Modal, Row } from "react-bootstrap/";
 import { ICommentResponse } from "../../models/comment";
 import { groupService } from "../../services/groupService";
 import { homeworkService } from "../../services/homeworkService";
-import { commentScope } from "../../shared/enums";
+import { CommentScope } from "../../shared/enums";
+import { useComments } from "../../shared/hooks";
 
 interface CommentsProps {
   showComments: boolean;
   setShowComments: React.Dispatch<React.SetStateAction<boolean>>;
-  scope: commentScope;
+  scope: CommentScope;
   scopeId: string;
 }
 
@@ -20,32 +21,26 @@ const Comments: React.FC<CommentsProps> = ({
   scope,
   scopeId,
 }) => {
-  const [comments, setComments] = useState<ICommentResponse[]>([]);
-
-  useEffect(() => {
-    const fetchComments = () => {
-      switch (scope) {
-        case commentScope.GROUP: {
-          const fetchedComments = groupService.getComments(scopeId);
-          setComments(fetchedComments);
-          break;
-        }
-        case commentScope.HOMEWORK: {
-          const fetchedComments = homeworkService.getComments(scopeId);
-          setComments(fetchedComments);
-          break;
-        }
-        default:
-          break;
-      }
-    };
-
-    fetchComments();
-  }, []);
-
+  const comments = useComments(scope, scopeId);
   const [newComment, setNewComment] = useState<string>("");
+
   const onFormControlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewComment(event.target.value);
+  };
+
+  const onSendClick = async () => {
+    switch (scope) {
+      case CommentScope.GROUP: {
+        await groupService.sendComment(scopeId, newComment);
+        break;
+      }
+      case CommentScope.HOMEWORK: {
+        await homeworkService.sendComment(scopeId, newComment);
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   const handleClose = () => {
@@ -84,7 +79,7 @@ const Comments: React.FC<CommentsProps> = ({
             </Form>
           </Row>
           <Row>
-            <Button size="sm">
+            <Button size="sm" onClick={onSendClick}>
               <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
               Küldés
             </Button>

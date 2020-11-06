@@ -5,7 +5,7 @@ import { IHomeworkResponse } from "../../models/homework";
 interface HomeworkDetailsProps {
   showHomeworkDetails: boolean;
   setShowHomeworkDetails: React.Dispatch<React.SetStateAction<boolean>>;
-  homework?: IHomeworkResponse;
+  homework: IHomeworkResponse;
 }
 
 const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
@@ -20,21 +20,21 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
   return (
     <Modal animation={false} show={showHomeworkDetails} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{homework?.title}</Modal.Title>
+        <Modal.Title>{homework.title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div>
-          <b>Határidő:</b> {homework?.submissionDeadline}
+          <b>Határidő:</b> {homework.submissionDeadline}
         </div>
         <div>
-          <b>Létszám:</b> {homework?.currentNumberOfStudents}
+          <b>Létszám:</b> {homework.currentNumberOfStudents}
         </div>
         <div>
-          <b>Maximális fájlméret:</b> {homework?.maxFileSize} MB
+          <b>Maximális fájlméret:</b> {homework.maxFileSize} MB
         </div>
         <div>
           <b>Javítók:</b>{" "}
-          {homework?.graders.map((g: string) => (
+          {homework.graders.map((g: string) => (
             <span key={g}>
               {g}
               {homework.graders.indexOf(g) !== homework.graders.length - 1 &&
@@ -42,7 +42,7 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
             </span>
           ))}
         </div>
-        <p className="mt-2">{homework?.description}</p>
+        <p className="mt-2">{homework.description}</p>
       </Modal.Body>
     </Modal>
   );
