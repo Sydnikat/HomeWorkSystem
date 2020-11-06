@@ -29,12 +29,9 @@ namespace homework_service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Order is crutial here. Setting up the database configurations before setting the databases.
-            services.ConfigureDatabaseSettings(this.Configuration);
-
-            services.AddMongodbSettings();
-
-            services.AddDbContexts();
+            // Configure DAL
+            services.AddMongodb(this.Configuration);
+            services.AddSqlServer(this.Configuration);
 
             services.AddServices();
 
