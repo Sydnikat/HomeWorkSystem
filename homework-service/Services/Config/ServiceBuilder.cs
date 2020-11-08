@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace homework_service.Services.Config
+namespace HWS.Services.Config
 {
     public static class ServiceBuilder
     {

@@ -1,4 +1,4 @@
-﻿using homework_service.Controllers.DTOs.Converters;
+﻿using HWS.Controllers.DTOs.Converters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace homework_service.Controllers.DTOs.Config
+namespace HWS.Controllers.DTOs.Config
 {
     public static class ConverterConfig
     {

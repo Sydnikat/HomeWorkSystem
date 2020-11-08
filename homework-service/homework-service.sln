@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "homework-service", "homework-service.csproj", "{BE50E0E4-76CA-46CD-B6DB-BFF07765608D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWS.Web", "HWS.Web.csproj", "{BE50E0E4-76CA-46CD-B6DB-BFF07765608D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWS.Domain", "..\HWS.Domain\HWS.Domain.csproj", "{50651061-EC89-455F-96C8-9A428A153E20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWS.Dal.Sql", "..\HWS.Dal.Sql\HWS.Dal.Sql.csproj", "{0F22E6B5-1373-49DA-8BD7-8CC31FCE295A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWS.Dal.Mongo", "..\HWS.Dal.Mongo\HWS.Dal.Mongo.csproj", "{15AB8A14-F015-4E2F-8741-9D3F3F8AD313}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWS.Dal.Common", "..\HWS.Dal.Common\HWS.Dal.Common.csproj", "{FB474EF4-3EF1-4B37-9F23-A4D924557CE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{BE50E0E4-76CA-46CD-B6DB-BFF07765608D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE50E0E4-76CA-46CD-B6DB-BFF07765608D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE50E0E4-76CA-46CD-B6DB-BFF07765608D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50651061-EC89-455F-96C8-9A428A153E20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50651061-EC89-455F-96C8-9A428A153E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50651061-EC89-455F-96C8-9A428A153E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50651061-EC89-455F-96C8-9A428A153E20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F22E6B5-1373-49DA-8BD7-8CC31FCE295A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F22E6B5-1373-49DA-8BD7-8CC31FCE295A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F22E6B5-1373-49DA-8BD7-8CC31FCE295A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F22E6B5-1373-49DA-8BD7-8CC31FCE295A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15AB8A14-F015-4E2F-8741-9D3F3F8AD313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15AB8A14-F015-4E2F-8741-9D3F3F8AD313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15AB8A14-F015-4E2F-8741-9D3F3F8AD313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15AB8A14-F015-4E2F-8741-9D3F3F8AD313}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB474EF4-3EF1-4B37-9F23-A4D924557CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB474EF4-3EF1-4B37-9F23-A4D924557CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB474EF4-3EF1-4B37-9F23-A4D924557CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB474EF4-3EF1-4B37-9F23-A4D924557CE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

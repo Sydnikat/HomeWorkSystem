@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using homework_service.Controllers.DTOs.Config;
-using homework_service.Dal.Config;
-using homework_service.Services.Config;
+using HWS.Controllers.DTOs.Config;
+using HWS.Dal.Config;
+using HWS.Services.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace homework_service
+namespace HWS
 {
     public class Startup
     {

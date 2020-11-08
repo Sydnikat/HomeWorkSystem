@@ -1,7 +1,7 @@
-﻿using homework_service.Domain;
+﻿using HWS.Domain;
 using System;
 
-namespace homework_service.Controllers.DTOs.Responses
+namespace HWS.Controllers.DTOs.Responses
 {
     public class AssignmentResponse
     {

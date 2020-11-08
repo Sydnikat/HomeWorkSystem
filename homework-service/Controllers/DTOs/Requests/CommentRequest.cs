@@ -1,5 +1,5 @@
 ﻿
-namespace homework_service.Controllers.DTOs.Requests
+namespace HWS.Controllers.DTOs.Requests
 {
     public class CommentRequest
     {

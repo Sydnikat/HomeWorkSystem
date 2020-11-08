@@ -1,24 +1,43 @@
-﻿using homework_service.Domain;
+﻿using HWS.Domain;
 using System;
-using static homework_service.Domain.User;
+using static HWS.Domain.User;
 
-namespace homework_service.Controllers.DTOs.Responses
+#nullable enable
+
+namespace HWS.Controllers.DTOs.Responses
 {
     public class UserResponse
     {
-        public Guid Id { get; set; }
-        public string UserName { get; set; }
-        public string UserFullName { get; set; }
-        public string Password { get; set; }
-        public UserRole Role { get; set; }
+        public Guid? Id { get; }
+        public string UserName { get; }
+        public string UserFullName { get; }
+        public UserRole? Role { get; }
 
         public UserResponse(User user)
         {
             Id = user.Id;
             UserName = user.UserName;
             UserFullName = user.UserFullName;
-            Password = user.Password;
             Role = user.Role;
+        }
+
+        public UserResponse(string userName, string userFullName, Guid? id = null, UserRole? role = null)
+        {
+            Id = id;
+            UserName = userName;
+            UserFullName = userFullName;
+            Role = role;
+        }
+
+        public static UserResponse ToPublicUserResponse(User user)
+        {
+            return new UserResponse
+            (
+                id: null,
+                userName: user.UserName,
+                userFullName: user.UserFullName,
+                role: null
+            );
         }
     }
 }

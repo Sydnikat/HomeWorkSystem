@@ -1,10 +1,10 @@
-﻿using homework_service.Domain;
+﻿using HWS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace homework_service.Services
+namespace HWS.Services
 {
     public interface IUserService
     {

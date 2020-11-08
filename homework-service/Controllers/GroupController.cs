@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using homework_service.Controllers.DTOs.Requests;
-using homework_service.Controllers.DTOs.Responses;
+using HWS.Controllers.DTOs.Requests;
+using HWS.Controllers.DTOs.Responses;
+using HWS.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace homework_service.Controllers
+namespace HWS.Controllers
 {
     // ToDo: JWT
     [Route("api/groups")]
@@ -23,7 +24,7 @@ namespace homework_service.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<GroupResponse>>> GetGroups()
         {
-            return Ok(new List<GroupResponse>());
+            return Ok(new List<Group>().Select(GroupResponse.ForTeacher));
         }
 
         [HttpPost]

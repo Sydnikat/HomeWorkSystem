@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using homework_service.Controllers.DTOs.Requests;
-using homework_service.Controllers.DTOs.Responses;
+using HWS.Controllers.DTOs.Requests;
+using HWS.Controllers.DTOs.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace homework_service.Controllers
+namespace HWS.Controllers
 {
     // ToDo: JWT
     [Route("api/homeworks")]
