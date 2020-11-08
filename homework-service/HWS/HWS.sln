@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWS.Cli", "HWS.Cli\HWS.Cli.csproj", "{85E65F5A-C8A2-4624-8241-13EE8EBD62E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWS.Dal.Common", "HWS.Dal.Common\HWS.Dal.Common.csproj", "{C9B24CEC-4027-4375-9C91-2D7509736C3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWS.Dal.Mongo", "HWS.Dal.Mongo\HWS.Dal.Mongo.csproj", "{229C0AD5-F796-4BB0-9628-4E6331F9EB13}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWS.Dal.Sql", "HWS.Dal.Sql\HWS.Dal.Sql.csproj", "{8BA1FACE-E0F1-4D49-AAF6-F116CA831DB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWS.Domain", "HWS.Domain\HWS.Domain.csproj", "{E17737D5-103B-4D5A-90DE-C766A85C657C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HWS.Web", "HWS.Web\HWS.Web.csproj", "{C352E9CD-CD26-4EF3-8732-886F4ADC37F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{85E65F5A-C8A2-4624-8241-13EE8EBD62E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85E65F5A-C8A2-4624-8241-13EE8EBD62E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85E65F5A-C8A2-4624-8241-13EE8EBD62E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85E65F5A-C8A2-4624-8241-13EE8EBD62E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9B24CEC-4027-4375-9C91-2D7509736C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9B24CEC-4027-4375-9C91-2D7509736C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9B24CEC-4027-4375-9C91-2D7509736C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9B24CEC-4027-4375-9C91-2D7509736C3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{229C0AD5-F796-4BB0-9628-4E6331F9EB13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{229C0AD5-F796-4BB0-9628-4E6331F9EB13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{229C0AD5-F796-4BB0-9628-4E6331F9EB13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{229C0AD5-F796-4BB0-9628-4E6331F9EB13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BA1FACE-E0F1-4D49-AAF6-F116CA831DB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BA1FACE-E0F1-4D49-AAF6-F116CA831DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BA1FACE-E0F1-4D49-AAF6-F116CA831DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BA1FACE-E0F1-4D49-AAF6-F116CA831DB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E17737D5-103B-4D5A-90DE-C766A85C657C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E17737D5-103B-4D5A-90DE-C766A85C657C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E17737D5-103B-4D5A-90DE-C766A85C657C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E17737D5-103B-4D5A-90DE-C766A85C657C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C352E9CD-CD26-4EF3-8732-886F4ADC37F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C352E9CD-CD26-4EF3-8732-886F4ADC37F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C352E9CD-CD26-4EF3-8732-886F4ADC37F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C352E9CD-CD26-4EF3-8732-886F4ADC37F6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8EBA752D-ECF1-4A19-AAB5-2356527A7A25}
+	EndGlobalSection
+EndGlobal
