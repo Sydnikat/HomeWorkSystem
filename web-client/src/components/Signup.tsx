@@ -90,7 +90,7 @@ const Signup: React.FC = () => {
     <Container fluid>
       <Row>
         <Col md={4} className="mt-2">
-          <Button onClick={onBack}>
+          <Button size="sm" onClick={onBack}>
             <FontAwesomeIcon icon={faArrowCircleLeft} />
           </Button>
         </Col>
@@ -98,7 +98,7 @@ const Signup: React.FC = () => {
           <h1>Regisztráció</h1>
         </Col>
       </Row>
-      <Row>
+      <Row className="mt-2">
         <Col md={{ span: 4, offset: 4 }}>
           <Row>
             <Col>
@@ -106,6 +106,7 @@ const Signup: React.FC = () => {
                 <Form.Group controlId="username">
                   <Form.Label>Felhasználónév</Form.Label>
                   <Form.Control
+                    size="sm"
                     type="text"
                     placeholder="Pl.: kovacs88"
                     value={userName}
@@ -115,6 +116,7 @@ const Signup: React.FC = () => {
                 <Form.Group controlId="password">
                   <Form.Label>Jelszó</Form.Label>
                   <Form.Control
+                    size="sm"
                     type="password"
                     placeholder="Jelszó"
                     value={password}
@@ -124,6 +126,7 @@ const Signup: React.FC = () => {
                 <Form.Group controlId="confirmPassword">
                   <Form.Label>Jelszó még egyszer</Form.Label>
                   <Form.Control
+                    size="sm"
                     type="password"
                     placeholder="Jelszó még egyszer"
                     value={confirmPassword}
@@ -133,21 +136,22 @@ const Signup: React.FC = () => {
                 <Form.Group controlId="userfullname">
                   <Form.Label>Teljes név</Form.Label>
                   <Form.Control
+                    size="sm"
                     type="text"
                     placeholder="Pl.: Dr. Kovács Tamás"
                     value={userFullName}
                     onChange={onFormControlChange(InputType.USERFULLNAME)}
                   />
                 </Form.Group>
-                <DropdownButton id="role" title={role.name}>
+                <DropdownButton size="sm" id="role" title={role.name}>
                   <Dropdown.Item onSelect={onRoleSelect(roles.student)}>
-                    Hallgató
+                    {roles.student.name}
                   </Dropdown.Item>
                   <Dropdown.Item onSelect={onRoleSelect(roles.teacher)}>
-                    Oktató
+                    {roles.teacher.name}
                   </Dropdown.Item>
                 </DropdownButton>
-                <Button className="mt-2" onClick={onSignup}>
+                <Button size="sm" className="mt-2" onClick={onSignup}>
                   Regisztráció
                 </Button>
               </Form>

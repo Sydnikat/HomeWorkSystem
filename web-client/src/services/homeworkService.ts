@@ -1,16 +1,16 @@
 import axios, { AxiosResponse } from "axios";
-import { ICommentResponse } from "../models/comment";
+import { ICommentRequest, ICommentResponse } from "../models/comment";
+import { homeworkServiceUrl } from "./config";
 
 interface HomeworkService {
   getComments(homeworkId: string): Promise<ICommentResponse[]>;
-  sendComment(homeworkId: string, comment: string): Promise<void>;
+  sendComment(homeworkId: string, comment: ICommentRequest): Promise<void>;
 }
 
 export const homeworkService: HomeworkService = {
   async getComments(homeworkId: string) {
-    console.log(homeworkId);
     return await axios
-      .get("url")
+      .get(`${homeworkServiceUrl}/${homeworkId}/comments`)
       .then((res: AxiosResponse) => {
         if (res.status === 200) {
           return res.data as ICommentResponse[];
@@ -23,10 +23,9 @@ export const homeworkService: HomeworkService = {
       });
   },
 
-  async sendComment(homeworkId: string, comment: string) {
-    console.log(homeworkId, comment);
+  async sendComment(homeworkId: string, comment: ICommentRequest) {
     return await axios
-      .post("url")
+      .post(`${homeworkServiceUrl}/${homeworkId}/comments`, { comment })
       .then((res: AxiosResponse) => {
         console.log(res);
       })

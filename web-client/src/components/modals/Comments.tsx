@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, Modal, Row } from "react-bootstrap/";
-import { ICommentResponse } from "../../models/comment";
+import { ICommentRequest, ICommentResponse } from "../../models/comment";
 import { groupService } from "../../services/groupService";
 import { homeworkService } from "../../services/homeworkService";
 import { CommentScope } from "../../shared/enums";
@@ -29,13 +29,14 @@ const Comments: React.FC<CommentsProps> = ({
   };
 
   const onSendClick = async () => {
+    const comment: ICommentRequest = { content: newComment };
     switch (scope) {
       case CommentScope.GROUP: {
-        await groupService.sendComment(scopeId, newComment);
+        await groupService.sendComment(scopeId, comment);
         break;
       }
       case CommentScope.HOMEWORK: {
-        await homeworkService.sendComment(scopeId, newComment);
+        await homeworkService.sendComment(scopeId, comment);
         break;
       }
       default:

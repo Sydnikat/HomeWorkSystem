@@ -98,8 +98,8 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
         </thead>
         <tbody>
           {assignments.map((a: IAssignmentResponse) => (
-            <tr key={a.id} style={colStyle.hw}>
-              <td>
+            <tr key={a.id}>
+              <td style={colStyle.hw}>
                 {a.homeworkTitle}
                 <Button
                   variant="info"
@@ -137,9 +137,7 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
                   </Button>
                 </div>
               </td>
-              <td style={{ ...colStyle.grade, wordBreak: "break-word" }}>
-                {a.grade}
-              </td>
+              <td style={colStyle.grade}>{a.grade}</td>
             </tr>
           ))}
         </tbody>
@@ -195,14 +193,18 @@ export default StudentGroup;
 const colStyle = {
   hw: {
     width: "50%",
-  },
+    wordBreak: "break-word",
+  } as React.CSSProperties,
   deadline: {
     width: "10%",
-  },
+    wordBreak: "break-word",
+  } as React.CSSProperties,
   file: {
     width: "20%",
-  },
+    wordBreak: "break-word",
+  } as React.CSSProperties,
   grade: {
     width: "20%",
-  },
+    wordBreak: "break-word",
+  } as React.CSSProperties,
 };
