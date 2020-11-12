@@ -1,4 +1,6 @@
 ﻿using HWS.Dal.Sql.Comments.DbEntities;
+using HWS.Dal.Sql.Homeworks.DbEntities;
+using HWS.Dal.Sql.MongoUsers.DbEntities;
 using HWS.Dal.Sql.MongoUsers.JoinTables;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HWS.Dal.Entities
+namespace HWS.Dal.Sql.Groups.DbEntities
 {
     public class Group
     {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HWS.Dal.Common
 {
-    public class User
+    public class UserCommon
     {
         public enum UserRole
         {

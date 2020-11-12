@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AHK.Dal
+namespace HWS.Dal.Common
 {
     public static class DomainConvertExtensions
     {

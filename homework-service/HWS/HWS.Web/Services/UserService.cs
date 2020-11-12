@@ -1,4 +1,5 @@
-﻿using HWS.Dal.Repositories;
+﻿using HWS.Dal.Mongo;
+using HWS.Dal.Mongo.Users;
 using HWS.Domain;
 using System;
 using System.Collections.Generic;
@@ -16,22 +17,22 @@ namespace HWS.Services
             this.userRepoitory = userRepoitory;
         }
 
-        public async Task<User> GetUser(Guid id)
+        public async Task<Domain.User> GetUser(Guid id)
         {
             return await userRepoitory.FindById(id);
         }
 
-        public async Task<User> GetUser(string userName)
+        public async Task<Domain.User> GetUser(string userName)
         {
             return await userRepoitory.FindByUserName(userName);
         }
 
-        public async Task<IEnumerable<User>> GetUsers(IEnumerable<Guid> ids)
+        public async Task<IEnumerable<Domain.User>> GetUsers(IEnumerable<Guid> ids)
         {
             return await userRepoitory.FindAllById(ids);
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<Domain.User>> GetUsers()
         {
             return await userRepoitory.FindAll();
         }

@@ -1,4 +1,4 @@
-﻿using HWS.Dal.Entities;
+﻿using HWS.Dal.Sql.Homeworks.DbEntities;
 using HWS.Dal.Sql.MongoUsers.DbEntities;
 using System;
 using System.Collections.Generic;

@@ -1,9 +1,9 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using static HWS.Dal.Common.User;
+using static HWS.Dal.Common.UserCommon;
 
-namespace HWS.Dal.Entities
+namespace HWS.Dal.Mongo.Users.DbEntities
 {
     public class User
     {

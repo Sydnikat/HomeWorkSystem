@@ -1,9 +1,9 @@
-﻿using HWS.Dal.Repositories;
+﻿using HWS.Dal.Mongo.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace HWS.Dal.Config
+namespace HWS.Dal.Mongo.Config
 {
     public static class MongoBuilder
     {

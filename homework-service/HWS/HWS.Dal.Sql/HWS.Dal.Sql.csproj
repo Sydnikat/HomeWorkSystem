@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HWS.Dal.Common\HWS.Dal.Common.csproj" />
+    <ProjectReference Include="..\HWS.Dal.Mongo\HWS.Dal.Mongo.csproj" />
   </ItemGroup>
 
 </Project>

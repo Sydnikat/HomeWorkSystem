@@ -1,5 +1,8 @@
-﻿using HWS.Dal.Entities;
-using HWS.Dal.Sql.MongoUsers.JoinTables;
+﻿using HWS.Dal.Sql;
+using HWS.Dal.Sql.Comments.DbEntities;
+using HWS.Dal.Sql.Groups.DbEntities;
+using HWS.Dal.Sql.Homeworks.DbEntities;
+using HWS.Dal.Sql.MongoUsers.DbEntities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

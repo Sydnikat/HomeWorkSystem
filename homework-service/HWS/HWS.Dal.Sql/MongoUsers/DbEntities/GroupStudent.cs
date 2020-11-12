@@ -1,5 +1,4 @@
-﻿using HWS.Dal.Entities;
-using HWS.Dal.Sql.MongoUsers.JoinTables;
+﻿using HWS.Dal.Sql.MongoUsers.JoinTables;
 using System;
 using System.Collections.Generic;
 using System.Text;

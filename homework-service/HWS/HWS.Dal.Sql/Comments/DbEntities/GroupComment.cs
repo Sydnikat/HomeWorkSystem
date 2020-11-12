@@ -1,4 +1,4 @@
-﻿using HWS.Dal.Entities;
+﻿using HWS.Dal.Sql.Groups.DbEntities;
 using System;
 using System.Collections.Generic;
 using System.Text;

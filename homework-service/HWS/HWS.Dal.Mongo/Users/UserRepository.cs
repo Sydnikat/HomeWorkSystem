@@ -1,29 +1,28 @@
-﻿using HWS.Dal.Entities;
-using HWS.Domain;
+﻿using HWS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using HWS.Dal.Config;
-using HWS.Dal.Converters;
+using HWS.Dal.Mongo.Config;
+using HWS.Dal.Mongo.Users.DbEntities;
 
-namespace HWS.Dal.Repositories
+namespace HWS.Dal.Mongo.Users
 {
     public class UserRepository : IUserRepoitory
     {
-        private readonly IMongoCollection<Entities.User> _users;
+        private readonly IMongoCollection<DbEntities.User> _users;
         public UserRepository(IUserDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
-            _users = database.GetCollection<Entities.User>(settings.UsersCollectionName);
+            _users = database.GetCollection<DbEntities.User>(settings.UsersCollectionName);
         }
 
         public async Task<IEnumerable<Domain.User>> FindAll()
         {
-            var query = await _users.FindAsync(Builders<Entities.User>.Filter.Empty);
+            var query = await _users.FindAsync(Builders<DbEntities.User>.Filter.Empty);
             var result = query.ToList();
             return result.Select(user => user.toDomain());
         }
