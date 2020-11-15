@@ -19,7 +19,7 @@ namespace HWS.Dal.Sql.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("HWS.Dal.Entities.Assignment", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.Assignments.DbEntities.Assignment", b =>
                 {
                     b.Property<long>("_id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace HWS.Dal.Sql.Migrations
                     b.ToTable("Assignment");
                 });
 
-            modelBuilder.Entity("HWS.Dal.Entities.Comment", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.Comments.DbEntities.Comment", b =>
                 {
                     b.Property<long>("_id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +87,7 @@ namespace HWS.Dal.Sql.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Comment");
                 });
 
-            modelBuilder.Entity("HWS.Dal.Entities.Group", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.Groups.DbEntities.Group", b =>
                 {
                     b.Property<long>("_id")
                         .ValueGeneratedOnAdd()
@@ -103,17 +103,15 @@ namespace HWS.Dal.Sql.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("Owner_id")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("Owner")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("_id");
-
-                    b.HasIndex("Owner_id");
 
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("HWS.Dal.Entities.Homework", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.Homeworks.DbEntities.Homework", b =>
                 {
                     b.Property<long>("_id")
                         .ValueGeneratedOnAdd()
@@ -154,9 +152,9 @@ namespace HWS.Dal.Sql.Migrations
                     b.ToTable("Homeworks");
                 });
 
-            modelBuilder.Entity("HWS.Dal.Entities.MongoUser", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.DbEntities.MongoUser", b =>
                 {
-                    b.Property<long>("_id")
+                    b.Property<long?>("_id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -177,10 +175,10 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.GroupStudentJoin", b =>
                 {
-                    b.Property<long>("GroupId")
+                    b.Property<long?>("GroupId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("StudentId")
+                    b.Property<long?>("StudentId")
                         .HasColumnType("bigint");
 
                     b.HasKey("GroupId", "StudentId");
@@ -192,10 +190,10 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.GroupTeacherJoin", b =>
                 {
-                    b.Property<long>("GroupId")
+                    b.Property<long?>("GroupId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("TeacherId")
+                    b.Property<long?>("TeacherId")
                         .HasColumnType("bigint");
 
                     b.HasKey("GroupId", "TeacherId");
@@ -205,27 +203,27 @@ namespace HWS.Dal.Sql.Migrations
                     b.ToTable("GroupTeacherJoin");
                 });
 
-            modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.HomeworkGranderJoin", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.HomeworkGraderJoin", b =>
                 {
-                    b.Property<long>("HomeworkId")
+                    b.Property<long?>("HomeworkId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("GraderId")
+                    b.Property<long?>("GraderId")
                         .HasColumnType("bigint");
 
                     b.HasKey("HomeworkId", "GraderId");
 
                     b.HasIndex("GraderId");
 
-                    b.ToTable("HomeworkGranderJoin");
+                    b.ToTable("HomeworkGraderJoin");
                 });
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.HomeworkStudentJoin", b =>
                 {
-                    b.Property<long>("HomeworkId")
+                    b.Property<long?>("HomeworkId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("StudentId")
+                    b.Property<long?>("StudentId")
                         .HasColumnType("bigint");
 
                     b.HasKey("HomeworkId", "StudentId");
@@ -237,7 +235,7 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.Comments.DbEntities.GroupComment", b =>
                 {
-                    b.HasBaseType("HWS.Dal.Entities.Comment");
+                    b.HasBaseType("HWS.Dal.Sql.Comments.DbEntities.Comment");
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
@@ -249,7 +247,7 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.Comments.DbEntities.HomeworkComment", b =>
                 {
-                    b.HasBaseType("HWS.Dal.Entities.Comment");
+                    b.HasBaseType("HWS.Dal.Sql.Comments.DbEntities.Comment");
 
                     b.Property<long>("HomeworkId")
                         .HasColumnType("bigint");
@@ -261,51 +259,44 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.DbEntities.GroupStudent", b =>
                 {
-                    b.HasBaseType("HWS.Dal.Entities.MongoUser");
+                    b.HasBaseType("HWS.Dal.Sql.MongoUsers.DbEntities.MongoUser");
 
                     b.HasDiscriminator().HasValue("GroupStudent");
                 });
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.DbEntities.GroupTeacher", b =>
                 {
-                    b.HasBaseType("HWS.Dal.Entities.MongoUser");
+                    b.HasBaseType("HWS.Dal.Sql.MongoUsers.DbEntities.MongoUser");
 
                     b.HasDiscriminator().HasValue("GroupTeacher");
                 });
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.DbEntities.HomeworkGrader", b =>
                 {
-                    b.HasBaseType("HWS.Dal.Entities.MongoUser");
+                    b.HasBaseType("HWS.Dal.Sql.MongoUsers.DbEntities.MongoUser");
 
                     b.HasDiscriminator().HasValue("HomeworkGrader");
                 });
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.DbEntities.HomeworkStudent", b =>
                 {
-                    b.HasBaseType("HWS.Dal.Entities.MongoUser");
+                    b.HasBaseType("HWS.Dal.Sql.MongoUsers.DbEntities.MongoUser");
 
                     b.HasDiscriminator().HasValue("HomeworkStudent");
                 });
 
-            modelBuilder.Entity("HWS.Dal.Entities.Assignment", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.Assignments.DbEntities.Assignment", b =>
                 {
-                    b.HasOne("HWS.Dal.Entities.Homework", "Homework")
+                    b.HasOne("HWS.Dal.Sql.Homeworks.DbEntities.Homework", "Homework")
                         .WithMany("Assignments")
                         .HasForeignKey("HomeworkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HWS.Dal.Entities.Group", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.Homeworks.DbEntities.Homework", b =>
                 {
-                    b.HasOne("HWS.Dal.Entities.MongoUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("Owner_id");
-                });
-
-            modelBuilder.Entity("HWS.Dal.Entities.Homework", b =>
-                {
-                    b.HasOne("HWS.Dal.Entities.Group", "Group")
+                    b.HasOne("HWS.Dal.Sql.Groups.DbEntities.Group", "Group")
                         .WithMany("Homeworks")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -314,7 +305,7 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.GroupStudentJoin", b =>
                 {
-                    b.HasOne("HWS.Dal.Entities.Group", "Group")
+                    b.HasOne("HWS.Dal.Sql.Groups.DbEntities.Group", "Group")
                         .WithMany("Students")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -329,7 +320,7 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.GroupTeacherJoin", b =>
                 {
-                    b.HasOne("HWS.Dal.Entities.Group", "Group")
+                    b.HasOne("HWS.Dal.Sql.Groups.DbEntities.Group", "Group")
                         .WithMany("Teachers")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -342,7 +333,7 @@ namespace HWS.Dal.Sql.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.HomeworkGranderJoin", b =>
+            modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.HomeworkGraderJoin", b =>
                 {
                     b.HasOne("HWS.Dal.Sql.MongoUsers.DbEntities.HomeworkGrader", "Grader")
                         .WithMany("Homeworks")
@@ -350,7 +341,7 @@ namespace HWS.Dal.Sql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HWS.Dal.Entities.Homework", "Homework")
+                    b.HasOne("HWS.Dal.Sql.Homeworks.DbEntities.Homework", "Homework")
                         .WithMany("Graders")
                         .HasForeignKey("HomeworkId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -359,7 +350,7 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.MongoUsers.JoinTables.HomeworkStudentJoin", b =>
                 {
-                    b.HasOne("HWS.Dal.Entities.Homework", "Homework")
+                    b.HasOne("HWS.Dal.Sql.Homeworks.DbEntities.Homework", "Homework")
                         .WithMany("Students")
                         .HasForeignKey("HomeworkId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -374,7 +365,7 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.Comments.DbEntities.GroupComment", b =>
                 {
-                    b.HasOne("HWS.Dal.Entities.Group", "Group")
+                    b.HasOne("HWS.Dal.Sql.Groups.DbEntities.Group", "Group")
                         .WithMany("Comments")
                         .HasForeignKey("GroupId")
                         .IsRequired();
@@ -382,7 +373,7 @@ namespace HWS.Dal.Sql.Migrations
 
             modelBuilder.Entity("HWS.Dal.Sql.Comments.DbEntities.HomeworkComment", b =>
                 {
-                    b.HasOne("HWS.Dal.Entities.Homework", "Homework")
+                    b.HasOne("HWS.Dal.Sql.Homeworks.DbEntities.Homework", "Homework")
                         .WithMany("Comments")
                         .HasForeignKey("HomeworkId")
                         .IsRequired();

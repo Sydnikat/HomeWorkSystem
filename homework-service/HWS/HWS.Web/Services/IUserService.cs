@@ -12,8 +12,8 @@ namespace HWS.Services
 
         Task<User> GetUser(string userName);
 
-        Task<IEnumerable<User>> GetUsers(IEnumerable<Guid> ids);
+        Task<IReadOnlyCollection<User>> GetUsers(IEnumerable<Guid> ids);
 
-        Task<IEnumerable<User>> GetUsers();
+        Task<IReadOnlyCollection<User>> GetUsers();
     }
 }

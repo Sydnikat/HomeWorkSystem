@@ -7,6 +7,16 @@ namespace HWS.Dal.Sql.MongoUsers.DbEntities
 {
     public class HomeworkGrader : MongoUser
     {
-        public ICollection<HomeworkGranderJoin> Homeworks { get; set; }
+        public HomeworkGrader() : base()
+        {
+        }
+
+        public HomeworkGrader(Guid userId, long? _id = null)
+            : base(userId, _id)
+        {
+
+        }
+
+        public ICollection<HomeworkGraderJoin> Homeworks { get; set; } = new List<HomeworkGraderJoin>();
     }
 }

@@ -17,22 +17,22 @@ namespace HWS.Services
             this.userRepoitory = userRepoitory;
         }
 
-        public async Task<Domain.User> GetUser(Guid id)
+        public async Task<User> GetUser(Guid id)
         {
             return await userRepoitory.FindById(id);
         }
 
-        public async Task<Domain.User> GetUser(string userName)
+        public async Task<User> GetUser(string userName)
         {
             return await userRepoitory.FindByUserName(userName);
         }
 
-        public async Task<IEnumerable<Domain.User>> GetUsers(IEnumerable<Guid> ids)
+        public async Task<IReadOnlyCollection<User>> GetUsers(IEnumerable<Guid> ids)
         {
             return await userRepoitory.FindAllById(ids);
         }
 
-        public async Task<IEnumerable<Domain.User>> GetUsers()
+        public async Task<IReadOnlyCollection<User>> GetUsers()
         {
             return await userRepoitory.FindAll();
         }

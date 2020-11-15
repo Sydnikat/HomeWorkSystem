@@ -1,4 +1,5 @@
 ﻿using HWS.Dal.Sql;
+using HWS.Dal.Sql.Assignments.DbEntities;
 using HWS.Dal.Sql.Comments.DbEntities;
 using HWS.Dal.Sql.Groups.DbEntities;
 using HWS.Dal.Sql.Homeworks.DbEntities;
@@ -25,13 +26,12 @@ namespace HWS.Dal
         public DbSet<Homework> Homeworks { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<MongoUser> MongoUsers { get; set; }
+        public DbSet<Assignment> Assignments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(
                 assembly: Assembly.GetAssembly(typeof(HWSContext)));
-
-            modelBuilder.Entity<Comment>().ToTable("Comments");
         }
     }
 }

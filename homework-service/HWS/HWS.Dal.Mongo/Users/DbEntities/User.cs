@@ -7,6 +7,16 @@ namespace HWS.Dal.Mongo.Users.DbEntities
 {
     public class User
     {
+        public User(string _id, Guid id, string userName, string userFullName, string password, UserRole role)
+        {
+            this._id = _id;
+            this.Id = id;
+            this.UserName = userName;
+            this.UserFullName = userFullName;
+            this.Password = password;
+            this.Role = role;
+        }
+
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }

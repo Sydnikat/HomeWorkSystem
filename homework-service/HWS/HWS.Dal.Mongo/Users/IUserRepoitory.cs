@@ -12,8 +12,8 @@ namespace HWS.Dal.Mongo.Users
 
         Task<User> FindByUserName(string userName);
 
-        Task<IEnumerable<User>> FindAllById(IEnumerable<Guid> ids);
+        Task<IReadOnlyCollection<User>> FindAllById(IEnumerable<Guid> ids);
 
-        Task<IEnumerable<User>> FindAll();
+        Task<IReadOnlyCollection<User>> FindAll();
     }
 }

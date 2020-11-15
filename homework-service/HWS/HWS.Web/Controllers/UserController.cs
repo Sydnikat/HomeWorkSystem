@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HWS.Controllers.DTOs.Responses;
+using HWS.Domain;
 using HWS.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,10 @@ namespace HWS.Controllers
         public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
             var users = await userService.GetUsers().ConfigureAwait(false);
+
+            if (users == null)
+                users = new List<User>();
+
             var userResponses = users.Select(u => new UserResponse(u));
             return Ok(userResponses);
         }

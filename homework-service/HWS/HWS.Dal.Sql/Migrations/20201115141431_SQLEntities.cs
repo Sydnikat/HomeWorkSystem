@@ -8,6 +8,22 @@ namespace HWS.Dal.Sql.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    _id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Code = table.Column<string>(nullable: true),
+                    Owner = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x._id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MongoUsers",
                 columns: table => new
                 {
@@ -22,25 +38,30 @@ namespace HWS.Dal.Sql.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Groups",
+                name: "Homeworks",
                 columns: table => new
                 {
                     _id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Code = table.Column<string>(nullable: true),
-                    Owner_id = table.Column<long>(nullable: true)
+                    Title = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    MaxFileSize = table.Column<int>(nullable: false),
+                    GroupId = table.Column<long>(nullable: false),
+                    SubmissionDeadline = table.Column<DateTime>(nullable: false),
+                    ApplicationDeadline = table.Column<DateTime>(nullable: false),
+                    MaximumNumberOfStudents = table.Column<int>(nullable: false),
+                    CurrentNumberOfStudents = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x._id);
+                    table.PrimaryKey("PK_Homeworks", x => x._id);
                     table.ForeignKey(
-                        name: "FK_Groups_MongoUsers_Owner_id",
-                        column: x => x.Owner_id,
-                        principalTable: "MongoUsers",
+                        name: "FK_Homeworks_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
                         principalColumn: "_id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,33 +108,6 @@ namespace HWS.Dal.Sql.Migrations
                         name: "FK_GroupTeacherJoin_MongoUsers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "MongoUsers",
-                        principalColumn: "_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Homeworks",
-                columns: table => new
-                {
-                    _id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Id = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    MaxFileSize = table.Column<int>(nullable: false),
-                    GroupId = table.Column<long>(nullable: false),
-                    SubmissionDeadline = table.Column<DateTime>(nullable: false),
-                    ApplicationDeadline = table.Column<DateTime>(nullable: false),
-                    MaximumNumberOfStudents = table.Column<int>(nullable: false),
-                    CurrentNumberOfStudents = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Homeworks", x => x._id);
-                    table.ForeignKey(
-                        name: "FK_Homeworks_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
                         principalColumn: "_id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -176,7 +170,7 @@ namespace HWS.Dal.Sql.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HomeworkGranderJoin",
+                name: "HomeworkGraderJoin",
                 columns: table => new
                 {
                     GraderId = table.Column<long>(nullable: false),
@@ -184,15 +178,15 @@ namespace HWS.Dal.Sql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HomeworkGranderJoin", x => new { x.HomeworkId, x.GraderId });
+                    table.PrimaryKey("PK_HomeworkGraderJoin", x => new { x.HomeworkId, x.GraderId });
                     table.ForeignKey(
-                        name: "FK_HomeworkGranderJoin_MongoUsers_GraderId",
+                        name: "FK_HomeworkGraderJoin_MongoUsers_GraderId",
                         column: x => x.GraderId,
                         principalTable: "MongoUsers",
                         principalColumn: "_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HomeworkGranderJoin_Homeworks_HomeworkId",
+                        name: "FK_HomeworkGraderJoin_Homeworks_HomeworkId",
                         column: x => x.HomeworkId,
                         principalTable: "Homeworks",
                         principalColumn: "_id",
@@ -239,11 +233,6 @@ namespace HWS.Dal.Sql.Migrations
                 column: "HomeworkId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Groups_Owner_id",
-                table: "Groups",
-                column: "Owner_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GroupStudentJoin_StudentId",
                 table: "GroupStudentJoin",
                 column: "StudentId");
@@ -254,8 +243,8 @@ namespace HWS.Dal.Sql.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HomeworkGranderJoin_GraderId",
-                table: "HomeworkGranderJoin",
+                name: "IX_HomeworkGraderJoin_GraderId",
+                table: "HomeworkGraderJoin",
                 column: "GraderId");
 
             migrationBuilder.CreateIndex(
@@ -284,7 +273,7 @@ namespace HWS.Dal.Sql.Migrations
                 name: "GroupTeacherJoin");
 
             migrationBuilder.DropTable(
-                name: "HomeworkGranderJoin");
+                name: "HomeworkGraderJoin");
 
             migrationBuilder.DropTable(
                 name: "HomeworkStudentJoin");
@@ -293,10 +282,10 @@ namespace HWS.Dal.Sql.Migrations
                 name: "Homeworks");
 
             migrationBuilder.DropTable(
-                name: "Groups");
+                name: "MongoUsers");
 
             migrationBuilder.DropTable(
-                name: "MongoUsers");
+                name: "Groups");
         }
     }
 }

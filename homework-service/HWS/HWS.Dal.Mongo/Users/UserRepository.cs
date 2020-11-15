@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using HWS.Dal.Mongo.Config;
 using HWS.Dal.Mongo.Users.DbEntities;
+using MongoDB.Bson;
+using HWS.Dal.Common;
 
 namespace HWS.Dal.Mongo.Users
 {
@@ -20,38 +22,39 @@ namespace HWS.Dal.Mongo.Users
             _users = database.GetCollection<DbEntities.User>(settings.UsersCollectionName);
         }
 
-        public async Task<IEnumerable<Domain.User>> FindAll()
+        public async Task<IReadOnlyCollection<Domain.User>> FindAll()
         {
             var query = await _users.FindAsync(Builders<DbEntities.User>.Filter.Empty);
-            var result = query.ToList();
-            return result.Select(user => user.toDomain());
+            return query.ToList().ToDomainOrNull(UserConverter.toDomain);
         }
 
-        public async Task<IEnumerable<Domain.User>> FindAllById(IEnumerable<Guid> ids)
+        public async Task<IReadOnlyCollection<Domain.User>> FindAllById(IEnumerable<Guid> ids)
         {
-            var query = await _users.FindAsync(user => ids.Contains(user.Id));
-            var result = query.ToList();
-            return result.Select(user => user.toDomain());
+            if (ids == null)
+                return new List<Domain.User>();
+
+            var filter = Builders<DbEntities.User>.Filter.In("id", ids.Select(id => id.ToString()));
+            var query = await _users.FindAsync(filter);
+            return query.ToList().ToDomainOrNull(UserConverter.toDomain);
         }
 
         public async Task<Domain.User> FindById(Guid id)
         {
-            var query = await _users.FindAsync(user => user.Id == id);
-            var result = query.FirstOrDefault();
-            if (result == null)
+            if (id == Guid.Empty)
                 return null;
-            else
-                return result.toDomain();
+
+            var filter = Builders<DbEntities.User>.Filter.Eq("id", id.ToString());
+            var query = await _users.FindAsync(filter);
+            return query.FirstOrDefault().ToDomainOrNull(UserConverter.toDomain);
         }
 
         public async Task<Domain.User> FindByUserName(string userName)
         {
-            var query = await _users.FindAsync(user => user.UserName == userName);
-            var result = query.FirstOrDefault();
-            if (result == null)
+            if (userName == null || userName == "")
                 return null;
-            else
-                return result.toDomain();
+
+            var query = await _users.FindAsync(user => user.UserName == userName);
+            return query.FirstOrDefault().ToDomainOrNull(UserConverter.toDomain);
         }
     }
 }

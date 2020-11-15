@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HWS.Dal.Sql.Assignments;
+using HWS.Dal.Sql.Groups;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -22,6 +24,9 @@ namespace HWS.Dal.Sql.Config
             {
                 o.UseSqlServer(settings.MSSQLConnection);
             });
+
+            services.AddTransient<IAssignmentRepository, AssignmentRepository>();
+            services.AddTransient<IGroupRepository, GroupRepository>();
         }
 
         private static void configureSqlServer(IServiceCollection services, IConfiguration config)

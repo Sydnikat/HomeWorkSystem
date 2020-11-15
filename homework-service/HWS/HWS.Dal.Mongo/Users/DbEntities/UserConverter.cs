@@ -10,15 +10,12 @@ namespace HWS.Dal.Mongo.Users.DbEntities
 {
     public static class UserConverter
     {
-        public static Domain.User toDomain(this User value)
-            => new Domain.User
-            {
-                _id = value._id,
-                Id = value.Id,
-                UserName = value.UserName,
-                UserFullName = value.UserFullName,
-                Password = value.Password,
-                Role = value.Role.toDomain()
-            };
+        public static Func<User, Domain.User> toDomain => 
+            user => new Domain.User(
+                id: user.Id,
+                userName: user.UserName,
+                userFullName: user.UserFullName,
+                password: user.Password,
+                role: user.Role.toDomain());
     }
 }

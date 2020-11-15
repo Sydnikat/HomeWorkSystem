@@ -6,9 +6,9 @@ using System.Text;
 
 namespace HWS.Dal.Sql.MongoUsers.JoinTables
 {
-    internal class HomeworkGraderConfiguration : IEntityTypeConfiguration<HomeworkGranderJoin>
+    internal class HomeworkGraderConfiguration : IEntityTypeConfiguration<HomeworkGraderJoin>
     {
-        public void Configure(EntityTypeBuilder<HomeworkGranderJoin> builder)
+        public void Configure(EntityTypeBuilder<HomeworkGraderJoin> builder)
         {
             builder
                  .HasKey(hgj => new { hgj.HomeworkId, hgj.GraderId });

@@ -7,6 +7,16 @@ namespace HWS.Dal.Sql.MongoUsers.DbEntities
 {
     public class GroupTeacher : MongoUser
     {
-        public ICollection<GroupTeacherJoin> Groups { get; set; }
+        public GroupTeacher() : base()
+        {
+        }
+
+        public GroupTeacher(Guid userId, long? _id = null)
+            : base(userId, _id)
+        {
+           
+        }
+
+        public ICollection<GroupTeacherJoin> Groups { get; set; } = new List<GroupTeacherJoin>();
     }
 }

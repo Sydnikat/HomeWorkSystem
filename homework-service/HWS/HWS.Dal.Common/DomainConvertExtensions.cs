@@ -49,7 +49,7 @@ namespace HWS.Dal.Common
             return dalResult.ToDomainOrNull(domainConverter);
         }
 
-        public static IReadOnlyCollection<TDomain> ToDomainOrNull<TDal, TDomain>(this List<TDal> list, Func<TDal, TDomain> domainConverter)
+        public static IReadOnlyCollection<TDomain> ToDomainOrNull<TDal, TDomain>(this ICollection<TDal> list, Func<TDal, TDomain> domainConverter)
             where TDomain : class
         {
             if (list == null)
@@ -69,7 +69,7 @@ namespace HWS.Dal.Common
                 return dalConverter(domain);
         }
 
-        public static IReadOnlyCollection<TDal> ToDalOrNull<TDomain, TDal>(this IReadOnlyCollection<TDomain> list, Func<TDomain, TDal> dalConverter)
+        public static IReadOnlyCollection<TDal> ToDalOrNull<TDomain, TDal>(this ICollection<TDomain> list, Func<TDomain, TDal> dalConverter)
             where TDal : class
             => list?.Select(dalConverter)
                 .ToList();

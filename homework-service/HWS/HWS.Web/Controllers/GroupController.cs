@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HWS.Controllers.DTOs.Requests;
 using HWS.Controllers.DTOs.Responses;
 using HWS.Domain;
+using HWS.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,9 +16,13 @@ namespace HWS.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
-        public GroupController()
-        {
+        private readonly IGroupService groupService;
+        private readonly IUserService userService;
 
+        public GroupController(IGroupService groupService, IUserService userService)
+        {
+            this.groupService = groupService;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -33,7 +38,25 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<GroupResponse>>> CreateGroup([FromBody] GroupRequest request)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            if (request == null)
+                return BadRequest();
+
+            var newGroup = request.ToNew();
+
+            var id = Guid.Parse("5ebbec4b-a5da-484e-84e5-644c3118898a");
+
+            var owner = await userService.GetUser(id);
+            newGroup.Owner = owner;
+
+            IReadOnlyCollection<User> students = await userService.GetUsers(request.students).ConfigureAwait(false);
+            IReadOnlyCollection<User> teachers = await userService.GetUsers(request.teachers).ConfigureAwait(false);
+
+            newGroup.Students = students.ToList();
+            newGroup.Teachers = teachers.ToList();
+
+            var savedGroup = await groupService.CreateGroup(newGroup);
+
+            return Created(nameof(CreateGroup), GroupResponse.ForTeacher(savedGroup));
         }
 
 
