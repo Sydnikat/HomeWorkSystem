@@ -35,6 +35,8 @@ namespace HWS
             services.AddMongodb(this.Configuration);
             services.AddSqlServer(this.Configuration);
 
+            services.AddAppConfiguration(this.Configuration);
+
             services.AddServices();
 
             services.AddControllers()

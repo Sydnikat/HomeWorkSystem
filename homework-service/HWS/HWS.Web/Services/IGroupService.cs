@@ -17,7 +17,6 @@ namespace HWS.Services
         Task<ICollection<Group>> GetGroupsForTeacher(User teacher);
 
         Task<Group> CreateGroup(User owner, Group newGroup, ICollection<Guid> students, ICollection<Guid> teachers);
-
         Task<Homework> CreateHomework(Group group, Homework newHomework, ICollection<Guid> students, ICollection<Guid> graders);
     }
 }

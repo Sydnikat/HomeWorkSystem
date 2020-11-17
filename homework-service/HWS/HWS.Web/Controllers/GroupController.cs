@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using HWS.Controllers.DTOs.Requests;
 using HWS.Controllers.DTOs.Responses;
 using HWS.Domain;
+using HWS.Middlewares.Config;
 using HWS.Services;
 using HWS.Services.Exceptions;
 using Microsoft.AspNetCore.Http;
@@ -29,10 +31,12 @@ namespace HWS.Controllers
 
 
         // TODO: remove id and use JWT
+        //[Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<GroupResponse>>> GetGroups(Guid id)
         {
+            var principal = this.User;
             //var userId = Guid.Parse("6994553d-3f8f-4e90-8243-ed6980832ae9");
             var user = await userService.GetUser(id);
 
