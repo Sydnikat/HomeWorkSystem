@@ -15,13 +15,13 @@ namespace HWS.Dal.Sql.Homeworks.DbEntities
 {
     public static class HomeworkConverter
     {
-        public static Func<Homework, Domain.Homework> toDomain => homework
+        public static Func<Homework, Domain.Homework> ToDomain => homework
             => new Domain.Homework(
                 id: homework.Id,
                 title: homework.Title,
                 description: homework.Description,
                 maxFileSize: homework.MaxFileSize,
-                group: homework.Group.ToDomainOrNull(GroupConverter.toDomain),
+                group: null,
                 submissionDeadline: homework.SubmissionDeadline,
                 applicationDeadline: homework.ApplicationDeadline,
                 maximumNumberOfStudents: homework.MaximumNumberOfStudents,
@@ -29,20 +29,20 @@ namespace HWS.Dal.Sql.Homeworks.DbEntities
                 graders: new List<Domain.User>(),
                 students: new List<Domain.User>(),
                 comments: homework.Comments.ToDomainOrNull(CommentConverter.ToHomeworkDomain).ToList(),
-                assignments: homework.Assignments.ToDomainOrNull(AssingmentConverter.toDomain).ToList(),
+                assignments: new List<Domain.Assignment>(),
                 _id: homework._id
                 );
 
-        public static Func<Domain.Homework, Homework> toDalNew => homework =>
+        public static Func<Domain.Homework, Homework> ToDalNew => homework =>
         {
-            var a = homework.Group._id;
             var entity = new Homework(
                 _id: 0,
                 id: homework.Id,
                 title: homework.Title,
                 description: homework.Description,
                 maxFileSize: homework.MaxFileSize,
-                group: homework.Group.ToDalOrNull(GroupConverter.toDal),
+                groupId: 0,
+                group: null,
                 submissionDeadline: homework.SubmissionDeadline,
                 applicationDeadline: homework.ApplicationDeadline,
                 maximumNumberOfStudents: homework.MaximumNumberOfStudents,
@@ -55,20 +55,21 @@ namespace HWS.Dal.Sql.Homeworks.DbEntities
 
             entity.Graders = homework.Graders.Select(g => new HomeworkGraderJoin(g, entity)).ToList();
             entity.Students = homework.Students.Select(s => new HomeworkStudentJoin(s, entity)).ToList();
+            entity.Assignments = homework.Assignments.Select(a => a.ToDalOrNull(AssingmentConverter.ToDalNew)).ToList();
 
             return entity;
         };
 
-        public static Func<Domain.Homework, Homework> toDal => homework =>
+        public static Func<Domain.Homework, Homework> ToDal => homework =>
         {
-            var a = homework.Group._id;
             var entity = new Homework(
                 _id: homework._id,
                 id: homework.Id,
                 title: homework.Title,
                 description: homework.Description,
                 maxFileSize: homework.MaxFileSize,
-                group: homework.Group.ToDalOrNull(GroupConverter.toDal),
+                groupId: 0,
+                group: null,
                 submissionDeadline: homework.SubmissionDeadline,
                 applicationDeadline: homework.ApplicationDeadline,
                 maximumNumberOfStudents: homework.MaximumNumberOfStudents,

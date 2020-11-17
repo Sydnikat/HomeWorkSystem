@@ -38,7 +38,7 @@ namespace HWS.Dal.Sql.Assignments
                 .Where(a => a.Student == student.Id)
                 .ToListAsync();
 
-            var assignments = query.Select(async a => 
+            var assignmentTasks = query.Select(async a => 
             {
                 var assignment = a.ToDomainOrNull(AssingmentConverter.toDomain);
                 assignment.Student = await userRepoitory.FindById(a.Student).ConfigureAwait(false);
@@ -47,9 +47,9 @@ namespace HWS.Dal.Sql.Assignments
                 return assignment;
             });
 
-            var task = Task.WhenAll(assignments);
+            var assignments = Task.WhenAll(assignmentTasks);
 
-            return await task;
+            return await assignments;
         }
 
         public async Task<IEnumerable<Domain.Assignment>> FindAllByUserInGraders(User grader)

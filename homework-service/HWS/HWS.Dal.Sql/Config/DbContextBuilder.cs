@@ -1,5 +1,6 @@
 ﻿using HWS.Dal.Sql.Assignments;
 using HWS.Dal.Sql.Groups;
+using HWS.Dal.Sql.Homeworks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ namespace HWS.Dal.Sql.Config
 
             services.AddTransient<IAssignmentRepository, AssignmentRepository>();
             services.AddTransient<IGroupRepository, GroupRepository>();
+            services.AddTransient<IHomeworkRepository, HomeworkRepository>();
         }
 
         private static void configureSqlServer(IServiceCollection services, IConfiguration config)

@@ -40,7 +40,7 @@ namespace HWS.Controllers.DTOs.Responses
                 Id = group.Id,
                 Name = group.Name,
                 students = new List<UserResponse>(),
-                teachers = new List<UserResponse>(),
+                teachers = group.Teachers.Select(t => new UserResponse(t)),
                 Code = group.Code,
                 OwnerId = group.Owner.Id,
                 OwnerUsername = group.Owner.UserFullName,

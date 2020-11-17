@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HWS.Controllers.DTOs.Requests;
 using HWS.Controllers.DTOs.Responses;
+using HWS.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,16 +15,22 @@ namespace HWS.Controllers
     [ApiController]
     public class HomeworkController : ControllerBase
     {
-        public HomeworkController()
-        {
+        private readonly IGroupService groupService;
+        private readonly IUserService userService;
+        private readonly IHomeworkService homeworkService;
 
+        public HomeworkController(IGroupService groupService, IUserService userService, IHomeworkService homeworkService)
+        {
+            this.groupService = groupService;
+            this.userService = userService;
+            this.homeworkService = homeworkService;
         }
 
         [HttpGet("{id}/comments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CommentResponse>>> GetHomewworkComments(Guid id)
+        public async Task<ActionResult<IEnumerable<CommentResponse>>> GetHomeworkComments(Guid id)
         {
             return StatusCode(StatusCodes.Status501NotImplemented);
         }

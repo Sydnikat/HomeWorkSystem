@@ -13,20 +13,20 @@ namespace HWS.Dal.Sql.Groups.DbEntities
 {
     public static class GroupConverter
     {
-        public static Func<Group, Domain.Group> toDomain => group
+        public static Func<Group, Domain.Group> ToDomain => group
             => new Domain.Group(
                 id: group.Id,
                 name: group.Name,
                 students: new List<Domain.User>(),
                 teachers: new List<Domain.User>(),
                 code: group.Code,
-                homeworks: group.Homeworks.ToDomainOrNull(HomeworkConverter.toDomain).ToList(),
+                homeworks: new List<Domain.Homework>(),
                 comments: group.Comments.ToDomainOrNull(CommentConverter.ToGroupDomain).ToList(),
                 owner: null,
                 _id: group._id
                 );
 
-        public static Func<Domain.Group, Group> toDalNew => group =>
+        public static Func<Domain.Group, Group> ToDalNew => group =>
         {
             var entity = new Group(
                 _id: 0,
@@ -46,7 +46,7 @@ namespace HWS.Dal.Sql.Groups.DbEntities
             return entity;
         };
 
-        public static Func<Domain.Group, Group> toDal => group =>
+        public static Func<Domain.Group, Group> ToDal => group =>
         {
             var entity = new Group(
                 _id: group._id,

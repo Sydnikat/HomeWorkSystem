@@ -14,11 +14,11 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
         {
         }
 
-        public Assignment(long _id, Guid id, Homework homework, DateTime submissionDeadline, DateTime turnInDate, string fileName, Guid student, Guid reservedBy, string grade)
+        public Assignment(long _id, Guid id, long homeworkId, Homework homework, DateTime submissionDeadline, DateTime turnInDate, string fileName, Guid student, Guid reservedBy, string grade)
         {
             this._id = _id;
             this.Id = id;
-            this.HomeworkId = homework._id;
+            this.HomeworkId = homeworkId;
             this.Homework = homework;
             this.SubmissionDeadline = submissionDeadline;
             this.TurnInDate = turnInDate;

@@ -15,8 +15,8 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
         public static Func<Assignment, Domain.Assignment> toDomain => assignment
             => new Domain.Assignment(
                 id: assignment.Id,
-                group: assignment.Homework.Group.ToDomainOrNull(GroupConverter.toDomain),
-                homework: assignment.Homework.ToDomainOrNull(HomeworkConverter.toDomain),
+                group: null,
+                homework: null,
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,
@@ -30,7 +30,8 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
             => new Assignment(
                 _id: 0,
                 id: assignment.Id,
-                homework: assignment.Homework.ToDalOrNull(HomeworkConverter.toDal),
+                homeworkId: 0,
+                homework: null,
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,
@@ -43,7 +44,8 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
             => new Assignment(
                 _id: assignment._id,
                 id: assignment.Id,
-                homework: assignment.Homework.ToDalOrNull(HomeworkConverter.toDal),
+                homeworkId: 0,
+                homework: null,
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,

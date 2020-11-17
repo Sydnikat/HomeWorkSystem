@@ -8,8 +8,14 @@ namespace HWS.Dal.Sql.Groups
 {
     public interface IGroupRepository
     {
-        Task<IEnumerable<Group>> FindAllByStudent(User student);
+        Task<IReadOnlyCollection<Group>> FindAllByInStudents(User student);
+
+        Task<IReadOnlyCollection<Group>> FindAllByInTeachersOrIsOwner(User teacher);
+
+        Task<Group> FindById(Guid id);
 
         Task<Group> Insert(Group group);
+
+        Task<Homework> InsertHomework(Guid groupId, Homework homework);
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HWS.Controllers.DTOs.Config;
 using HWS.Dal.Mongo.Config;
 using HWS.Dal.Sql.Config;
+using HWS.Middlewares;
 using HWS.Services.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -54,6 +55,8 @@ namespace HWS
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.AddMiddlewares();
 
             app.UseEndpoints(endpoints =>
             {

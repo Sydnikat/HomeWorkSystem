@@ -16,9 +16,9 @@ namespace HWS.Domain
             Role = role;
         }
 
-        public User(Guid id)
+        public User()
         {
-            Id = id;
+
         }
 
         public enum UserRole
@@ -28,7 +28,7 @@ namespace HWS.Domain
             Unknown
         }
 
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.Empty;
         public string UserName { get; set; } = "";
         public string UserFullName { get; set; } = "";
         public string Password { get; set; } = "";

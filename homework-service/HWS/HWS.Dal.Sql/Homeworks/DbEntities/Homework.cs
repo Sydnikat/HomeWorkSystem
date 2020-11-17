@@ -23,6 +23,7 @@ namespace HWS.Dal.Sql.Homeworks.DbEntities
             string title,
             string description,
             int maxFileSize,
+            long groupId,
             Group group, 
             DateTime submissionDeadline,
             DateTime applicationDeadline,
@@ -38,7 +39,7 @@ namespace HWS.Dal.Sql.Homeworks.DbEntities
             this.Title = title;
             this.Description = description;
             this.MaxFileSize = maxFileSize;
-            this.GroupId = group._id;
+            this.GroupId = groupId;
             this.Group = group;
             this.SubmissionDeadline = submissionDeadline;
             this.ApplicationDeadline = applicationDeadline;

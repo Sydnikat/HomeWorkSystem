@@ -13,6 +13,7 @@ namespace HWS.Services.Config
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IHomeworkService, HomeworkService>();
         }
     }
 }

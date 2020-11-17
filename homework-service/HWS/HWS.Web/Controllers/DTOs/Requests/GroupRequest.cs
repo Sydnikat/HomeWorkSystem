@@ -10,7 +10,7 @@ namespace HWS.Controllers.DTOs.Requests
         {
         }
 
-        public GroupRequest(string name, IEnumerable<Guid> students, IEnumerable<Guid> teachers)
+        public GroupRequest(string name, ICollection<Guid> students, ICollection<Guid> teachers)
         {
             Name = name;
             this.students = students;
@@ -18,21 +18,21 @@ namespace HWS.Controllers.DTOs.Requests
         }
 
         public string Name { get; set; }
-        public IEnumerable<Guid> students { get; set; }
-        public IEnumerable<Guid> teachers { get; set; }
+        public ICollection<Guid> students { get; set; }
+        public ICollection<Guid> teachers { get; set; }
 
         public Group ToNew()
         {
             return new Group(
                 _id: 0,
-                id: Guid.NewGuid(),
+                id: Guid.Empty,
                 name: Name,
                 students: new List<User>(),
                 teachers: new List<User>(),
                 code: "",
                 homeworks: new List<Homework>(),
                 comments: new List<Comment>(),
-                owner: new User(Guid.NewGuid()));
+                owner: new User());
         }
     }
 }

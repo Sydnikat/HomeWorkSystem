@@ -6,8 +6,10 @@ using HWS.Controllers.DTOs.Requests;
 using HWS.Controllers.DTOs.Responses;
 using HWS.Domain;
 using HWS.Services;
+using HWS.Services.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static HWS.Middlewares.ErrorHandlerMiddleware;
 
 namespace HWS.Controllers
 {
@@ -25,11 +27,35 @@ namespace HWS.Controllers
             this.userService = userService;
         }
 
-        [HttpGet]
+
+        // TODO: remove id and use JWT
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<GroupResponse>>> GetGroups()
+        public async Task<ActionResult<IEnumerable<GroupResponse>>> GetGroups(Guid id)
         {
-            return Ok(new List<Group>().Select(GroupResponse.ForTeacher));
+            //var userId = Guid.Parse("6994553d-3f8f-4e90-8243-ed6980832ae9");
+            var user = await userService.GetUser(id);
+
+            if (user == null)
+                return Ok(new List<Group>().Select(GroupResponse.ForTeacher));
+
+            switch (user.Role)
+            {
+                case Domain.User.UserRole.Student:
+                    var groupsForStudent = await groupService.GetGroupsForStudent(user).ConfigureAwait(false);
+
+                    return Ok(groupsForStudent.Select(GroupResponse.ForStudent));
+
+                case Domain.User.UserRole.Teacher:
+                    var groupsForTeacher = await groupService.GetGroupsForTeacher(user).ConfigureAwait(false);
+
+                    return Ok(groupsForTeacher.Select(GroupResponse.ForTeacher));
+
+                case Domain.User.UserRole.Unknown:
+                default:
+                    return Ok(new List<Group>().Select(GroupResponse.ForStudent));
+            }
+
         }
 
         [HttpPost]
@@ -38,23 +64,20 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<GroupResponse>>> CreateGroup([FromBody] GroupRequest request)
         {
-            if (request == null)
-                return BadRequest();
-
-            var newGroup = request.ToNew();
-
+            // TODO: JWT
             var id = Guid.Parse("5ebbec4b-a5da-484e-84e5-644c3118898a");
 
-            var owner = await userService.GetUser(id);
-            newGroup.Owner = owner;
+            if (request == null)
+                throw new HWSException("Request body cannot be null", StatusCodes.Status400BadRequest);
 
-            IReadOnlyCollection<User> students = await userService.GetUsers(request.students).ConfigureAwait(false);
-            IReadOnlyCollection<User> teachers = await userService.GetUsers(request.teachers).ConfigureAwait(false);
+            var user = await userService.GetUser(id);
 
-            newGroup.Students = students.ToList();
-            newGroup.Teachers = teachers.ToList();
+            if (!groupService.CanCreateGroup(user))
+                throw new HWSException("User has to be a teacher to create a group", StatusCodes.Status403Forbidden);
 
-            var savedGroup = await groupService.CreateGroup(newGroup);
+            var savedGroup = await groupService
+                .CreateGroup(user, request.ToNew(), request.students, request.teachers)
+                .ConfigureAwait(false);
 
             return Created(nameof(CreateGroup), GroupResponse.ForTeacher(savedGroup));
         }
@@ -89,14 +112,50 @@ namespace HWS.Controllers
             return StatusCode(StatusCodes.Status501NotImplemented);
         }
 
-        [HttpPost("{id}/homework")]
+        [HttpPost("{id}/homeworks")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> CreateHomework(Guid id, [FromBody] HomeworkRequest request)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            // TODO: JWT
+            var userId = Guid.Parse("5ebbec4b-a5da-484e-84e5-644c3118898a");
+
+            if (request == null)
+                throw new HWSException("Request body cannot be null", StatusCodes.Status400BadRequest);
+
+            var user = await userService.GetUser(userId);
+
+            var group = await groupService.GetGroup(id).ConfigureAwait(false);
+
+            if (group == null)
+                throw new HWSException("Group not found", StatusCodes.Status404NotFound);
+
+            if (group.Owner.Id != user.Id)
+                throw new HWSException("User has to be the group owner to create a new homework", StatusCodes.Status403Forbidden);
+
+            try
+            {
+                var savedHomework = await groupService
+                .CreateHomework(group, request.ToNew(), request.Students, request.Graders)
+                .ConfigureAwait(false);
+
+                return Created(nameof(CreateHomework), HomeworkResponse.ForTeacher(savedHomework));
+            }
+            catch (IllegalStudentException e)
+            {
+                throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
+            }
+            catch (IllegalTeacherException e)
+            {
+                throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
+            }
+            catch (StudentNumberMisMatchException e)
+            {
+                throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
+            }
+            
         }
     }
 }

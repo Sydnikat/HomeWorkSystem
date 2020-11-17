@@ -46,17 +46,5 @@ namespace HWS.Dal.Sql.Comments.DbEntities
                 createdBy: comment.CreatedBy,
                 content: comment.Content
                 );
-
-        /*
-        public static HomeworkComment ToDalNew(this Domain.Comment comment, Homework homework)
-            => new HomeworkComment(
-                _id: 0,
-                homework: homework,
-                id: comment.Id,
-                creationDate: comment.CreationDate,
-                createdBy: comment.CreatedBy,
-                content: comment.Content
-                );
-        */
     }
 }
