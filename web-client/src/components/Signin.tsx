@@ -38,7 +38,7 @@ const Signin: React.FC = () => {
     const user = await authService.signin(userName, password);
     if (user) {
       dispatch(setUser(user));
-      user.role === "student"
+      user.role === "Student"
         ? history.push("student")
         : history.push("teacher");
     } else {

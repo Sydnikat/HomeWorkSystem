@@ -17,11 +17,11 @@ import CommonAlert from "./CommonAlert";
 
 const roles = {
   student: {
-    value: "student",
+    value: "Student",
     name: "Hallgató",
   },
   teacher: {
-    value: "teacher",
+    value: "Teacher",
     name: "Oktató",
   },
 };
