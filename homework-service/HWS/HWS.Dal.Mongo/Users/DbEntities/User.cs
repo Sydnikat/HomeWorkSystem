@@ -37,5 +37,9 @@ namespace HWS.Dal.Mongo.Users.DbEntities
         [BsonRepresentation(BsonType.String)]
         [BsonElement("role")]
         public UserRole Role { get; set; }
+
+        [BsonRepresentation(BsonType.Int32)]
+        [BsonElement("__v")]
+        public int version { get; set; }
     }
 }

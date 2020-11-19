@@ -11,9 +11,9 @@ namespace HWS.Services.Config
     {
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddSingleton<IUserService, UserService>();
-            services.AddScoped<IGroupService, GroupService>();
-            services.AddScoped<IHomeworkService, HomeworkService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IHomeworkService, HomeworkService>();
         }
     }
 }

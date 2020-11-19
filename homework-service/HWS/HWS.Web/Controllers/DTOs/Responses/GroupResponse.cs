@@ -13,7 +13,7 @@ namespace HWS.Controllers.DTOs.Responses
         public IEnumerable<UserResponse> teachers { get; set; }
         public string Code { get; set; }
         public Guid OwnerId { get; set; }
-        public string OwnerUsername { get; set; }
+        public string OwnerFullName { get; set; }
         public IEnumerable<HomeworkResponse> Homeworks { get; set; }
 
         public GroupResponse() { }
@@ -28,7 +28,7 @@ namespace HWS.Controllers.DTOs.Responses
                 teachers = group.Teachers.Select(t => new UserResponse(t)),
                 Code = group.Code,
                 OwnerId = group.Owner.Id,
-                OwnerUsername = group.Owner.UserFullName,
+                OwnerFullName = group.Owner.UserFullName,
                 Homeworks = group.Homeworks.Select(HomeworkResponse.ForTeacher)
             };
         }
@@ -43,7 +43,7 @@ namespace HWS.Controllers.DTOs.Responses
                 teachers = group.Teachers.Select(t => new UserResponse(t)),
                 Code = group.Code,
                 OwnerId = group.Owner.Id,
-                OwnerUsername = group.Owner.UserFullName,
+                OwnerFullName = group.Owner.UserFullName,
                 Homeworks = group.Homeworks.Select(HomeworkResponse.ForStudent)
             };
         }

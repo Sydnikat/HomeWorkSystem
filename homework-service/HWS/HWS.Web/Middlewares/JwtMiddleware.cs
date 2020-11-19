@@ -30,12 +30,12 @@ namespace HWS.Middlewares
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                attachUserToContext(context, token);
+                await attachUserToContext(context, token);
 
             await _next(context);
         }
 
-        private void attachUserToContext(HttpContext context, string token)
+        private async Task attachUserToContext(HttpContext context, string token)
         {
             try
             {
@@ -54,7 +54,8 @@ namespace HWS.Middlewares
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = Guid.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
-                var user = _userService.GetUser(userId);
+                var user = await _userService.GetUser(userId).ConfigureAwait(false);
+
                 context.Items["User"] = user;
             }
             catch

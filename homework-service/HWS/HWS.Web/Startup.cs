@@ -21,6 +21,8 @@ namespace HWS
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_allowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,6 +40,17 @@ namespace HWS
             services.AddAppConfiguration(this.Configuration);
 
             services.AddServices();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+                {
+                    builder
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
 
             services.AddControllers()
                 .SetupJsonConverters()
@@ -60,9 +73,15 @@ namespace HWS
 
             app.AddMiddlewares();
 
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints
+                .MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}")
+                .RequireCors(MyAllowSpecificOrigins);
             });
         }
     }
