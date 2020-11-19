@@ -1,8 +1,9 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { IGroupRequest, IGroupResponse } from "../models/group";
 import { IHomeworkRequest } from "../models/homework";
-import { groupServiceUrl } from "./config";
+import { axiosInstance } from "./config/axios";
+import { groupServiceUrl } from "./config/url";
 
 export interface GroupService {
   getGroups(): Promise<IGroupResponse[]>;
@@ -15,7 +16,7 @@ export interface GroupService {
 
 export const groupService: GroupService = {
   async getGroups() {
-    return await axios
+    return await axiosInstance
       .get(`${groupServiceUrl}`)
       .then((res: AxiosResponse) => {
         if (res.status === 200) {
@@ -30,7 +31,7 @@ export const groupService: GroupService = {
   },
 
   async createGroup(group: IGroupRequest) {
-    return await axios
+    return await axiosInstance
       .post(`${groupServiceUrl}`, { group })
       .then((res: AxiosResponse) => {
         console.log(res);
@@ -41,7 +42,7 @@ export const groupService: GroupService = {
   },
 
   async getComments(groupId: string) {
-    return await axios
+    return await axiosInstance
       .get(`${groupServiceUrl}/${groupId}/comments`)
       .then((res: AxiosResponse) => {
         if (res.status === 200) {
@@ -56,7 +57,7 @@ export const groupService: GroupService = {
   },
 
   async sendComment(groupId: string, comment: ICommentRequest) {
-    return await axios
+    return await axiosInstance
       .post(`${groupServiceUrl}/${groupId}/comments`, { comment })
       .then((res: AxiosResponse) => {
         console.log(res);
@@ -67,7 +68,7 @@ export const groupService: GroupService = {
   },
 
   async joinGroup(groupId: string, code: string) {
-    return await axios
+    return await axiosInstance
       .post(`${groupServiceUrl}/${groupId}`, { code })
       .then((res: AxiosResponse) => {
         console.log(res);
@@ -78,7 +79,7 @@ export const groupService: GroupService = {
   },
 
   async createHomework(groupId: string, homework: IHomeworkRequest) {
-    return await axios
+    return await axiosInstance
       .post(`${groupServiceUrl}/${groupId}/homework`, { homework })
       .then((res: AxiosResponse) => {
         console.log(res);

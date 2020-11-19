@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IUser } from "../models/user";
-import { authServiceUrl } from "./config";
+import { authServiceUrl } from "./config/url";
 
 interface AuthService {
   signin(userName: string, password: string): Promise<IUser | undefined>;

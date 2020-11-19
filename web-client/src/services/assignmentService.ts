@@ -1,6 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { IAssignmentResponse } from "../models/assignment";
-import { assignmentServiceUrl } from "./config";
+import { axiosInstance } from "./config/axios";
+import { assignmentServiceUrl } from "./config/url";
 
 export interface AssignmentService {
   getAssignments(): Promise<IAssignmentResponse[]>;
@@ -13,7 +14,7 @@ export interface AssignmentService {
 
 export const assignmentService: AssignmentService = {
   async getAssignments() {
-    return await axios
+    return await axiosInstance
       .get(`${assignmentServiceUrl}`)
       .then((res: AxiosResponse) => {
         if (res.status === 200) {
@@ -28,7 +29,7 @@ export const assignmentService: AssignmentService = {
   },
 
   async grade(assignmentId: string, grade: string) {
-    return axios
+    return axiosInstance
       .post(`${assignmentServiceUrl}/${assignmentId}/grade`, { grade })
       .then((res: AxiosResponse) => {
         console.log(res);
@@ -39,7 +40,7 @@ export const assignmentService: AssignmentService = {
   },
 
   async reserve(assignmentId: string) {
-    return axios
+    return axiosInstance
       .post(`${assignmentServiceUrl}/${assignmentId}/reserve`)
       .then((res: AxiosResponse) => {
         if (res.status === 200) {
@@ -55,7 +56,7 @@ export const assignmentService: AssignmentService = {
   },
 
   async free(assignmentId: string) {
-    return axios
+    return axiosInstance
       .post(`${assignmentServiceUrl}/${assignmentId}/free`)
       .then((res: AxiosResponse) => {
         if (res.status === 200) {
@@ -75,9 +76,8 @@ export const assignmentService: AssignmentService = {
   },
 
   async upload(assignmentId: string) {
-    console.log(assignmentId);
-    return await axios
-      .post("url")
+    return await axiosInstance
+      .post(`${assignmentServiceUrl}/${assignmentId}/file`)
       .then((res: AxiosResponse) => {
         console.log(res);
       })

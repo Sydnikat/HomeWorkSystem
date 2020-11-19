@@ -1,6 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { ICommentRequest, ICommentResponse } from "../models/comment";
-import { homeworkServiceUrl } from "./config";
+import { axiosInstance } from "./config/axios";
+import { homeworkServiceUrl } from "./config/url";
 
 interface HomeworkService {
   getComments(homeworkId: string): Promise<ICommentResponse[]>;
@@ -9,7 +10,7 @@ interface HomeworkService {
 
 export const homeworkService: HomeworkService = {
   async getComments(homeworkId: string) {
-    return await axios
+    return await axiosInstance
       .get(`${homeworkServiceUrl}/${homeworkId}/comments`)
       .then((res: AxiosResponse) => {
         if (res.status === 200) {
@@ -24,7 +25,7 @@ export const homeworkService: HomeworkService = {
   },
 
   async sendComment(homeworkId: string, comment: ICommentRequest) {
-    return await axios
+    return await axiosInstance
       .post(`${homeworkServiceUrl}/${homeworkId}/comments`, { comment })
       .then((res: AxiosResponse) => {
         console.log(res);
