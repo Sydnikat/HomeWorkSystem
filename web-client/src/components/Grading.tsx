@@ -7,10 +7,11 @@ import {
   setFilteredAssignments,
 } from "../store/assignmentStore";
 import FilteredAssignments from "./FilteredAssignments";
+import { Spinner } from "react-bootstrap";
 
 const Grading: React.FC = () => {
   const dispatch = useDispatch();
-  const assignments = useAssignments();
+  const { assignments, assignmentsLoading } = useAssignments();
 
   useEffect(() => {
     dispatch(setAssignments(assignments));
@@ -24,7 +25,11 @@ const Grading: React.FC = () => {
   return (
     <div className="mt-5">
       <FilterAssignmentPanel />
-      <FilteredAssignments />
+      {assignmentsLoading ? (
+        <Spinner animation="border" variant="primary" />
+      ) : (
+        <FilteredAssignments />
+      )}
     </div>
   );
 };
