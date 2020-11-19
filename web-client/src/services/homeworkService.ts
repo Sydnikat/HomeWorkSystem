@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { axiosInstance } from "./config/axios";
 import { homeworkServiceUrl } from "./config/url";
@@ -10,29 +9,30 @@ interface HomeworkService {
 
 export const homeworkService: HomeworkService = {
   async getComments(homeworkId: string) {
-    return await axiosInstance
-      .get(`${homeworkServiceUrl}/${homeworkId}/comments`)
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return res.data as ICommentResponse[];
-        }
-        return exampleComments;
-      })
-      .catch((err) => {
-        console.log(err);
-        return exampleComments;
-      });
+    try {
+      const response = await axiosInstance.get(
+        `${homeworkServiceUrl}/${homeworkId}/comments`
+      );
+      if (response.status === 200) {
+        return response.data as ICommentResponse[];
+      }
+      return exampleComments;
+    } catch (err) {
+      console.log(err);
+      return exampleComments;
+    }
   },
 
   async sendComment(homeworkId: string, comment: ICommentRequest) {
-    return await axiosInstance
-      .post(`${homeworkServiceUrl}/${homeworkId}/comments`, { comment })
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${homeworkServiceUrl}/${homeworkId}/comments`,
+        { comment }
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 };
 

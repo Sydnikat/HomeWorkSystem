@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { IAssignmentResponse } from "../models/assignment";
 import { axiosInstance } from "./config/axios";
 import { assignmentServiceUrl } from "./config/url";
@@ -14,61 +13,58 @@ export interface AssignmentService {
 
 export const assignmentService: AssignmentService = {
   async getAssignments() {
-    return await axiosInstance
-      .get(`${assignmentServiceUrl}`)
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return res.data as IAssignmentResponse[];
-        }
-        return exampleAssignments;
-      })
-      .catch((err) => {
-        console.log(err);
-        return exampleAssignments;
-      });
+    try {
+      const response = await axiosInstance.get(`${assignmentServiceUrl}`);
+      if (response.status === 200) {
+        return response.data as IAssignmentResponse[];
+      }
+      return exampleAssignments;
+    } catch (err) {
+      console.log(err);
+      return exampleAssignments;
+    }
   },
 
   async grade(assignmentId: string, grade: string) {
-    return axiosInstance
-      .post(`${assignmentServiceUrl}/${assignmentId}/grade`, { grade })
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/grade`,
+        { grade }
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 
   async reserve(assignmentId: string) {
-    return axiosInstance
-      .post(`${assignmentServiceUrl}/${assignmentId}/reserve`)
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return true;
-        }
-
-        return false;
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/reserve`
+      );
+      if (response.status === 200) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   },
 
   async free(assignmentId: string) {
-    return axiosInstance
-      .post(`${assignmentServiceUrl}/${assignmentId}/free`)
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return true;
-        }
-
-        return false;
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/free`
+      );
+      if (response.status === 200) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   },
 
   download() {
@@ -76,14 +72,14 @@ export const assignmentService: AssignmentService = {
   },
 
   async upload(assignmentId: string) {
-    return await axiosInstance
-      .post(`${assignmentServiceUrl}/${assignmentId}/file`)
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/file`
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 };
 

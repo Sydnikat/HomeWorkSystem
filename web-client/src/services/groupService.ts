@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { IGroupRequest, IGroupResponse } from "../models/group";
 import { IHomeworkRequest } from "../models/homework";
@@ -16,77 +15,78 @@ export interface GroupService {
 
 export const groupService: GroupService = {
   async getGroups() {
-    return await axiosInstance
-      .get(`${groupServiceUrl}`)
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return res.data as IGroupResponse[];
-        }
-        return exampleGroups;
-      })
-      .catch((err) => {
-        console.log(err);
-        return exampleGroups;
-      });
+    try {
+      const response = await axiosInstance.get(`${groupServiceUrl}`);
+      if (response.status === 200) {
+        return response.data as IGroupResponse[];
+      }
+      return exampleGroups;
+    } catch (err) {
+      console.log(err);
+      return exampleGroups;
+    }
   },
 
   async createGroup(group: IGroupRequest) {
-    return await axiosInstance
-      .post(`${groupServiceUrl}`, { group })
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
+    try {
+      const response = await axiosInstance.post(`${groupServiceUrl}`, {
+        group,
       });
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 
   async getComments(groupId: string) {
-    return await axiosInstance
-      .get(`${groupServiceUrl}/${groupId}/comments`)
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return res.data as ICommentResponse[];
-        }
-        return exampleComments;
-      })
-      .catch((err) => {
-        console.log(err);
-        return exampleComments;
-      });
+    try {
+      const response = await axiosInstance.get(
+        `${groupServiceUrl}/${groupId}/comments`
+      );
+      if (response.status === 200) {
+        return response.data as ICommentResponse[];
+      }
+      return exampleComments;
+    } catch (err) {
+      console.log(err);
+      return exampleComments;
+    }
   },
 
   async sendComment(groupId: string, comment: ICommentRequest) {
-    return await axiosInstance
-      .post(`${groupServiceUrl}/${groupId}/comments`, { comment })
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${groupServiceUrl}/${groupId}/comments`,
+        { comment }
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 
   async joinGroup(groupId: string, code: string) {
-    return await axiosInstance
-      .post(`${groupServiceUrl}/${groupId}`, { code })
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${groupServiceUrl}/${groupId}`,
+        { code }
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 
   async createHomework(groupId: string, homework: IHomeworkRequest) {
-    return await axiosInstance
-      .post(`${groupServiceUrl}/${groupId}/homework`, { homework })
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${groupServiceUrl}/${groupId}/homework`,
+        { homework }
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 };
 
