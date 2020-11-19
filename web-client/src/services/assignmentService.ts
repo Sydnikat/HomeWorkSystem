@@ -1,37 +1,85 @@
-import axios, { AxiosResponse } from "axios";
 import { IAssignmentResponse } from "../models/assignment";
+import { axiosInstance } from "./config/axios";
+import { assignmentServiceUrl } from "./config/url";
 
 export interface AssignmentService {
   getAssignments(): Promise<IAssignmentResponse[]>;
+  grade(assignmentId: string, grade: string): Promise<void>;
+  reserve(assignmentId: string): Promise<boolean>;
+  free(assignmentId: string): Promise<boolean>;
+  download(): string;
   upload(assignmentId: string): Promise<void>;
 }
 
 export const assignmentService: AssignmentService = {
   async getAssignments() {
-    return await axios
-      .get("url")
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return res.data as IAssignmentResponse[];
-        }
-        return exampleAssignments;
-      })
-      .catch((err) => {
-        console.log(err);
-        return exampleAssignments;
-      });
+    try {
+      const response = await axiosInstance.get(`${assignmentServiceUrl}`);
+      if (response.status === 200) {
+        return response.data as IAssignmentResponse[];
+      }
+      return exampleAssignments;
+    } catch (err) {
+      console.log(err);
+      return exampleAssignments;
+    }
+  },
+
+  async grade(assignmentId: string, grade: string) {
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/grade`,
+        { grade }
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  async reserve(assignmentId: string) {
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/reserve`
+      );
+      if (response.status === 200) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  },
+
+  async free(assignmentId: string) {
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/free`
+      );
+      if (response.status === 200) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  },
+
+  download() {
+    return "download";
   },
 
   async upload(assignmentId: string) {
-    console.log(assignmentId);
-    return await axios
-      .post("url")
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/file`
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 };
 
@@ -47,6 +95,8 @@ const exampleAssignments: IAssignmentResponse[] = [
     userFullName: "Hallgató1",
     homeworkTitle: "Házi feladat beadó rendszer",
     groupName: "Csoport1",
+    reservedBy: "8ab2c6a8-ab4a-42dc-97e2-668e273b5837",
+    turnInDate: "2020. 11. 11.",
   },
   {
     id: "a2",
@@ -59,5 +109,42 @@ const exampleAssignments: IAssignmentResponse[] = [
     userFullName: "Hallgató1",
     homeworkTitle: "Nagy házi feladat",
     groupName: "Csoport2",
+  },
+  {
+    id: "a3",
+    homeworkId: "h2",
+    groupId: "g2",
+    grade: "",
+    submissionDeadline: "2020. 11. 12.",
+    fileName: "házifájlnév3",
+    userName: "hallgato3",
+    userFullName: "Hallgató3",
+    homeworkTitle: "Nagy házi feladat",
+    groupName: "Csoport2",
+  },
+  {
+    id: "a4",
+    homeworkId: "h2",
+    groupId: "g2",
+    grade: "",
+    submissionDeadline: "2020. 11. 12.",
+    fileName: "házifájlnév4",
+    userName: "hallgato4",
+    userFullName: "Hallgató4",
+    homeworkTitle: "Nagy házi feladat",
+    groupName: "Csoport2",
+  },
+  {
+    id: "a5",
+    homeworkId: "h2",
+    groupId: "g2",
+    grade: "",
+    submissionDeadline: "2020. 11. 12.",
+    fileName: "házifájlnév5",
+    userName: "hallgato5",
+    userFullName: "Hallgató5",
+    homeworkTitle: "Nagy házi feladat",
+    groupName: "Csoport2",
+    reservedBy: "8ab2c6a8-ab4a-42dc-97e2-668e273b5837",
   },
 ];

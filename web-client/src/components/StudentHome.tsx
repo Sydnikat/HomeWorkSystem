@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSignOutAlt,
@@ -16,8 +16,8 @@ import { useAssignments, useGroups } from "../shared/hooks";
 
 const StudentHome: React.FC = () => {
   const dispatch = useDispatch();
-  const groups = useGroups();
-  const assignments = useAssignments();
+  const { groups, groupsLoading } = useGroups();
+  const { assignments, assignmentsLoading } = useAssignments();
   const [showJoinGroup, setShowJoinGroup] = useState<boolean>(false);
 
   const onSignout = () => {
@@ -51,13 +51,19 @@ const StudentHome: React.FC = () => {
                 Csatlakozás csoporthoz
               </Button>
             </Row>
-            {groups.map((group: IGroupResponse) => (
-              <StudentGroup
-                key={group.id}
-                group={group}
-                assignments={assignments.filter((a) => a.groupId === group.id)}
-              />
-            ))}
+            {groupsLoading || assignmentsLoading ? (
+              <Spinner animation="border" variant="primary" />
+            ) : (
+              groups.map((group: IGroupResponse) => (
+                <StudentGroup
+                  key={group.id}
+                  group={group}
+                  assignments={assignments.filter(
+                    (a) => a.groupId === group.id
+                  )}
+                />
+              ))
+            )}
           </Col>
         </Row>
       </Container>

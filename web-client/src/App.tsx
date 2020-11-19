@@ -24,10 +24,10 @@ const App: React.FC = () => {
           render={() =>
             !user ? (
               <Redirect to="/signin" />
-            ) : user.role === "student" ? (
+            ) : user.role === "Student" ? (
               <Redirect to="/student" />
-            ) : user.role === "teacher" ? (
-              <Redirect to="/teacher" />
+            ) : user.role === "Teacher" ? (
+              <Redirect to="/teacher/groups" />
             ) : (
               <Redirect to="/signin" />
             )
@@ -38,7 +38,7 @@ const App: React.FC = () => {
         <Route
           path="/student"
           render={() =>
-            user && user.role === "student" ? (
+            user && user.role === "Student" ? (
               <StudentHome />
             ) : (
               <Redirect to="/signin" />
@@ -46,9 +46,14 @@ const App: React.FC = () => {
           }
         />
         <Route
+          exact
+          path="/teacher"
+          render={() => <Redirect to="/teacher/groups" />}
+        />
+        <Route
           path="/teacher"
           render={() =>
-            user && user.role === "teacher" ? (
+            user && user.role === "Teacher" ? (
               <TeacherHome />
             ) : (
               <Redirect to="/signin" />

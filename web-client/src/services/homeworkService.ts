@@ -1,38 +1,38 @@
-import axios, { AxiosResponse } from "axios";
-import { ICommentResponse } from "../models/comment";
+import { ICommentRequest, ICommentResponse } from "../models/comment";
+import { axiosInstance } from "./config/axios";
+import { homeworkServiceUrl } from "./config/url";
 
 interface HomeworkService {
   getComments(homeworkId: string): Promise<ICommentResponse[]>;
-  sendComment(homeworkId: string, comment: string): Promise<void>;
+  sendComment(homeworkId: string, comment: ICommentRequest): Promise<void>;
 }
 
 export const homeworkService: HomeworkService = {
   async getComments(homeworkId: string) {
-    console.log(homeworkId);
-    return await axios
-      .get("url")
-      .then((res: AxiosResponse) => {
-        if (res.status === 200) {
-          return res.data as ICommentResponse[];
-        }
-        return exampleComments;
-      })
-      .catch((err) => {
-        console.log(err);
-        return exampleComments;
-      });
+    try {
+      const response = await axiosInstance.get(
+        `${homeworkServiceUrl}/${homeworkId}/comments`
+      );
+      if (response.status === 200) {
+        return response.data as ICommentResponse[];
+      }
+      return exampleComments;
+    } catch (err) {
+      console.log(err);
+      return exampleComments;
+    }
   },
 
-  async sendComment(homeworkId: string, comment: string) {
-    console.log(homeworkId, comment);
-    return await axios
-      .post("url")
-      .then((res: AxiosResponse) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  async sendComment(homeworkId: string, comment: ICommentRequest) {
+    try {
+      const response = await axiosInstance.post(
+        `${homeworkServiceUrl}/${homeworkId}/comments`,
+        { comment }
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   },
 };
 

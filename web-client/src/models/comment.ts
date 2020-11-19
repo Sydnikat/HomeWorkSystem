@@ -4,3 +4,7 @@ export interface ICommentResponse {
   creationDate: string;
   content: string;
 }
+
+export interface ICommentRequest {
+  content: string;
+}

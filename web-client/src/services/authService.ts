@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IUser } from "../models/user";
-import { authServiceUrl } from "./config";
+import { authServiceUrl } from "./config/url";
 
 interface AuthService {
   signin(userName: string, password: string): Promise<IUser | undefined>;
@@ -15,18 +15,19 @@ interface AuthService {
 
 export const authService: AuthService = {
   async signin(userName: string, password: string): Promise<IUser> {
-    return axios
-      .post(`${authServiceUrl}/signin`, { userName, password })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.data as IUser;
-        }
-        return (undefined as unknown) as IUser;
-      })
-      .catch((err) => {
-        console.log(err);
-        return (undefined as unknown) as IUser;
+    try {
+      const response = await axios.post(`${authServiceUrl}/signin`, {
+        userName,
+        password,
       });
+      if (response.status === 200) {
+        return response.data as IUser;
+      }
+      return (undefined as unknown) as IUser;
+    } catch (err) {
+      console.log(err);
+      return (undefined as unknown) as IUser;
+    }
   },
 
   async signup(
@@ -36,24 +37,21 @@ export const authService: AuthService = {
     userFullName: string,
     role: string
   ) {
-    return axios
-      .post(`${authServiceUrl}/signup`, {
+    try {
+      const response = await axios.post(`${authServiceUrl}/signup`, {
         userName,
         password,
         repassword,
         userFullName,
         role,
-      })
-      .then((res) => {
-        if (res.status === 201) {
-          return true;
-        }
-
-        return false;
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
       });
+      if (response.status === 201) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   },
 };

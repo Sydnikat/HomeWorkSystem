@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { Button, Form, Modal, Row } from "react-bootstrap/";
-import { ICommentResponse } from "../../models/comment";
+import { Button, Form, Modal, Row, Spinner } from "react-bootstrap/";
+import { ICommentRequest, ICommentResponse } from "../../models/comment";
 import { groupService } from "../../services/groupService";
 import { homeworkService } from "../../services/homeworkService";
 import { CommentScope } from "../../shared/enums";
@@ -21,7 +21,7 @@ const Comments: React.FC<CommentsProps> = ({
   scope,
   scopeId,
 }) => {
-  const comments = useComments(scope, scopeId);
+  const { comments, commentsLoading } = useComments(scope, scopeId);
   const [newComment, setNewComment] = useState<string>("");
 
   const onFormControlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,13 +29,14 @@ const Comments: React.FC<CommentsProps> = ({
   };
 
   const onSendClick = async () => {
+    const comment: ICommentRequest = { content: newComment };
     switch (scope) {
       case CommentScope.GROUP: {
-        await groupService.sendComment(scopeId, newComment);
+        await groupService.sendComment(scopeId, comment);
         break;
       }
       case CommentScope.HOMEWORK: {
-        await homeworkService.sendComment(scopeId, newComment);
+        await homeworkService.sendComment(scopeId, comment);
         break;
       }
       default:
@@ -54,15 +55,19 @@ const Comments: React.FC<CommentsProps> = ({
           <Modal.Title>Közlemények</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ maxHeight: "50vh", overflowY: "auto" }}>
-          {comments.map((comment: ICommentResponse) => (
-            <div key={comment.id}>
-              <div>
-                <b>{comment.createdBy}</b>
-                <i className="ml-2">{comment.creationDate}</i>
+          {commentsLoading ? (
+            <Spinner animation="border" variant="primary" />
+          ) : (
+            comments.map((comment: ICommentResponse) => (
+              <div key={comment.id}>
+                <div>
+                  <b>{comment.createdBy}</b>
+                  <i className="ml-2">{comment.creationDate}</i>
+                </div>
+                <p>{comment.content}</p>
               </div>
-              <p>{comment.content}</p>
-            </div>
-          ))}
+            ))
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Row className="w-100">

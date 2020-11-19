@@ -7,8 +7,12 @@ import { groupService } from "../services/groupService";
 import { homeworkService } from "../services/homeworkService";
 import { CommentScope } from "./enums";
 
-export const useGroups = (): IGroupResponse[] => {
+export const useGroups = (): {
+  groups: IGroupResponse[];
+  groupsLoading: boolean;
+} => {
   const [groups, setGroups] = useState<IGroupResponse[]>([]);
+  const [groupsLoading, setGroupsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -18,6 +22,7 @@ export const useGroups = (): IGroupResponse[] => {
         const fetchedGroups = await groupService.getGroups();
         if (isSubscribed) {
           setGroups(fetchedGroups);
+          setGroupsLoading(false);
         }
       } catch (e) {
         console.log(e);
@@ -31,11 +36,15 @@ export const useGroups = (): IGroupResponse[] => {
     };
   }, []);
 
-  return groups;
+  return { groups, groupsLoading };
 };
 
-export const useAssignments = (): IAssignmentResponse[] => {
+export const useAssignments = (): {
+  assignments: IAssignmentResponse[];
+  assignmentsLoading: boolean;
+} => {
   const [assignments, setAssignments] = useState<IAssignmentResponse[]>([]);
+  const [assignmentsLoading, setAssignmentsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -45,6 +54,7 @@ export const useAssignments = (): IAssignmentResponse[] => {
         const fetchedAssignments = await assignmentService.getAssignments();
         if (isSubscribed) {
           setAssignments(fetchedAssignments);
+          setAssignmentsLoading(false);
         }
       } catch (e) {
         console.log(e);
@@ -58,14 +68,15 @@ export const useAssignments = (): IAssignmentResponse[] => {
     };
   }, []);
 
-  return assignments;
+  return { assignments, assignmentsLoading };
 };
 
 export const useComments = (
   scope: CommentScope,
   scopeId: string
-): ICommentResponse[] => {
+): { comments: ICommentResponse[]; commentsLoading: boolean } => {
   const [comments, setComments] = useState<ICommentResponse[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -77,6 +88,7 @@ export const useComments = (
             const fetchedComments = await groupService.getComments(scopeId);
             if (isSubscribed) {
               setComments(fetchedComments);
+              setCommentsLoading(false);
             }
             break;
           }
@@ -85,6 +97,7 @@ export const useComments = (
             const fetchedComments = await homeworkService.getComments(scopeId);
             if (isSubscribed) {
               setComments(fetchedComments);
+              setCommentsLoading(false);
             }
             break;
           }
@@ -103,5 +116,5 @@ export const useComments = (
     };
   }, []);
 
-  return comments;
+  return { comments, commentsLoading };
 };

@@ -38,7 +38,7 @@ const Signin: React.FC = () => {
     const user = await authService.signin(userName, password);
     if (user) {
       dispatch(setUser(user));
-      user.role === "student"
+      user.role === "Student"
         ? history.push("student")
         : history.push("teacher");
     } else {
@@ -58,12 +58,13 @@ const Signin: React.FC = () => {
               <h1>Bejelentkezés</h1>
             </Col>
           </Row>
-          <Row>
+          <Row className="mt-2">
             <Col>
               <Form>
                 <Form.Group controlId="username">
                   <Form.Label>Felhasználónév</Form.Label>
                   <Form.Control
+                    size="sm"
                     type="text"
                     placeholder="Pl.: kovacs88"
                     value={userName}
@@ -73,13 +74,16 @@ const Signin: React.FC = () => {
                 <Form.Group controlId="password">
                   <Form.Label>Jelszó</Form.Label>
                   <Form.Control
+                    size="sm"
                     type="password"
                     placeholder="Jelszó"
                     value={password}
                     onChange={onFormControlChange(inputType.PASSWORD)}
                   />
                 </Form.Group>
-                <Button onClick={onSignin}>Bejelentkezés</Button>
+                <Button size="sm" onClick={onSignin}>
+                  Bejelentkezés
+                </Button>
               </Form>
             </Col>
           </Row>
@@ -99,7 +103,9 @@ const Signin: React.FC = () => {
           </Row>
           <Row>
             <Col>
-              <Button onClick={onSignup}>Regisztráció</Button>
+              <Button size="sm" onClick={onSignup}>
+                Regisztráció
+              </Button>
             </Col>
           </Row>
         </Col>
