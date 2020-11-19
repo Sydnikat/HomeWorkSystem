@@ -12,7 +12,7 @@ namespace HWS.Middlewares
 {
     public static class MiddlewareBuilder
     {
-        public static void AddMiddlewares(this IApplicationBuilder app)
+        public static void UseMiddlewares(this IApplicationBuilder app)
         {
             app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseMiddleware<JwtMiddleware>();

@@ -18,8 +18,8 @@ namespace HWS.Controllers.DTOs.Responses
         public DateTime? ApplicationDeadline { get; set; }
         public int MaximumNumberOfStudents { get; set; }
         public int CurrentNumberOfStudents { get; set; }
-        public IEnumerable<UserResponse> Graders { get; set; }
-        public IEnumerable<UserResponse> Students { get; set; }
+        public IEnumerable<string> Graders { get; set; }
+        public IEnumerable<string> Students { get; set; }
 
         public HomeworkResponse(
             Guid id,
@@ -43,8 +43,8 @@ namespace HWS.Controllers.DTOs.Responses
             ApplicationDeadline = applicationDeadline;
             MaximumNumberOfStudents = maximumNumberOfStudents;
             CurrentNumberOfStudents = currentNumberOfStudents;
-            Graders = graders;
-            Students = students;
+            Graders = graders.Select(g => g.UserFullName);
+            Students = students.Select(s => s.UserFullName);
         }
 
         public static HomeworkResponse ForTeacher(Homework homework)
@@ -66,6 +66,13 @@ namespace HWS.Controllers.DTOs.Responses
 
         public static HomeworkResponse ForStudent(Homework homework)
         {
+            DateTime? applicationDueDate = homework.ApplicationDeadline;
+
+            if (applicationDueDate > homework.SubmissionDeadline)
+            {
+                applicationDueDate = null;
+            }
+
             return new HomeworkResponse(
                 id: homework.Id,
                 title: homework.Title,
@@ -73,7 +80,7 @@ namespace HWS.Controllers.DTOs.Responses
                 maxFileSize: homework.MaxFileSize,
                 groupId: homework.Group.Id,
                 submissionDeadline: homework.SubmissionDeadline,
-                applicationDeadline: homework.ApplicationDeadline,
+                applicationDeadline: applicationDueDate,
                 maximumNumberOfStudents: homework.MaximumNumberOfStudents,
                 currentNumberOfStudents: homework.Students.Count,
                 graders: homework.Graders.Select(g => new UserResponse(g)),

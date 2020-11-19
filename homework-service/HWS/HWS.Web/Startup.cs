@@ -71,7 +71,7 @@ namespace HWS
 
             app.UseAuthorization();
 
-            app.AddMiddlewares();
+            app.UseMiddlewares();
 
             app.UseCors(MyAllowSpecificOrigins);
 
