@@ -16,6 +16,8 @@ namespace HWS.Dal.Sql.Groups
 
         Task<Group> Insert(Group group);
 
+        Task<Comment> InsertComment(User user, Group group, string content);
+
         Task<Homework> InsertHomework(Guid groupId, Homework homework);
     }
 }

@@ -41,6 +41,11 @@ namespace HWS.Services
             return await groupRepository.FindById(id);
         }
 
+        public async Task<Comment> CreateGroupComment(User user, Group group, string content)
+        {
+            return await groupRepository.InsertComment(user, group, content);
+        }
+
         public async Task<Homework> CreateHomework(Group group, Homework newHomework, ICollection<Guid> students, ICollection<Guid> graders)
         {
             IReadOnlyCollection<User> studentList = await userService.GetUsers(students).ConfigureAwait(false);
