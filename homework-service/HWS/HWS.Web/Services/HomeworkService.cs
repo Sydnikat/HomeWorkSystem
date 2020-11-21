@@ -16,8 +16,9 @@ namespace HWS.Services
             this.homeworkRepository = homeworkRepository;
         }
 
-        public async Task<Assignment> CreateHomework(Homework homework, Assignment newAssignment)
+        public async Task<Assignment> CreateAssignment(Homework homework, Assignment newAssignment)
         {
+            //TODO: Validation
             return await homeworkRepository.InsertAssignment(homework.Id, newAssignment).ConfigureAwait(false);
         }
     }

@@ -8,6 +8,6 @@ namespace HWS.Services
 {
     public interface IHomeworkService
     {
-        Task<Assignment> CreateHomework(Homework homework, Assignment newAssignment);
+        Task<Assignment> CreateAssignment(Homework homework, Assignment newAssignment);
     }
 }
