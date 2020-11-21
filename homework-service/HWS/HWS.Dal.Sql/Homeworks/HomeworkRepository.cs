@@ -54,5 +54,35 @@ namespace HWS.Dal.Sql.Homeworks
 
             return newAssigment;
         }
+
+        public async Task<ICollection<Domain.Assignment>> InsertAllAssignment(Guid homeworkId, ICollection<Domain.Assignment> assignments)
+        {
+            if (assignments == null)
+                throw new ArgumentNullException(nameof(assignments));
+
+            var dbAssignments = assignments.Select(a => a.ToDalOrNull(AssingmentConverter.ToDalNew)).ToList();
+
+            var homework = await _homeworks
+               .Include(h => h.Assignments)
+               .Include(h => h.Group)
+               .Where(h => h.Id == homeworkId)
+               .SingleOrDefaultAsync();
+
+            if (homework == null)
+                return null;
+
+            dbAssignments.ForEach(a => homework.Assignments.Add(a));
+
+            await context.SaveChangesAsync();
+
+            return dbAssignments.Select(a => {
+                var newAssigment = a.ToDomainOrNull(AssingmentConverter.toDomain);
+                newAssigment.Student = assignments.First(assignment => assignment.Id == a.Id)?.Student;
+                newAssigment.ReservedBy = null;
+                newAssigment.Homework = homework.ToDomainOrNull(HomeworkConverter.ToDomain);
+                newAssigment.Group = homework.Group.ToDomainOrNull(GroupConverter.ToDomain);
+                return newAssigment;
+            }).ToList();
+        }
     }
 }

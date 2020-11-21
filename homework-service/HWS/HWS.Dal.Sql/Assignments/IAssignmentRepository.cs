@@ -11,9 +11,5 @@ namespace HWS.Dal.Sql.Assignments
         Task<IEnumerable<Assignment>> FindAllByStudent(User student);
 
         Task<IEnumerable<Assignment>> FindAllByUserInGraders(User grader);
-
-        Task<Assignment> Insert(Assignment assignment);
-
-        Task<IEnumerable<Assignment>> InsertAll(ICollection<Assignment> assignments);
     }
 }
