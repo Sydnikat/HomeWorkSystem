@@ -1,6 +1,7 @@
 import { IAssignmentResponse } from "../models/assignment";
 import { axiosInstance } from "./config/axios";
 import { assignmentServiceUrl } from "./config/url";
+import {AxiosError} from "axios";
 
 export interface AssignmentService {
   getAssignments(): Promise<IAssignmentResponse[]>;
@@ -18,10 +19,11 @@ export const assignmentService: AssignmentService = {
       if (response.status === 200) {
         return response.data as IAssignmentResponse[];
       }
-      return exampleAssignments;
+      return [];
     } catch (err) {
       console.log(err);
-      return exampleAssignments;
+      console.log((err as AxiosError)?.response?.data);
+      return [];
     }
   },
 
