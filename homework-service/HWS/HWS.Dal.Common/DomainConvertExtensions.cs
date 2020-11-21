@@ -53,7 +53,7 @@ namespace HWS.Dal.Common
             where TDomain : class
         {
             if (list == null)
-                return null;
+                return new List<TDomain>();
             else
                 return list
                     .Select(domainConverter)
