@@ -6,6 +6,41 @@ import { assignmentService } from "../services/assignmentService";
 import { groupService } from "../services/groupService";
 import { homeworkService } from "../services/homeworkService";
 import { CommentScope } from "./enums";
+import {IUserResponse} from "../models/user";
+import {userService} from "../services/userService";
+
+export const useUsers = (): {
+  users: IUserResponse[];
+  usersLoading: boolean;
+} => {
+  const [users, setUsers] = useState<IUserResponse[]>([]);
+  const [usersLoading, setUsersLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    let isSubscribed = true;
+
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await userService.getUsers();
+        if (isSubscribed) {
+          setUsers(fetchedUsers);
+          setUsersLoading(false);
+        }
+      }
+      catch (e) {
+        console.log(e);
+      }
+    };
+
+    void fetchUsers();
+
+    return () => {
+      isSubscribed = false;
+    }
+  }, []);
+
+  return { users, usersLoading };
+};
 
 export const useGroups = (): {
   groups: IGroupResponse[];
@@ -13,7 +48,6 @@ export const useGroups = (): {
 } => {
   const [groups, setGroups] = useState<IGroupResponse[]>([]);
   const [groupsLoading, setGroupsLoading] = useState<boolean>(true);
-
   useEffect(() => {
     let isSubscribed = true;
 
