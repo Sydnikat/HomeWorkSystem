@@ -36,7 +36,7 @@ const FilterAssignmentPanel: React.FC = () => {
     const filteredAssignments = assignments
       .filter((a) =>
         isFreeAssignmentsSelected
-          ? a.reservedBy === undefined
+          ? a.reservedBy === null
           : a.reservedBy === user?.id
       )
       .filter(
@@ -46,7 +46,7 @@ const FilterAssignmentPanel: React.FC = () => {
           a.userFullName.toLowerCase().includes(search.toLowerCase()) ||
           a.grade.toLowerCase().includes(search.toLowerCase())
       )
-      .filter((a) => (!isAllAssignmentsSelected ? a.grade === "" : a));
+      .filter((a) => (isAllAssignmentsSelected ? true : a.grade === ""));
 
     dispatch(setFilteredAssignments(filteredAssignments));
   }, [
