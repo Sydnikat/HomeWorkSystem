@@ -68,6 +68,12 @@ namespace HWS.Services
             if (studentList.Count != 0 && newHomework.MaximumNumberOfStudents != studentList.Count)
                 throw new StudentNumberMisMatchException("Number of found and expected students are not the same");
 
+            if (newHomework.SubmissionDeadline < DateTime.Now)
+                throw new InvalidDateException("Submission date must be a future date");
+
+            if (newHomework.ApplicationDeadline < DateTime.Now)
+                throw new InvalidDateException("Application date must be a future date");
+
             newHomework.CurrentNumberOfStudents = newHomework.Students.Count;
 
             newHomework.Id = Guid.NewGuid();
