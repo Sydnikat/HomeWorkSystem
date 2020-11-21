@@ -27,6 +27,9 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
           <b>Határidő:</b> {homework.submissionDeadline}
         </div>
         <div>
+          <b>Jelentkezési határidő:</b> {homework.applicationDeadline ?? "Nincs"}
+        </div>
+        <div>
           <b>Létszám:</b> {homework.currentNumberOfStudents}
         </div>
         <div>
@@ -42,7 +45,10 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
             </span>
           ))}
         </div>
-        <p className="mt-2">{homework.description}</p>
+        <div>
+          <b>Leírás:</b>
+        </div>
+        <p className="mt-2 ml-1">{homework.description}</p>
       </Modal.Body>
     </Modal>
   );
