@@ -192,11 +192,11 @@ export default StudentGroup;
 
 const colStyle = {
   hw: {
-    width: "50%",
+    width: "45%",
     wordBreak: "break-word",
   } as React.CSSProperties,
   deadline: {
-    width: "10%",
+    width: "15%",
     wordBreak: "break-word",
   } as React.CSSProperties,
   file: {
