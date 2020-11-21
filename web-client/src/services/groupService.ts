@@ -3,10 +3,11 @@ import { IGroupRequest, IGroupResponse } from "../models/group";
 import { IHomeworkRequest } from "../models/homework";
 import { axiosInstance } from "./config/axios";
 import { groupServiceUrl } from "./config/url";
+import {AxiosError} from "axios";
 
 export interface GroupService {
   getGroups(): Promise<IGroupResponse[]>;
-  createGroup(group: IGroupRequest): Promise<void>;
+  createGroup(group: IGroupRequest): Promise<IGroupResponse | null>;
   getComments(groupId: string): Promise<ICommentResponse[]>;
   sendComment(groupId: string, comment: ICommentRequest): Promise<void>;
   joinGroup(groupId: string, code: string): Promise<void>;
@@ -27,14 +28,17 @@ export const groupService: GroupService = {
     }
   },
 
-  async createGroup(group: IGroupRequest) {
+  async createGroup(request: IGroupRequest) {
     try {
-      const response = await axiosInstance.post(`${groupServiceUrl}`, {
-        group,
-      });
-      console.log(response);
+      const response = await axiosInstance.post(`${groupServiceUrl}`, request);
+      if (response.status === 201) {
+        return response.data as IGroupResponse;
+      }
+      return null;
     } catch (err) {
       console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return null;
     }
   },
 
