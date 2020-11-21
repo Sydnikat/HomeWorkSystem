@@ -1,6 +1,6 @@
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { IGroupRequest, IGroupResponse } from "../models/group";
-import { IHomeworkRequest } from "../models/homework";
+import {IHomeworkRequest, IHomeworkResponse} from "../models/homework";
 import { axiosInstance } from "./config/axios";
 import { groupServiceUrl } from "./config/url";
 import {AxiosError} from "axios";
@@ -11,7 +11,7 @@ export interface GroupService {
   getComments(groupId: string): Promise<ICommentResponse[]>;
   sendComment(groupId: string, comment: ICommentRequest): Promise<void>;
   joinGroup(groupId: string, code: string): Promise<void>;
-  createHomework(groupId: string, homework: IHomeworkRequest): Promise<void>;
+  createHomework(groupId: string, homework: IHomeworkRequest): Promise<IHomeworkResponse | null>;
 }
 
 export const groupService: GroupService = {
@@ -84,12 +84,17 @@ export const groupService: GroupService = {
   async createHomework(groupId: string, homework: IHomeworkRequest) {
     try {
       const response = await axiosInstance.post(
-        `${groupServiceUrl}/${groupId}/homework`,
-        { homework }
+        `${groupServiceUrl}/${groupId}/homeworks`, homework
       );
-      console.log(response);
+      if (response.status === 201) {
+        return response.data as IHomeworkResponse;
+      }
+
+      return null;
     } catch (err) {
       console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return null;
     }
   },
 };
@@ -101,8 +106,8 @@ const exampleGroups: IGroupResponse[] = [
     code: "abc123",
     ownerId: "8ab2c6a8-ab4a-42dc-97e2-668e273b5837",
     ownerFullName: "Oktató1",
-    students: ["Hallgató1", "Hallgató2"],
-    teachers: ["Oktató1", "Oktató2"],
+    students: [],
+    teachers: [],
     homeworks: [
       {
         id: "h1",
@@ -152,8 +157,8 @@ const exampleGroups: IGroupResponse[] = [
     code: "abc456",
     ownerId: "ownerid2",
     ownerFullName: "Oktató2",
-    students: ["Hallgató1", "Hallgató2"],
-    teachers: ["Oktató1", "Oktató2"],
+    students: [],
+    teachers: [],
     homeworks: [
       {
         id: "h2",
