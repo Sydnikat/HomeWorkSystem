@@ -4,6 +4,7 @@ using HWS.Dal.Sql.Assignments.DbEntities;
 using HWS.Dal.Sql.Comments.DbEntities;
 using HWS.Dal.Sql.Groups.DbEntities;
 using HWS.Dal.Sql.Homeworks.DbEntities;
+using HWS.Dal.Sql.MongoUsers.JoinTables;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -63,12 +64,15 @@ namespace HWS.Dal.Sql.Homeworks
 
             var homework = await _homeworks
                 .Include(h => h.Assignments)
+                .Include(h => h.Students)
                 .Include(h => h.Group)
                 .Where(h => h.Id == homeworkId)
                 .SingleOrDefaultAsync();
 
             if (homework == null)
                 return null;
+
+            homework.Students.Add(new HomeworkStudentJoin(assignment.Student, homework));
 
             homework.Assignments.Add(dbAssignment);
 
@@ -92,6 +96,7 @@ namespace HWS.Dal.Sql.Homeworks
 
             var homework = await _homeworks
                .Include(h => h.Assignments)
+                .Include(h => h.Students)
                .Include(h => h.Group)
                .Where(h => h.Id == homeworkId)
                .SingleOrDefaultAsync();
@@ -100,6 +105,9 @@ namespace HWS.Dal.Sql.Homeworks
                 return null;
 
             dbAssignments.ForEach(a => homework.Assignments.Add(a));
+            assignments
+                .ToList()
+                .ForEach(a => homework.Students.Add(new HomeworkStudentJoin(a.Student, homework)));
 
             await context.SaveChangesAsync();
 
