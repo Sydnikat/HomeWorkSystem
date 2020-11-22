@@ -1,30 +1,24 @@
-import {IGroupResponse} from "../models/group";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IHomeworkResponse} from "../models/homework";
+import { IGroupResponse } from "../models/group";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IHomeworkResponse } from "../models/homework";
 
 export interface GroupState {
   groups: IGroupResponse[];
 }
 
 const initialGroupsState: GroupState = {
-  groups: []
+  groups: [],
 };
 
 export const group = createSlice({
   name: "group",
   initialState: initialGroupsState,
   reducers: {
-    setGroups(
-      state: GroupState,
-      action: PayloadAction<IGroupResponse[]>
-    ) {
+    setGroups(state: GroupState, action: PayloadAction<IGroupResponse[]>) {
       state.groups = action.payload;
     },
 
-    addNewGroup(
-      state: GroupState,
-      action: PayloadAction<IGroupResponse>
-    ) {
+    addNewGroup(state: GroupState, action: PayloadAction<IGroupResponse>) {
       state.groups = [action.payload, ...state.groups];
     },
 
@@ -33,19 +27,14 @@ export const group = createSlice({
       action: PayloadAction<IHomeworkResponse>
     ) {
       const homework = action.payload;
-      const index = state.groups.findIndex(g => g.id === homework.groupId);
+      const index = state.groups.findIndex((g) => g.id === homework.groupId);
 
       if (index !== -1) {
         state.groups[index].homeworks.push(homework);
       }
-    }
-
-  }
+    },
+  },
 });
 
-export const {
-  setGroups,
-  addNewGroup,
-  updateGroupHomeworks
-} = group.actions;
+export const { setGroups, addNewGroup, updateGroupHomeworks } = group.actions;
 export const groupReducer = group.reducer;
