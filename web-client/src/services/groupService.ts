@@ -13,7 +13,7 @@ export interface GroupService {
     groupId: string,
     comment: ICommentRequest
   ): Promise<ICommentResponse | null>;
-  joinGroup(groupId: string, code: string): Promise<void>;
+  joinGroup(code: string): Promise<IGroupResponse | null>;
   createHomework(
     groupId: string,
     homework: IHomeworkRequest
@@ -80,15 +80,19 @@ export const groupService: GroupService = {
     }
   },
 
-  async joinGroup(groupId: string, code: string) {
+  async joinGroup(code: string) {
     try {
-      const response = await axiosInstance.post(
-        `${groupServiceUrl}/${groupId}`,
-        { code }
-      );
-      console.log(response);
+      const response = await axiosInstance.post(`${groupServiceUrl}/join`, {
+        code,
+      });
+      if (response.status === 200) {
+        return response.data as IGroupResponse;
+      }
+      return null;
     } catch (err) {
       console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return null;
     }
   },
 
