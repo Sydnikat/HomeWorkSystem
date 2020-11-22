@@ -21,8 +21,8 @@ namespace HWS.Controllers.DTOs.Requests
         [Required]
         [MinLength(length: 3)]
         public string Name { get; set; }
-        [Required]
 
+        [Required]
         public ICollection<Guid> students { get; set; }
 
         [Required]

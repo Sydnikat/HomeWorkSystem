@@ -13,6 +13,8 @@ namespace HWS.Controllers.DTOs.Requests
         }
 
         [Required]
+        [MinLength(length: 2)]
+        [MaxLength(length: 255)]
         public string Grade { get; set; }
     }
 }
