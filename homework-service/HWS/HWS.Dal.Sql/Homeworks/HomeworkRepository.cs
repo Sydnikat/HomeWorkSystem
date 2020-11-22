@@ -36,6 +36,7 @@ namespace HWS.Dal.Sql.Homeworks
                 .Include(h => h.Graders)
                     .ThenInclude(hgj => hgj.Grader)
                 .Include(h => h.Assignments)
+                .Include(h => h.Group)
                 .Include(h => h.Comments)
                 .Where(h => h.Id == id)
                 .SingleOrDefaultAsync();
@@ -47,6 +48,8 @@ namespace HWS.Dal.Sql.Homeworks
 
             homework.Students = (await userRepoitory.FindAllById(studentIds).ConfigureAwait(false)).ToList();
             homework.Graders = (await userRepoitory.FindAllById(graderIds).ConfigureAwait(false)).ToList();
+            homework.Group = query.Group.ToDomainOrNull(GroupConverter.ToDomain);
+            homework.Assignments = query.Assignments.ToDomainOrNull(AssingmentConverter.ToDomain).ToList();
 
             return homework;
         }
@@ -73,7 +76,7 @@ namespace HWS.Dal.Sql.Homeworks
 
             var newAssigment = dbAssignment.ToDomainOrNull(AssingmentConverter.ToDomain);
             newAssigment.Student = assignment.Student;
-            newAssigment.ReservedBy = null;
+            newAssigment.ReservedBy = new Domain.User();
             newAssigment.Homework = homework.ToDomainOrNull(HomeworkConverter.ToDomain);
             newAssigment.Group = homework.Group.ToDomainOrNull(GroupConverter.ToDomain);
 
@@ -103,7 +106,7 @@ namespace HWS.Dal.Sql.Homeworks
             return dbAssignments.Select(a => {
                 var newAssigment = a.ToDomainOrNull(AssingmentConverter.ToDomain);
                 newAssigment.Student = assignments.First(assignment => assignment.Id == a.Id)?.Student;
-                newAssigment.ReservedBy = null;
+                newAssigment.ReservedBy = new Domain.User();
                 newAssigment.Homework = homework.ToDomainOrNull(HomeworkConverter.ToDomain);
                 newAssigment.Group = homework.Group.ToDomainOrNull(GroupConverter.ToDomain);
                 return newAssigment;
