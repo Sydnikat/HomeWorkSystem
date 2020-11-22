@@ -87,7 +87,19 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<CommentResponse>>> GetGroupComments(Guid id)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            var user = getUser();
+
+            var group = await groupService.GetGroup(id).ConfigureAwait(false);
+
+            if (group == null)
+                throw new HWSException("Group not found", StatusCodes.Status404NotFound);
+
+            if (!groupService.UserIsMemberOfGroup(user, group))
+                throw new HWSException("User is not a member of the group", StatusCodes.Status403Forbidden);
+
+            var commentsResponse = group.Comments.Select(comment => new CommentResponse(comment));
+
+            return Ok(commentsResponse);
         }
 
         [HttpPost("{id}/comments")]
@@ -97,7 +109,22 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> CreateGroupComment(Guid id, [FromBody] CommentRequest request)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            var user = getUser();
+
+            if (request == null)
+                throw new HWSException("Request body cannot be null", StatusCodes.Status400BadRequest);
+
+            var group = await groupService.GetGroup(id).ConfigureAwait(false);
+
+            if (group == null)
+                throw new HWSException("Group not found", StatusCodes.Status404NotFound);
+
+            if (!groupService.UserIsMemberOfGroup(user, group))
+                throw new HWSException("User is not a member of the group", StatusCodes.Status403Forbidden);
+
+            var savedGroupComment = await groupService.CreateGroupComment(user, group, request.Content).ConfigureAwait(false);
+
+            return Created(nameof(CreateGroupComment), new CommentResponse(savedGroupComment));
         }
 
         [HttpPost("{id}")]
@@ -115,7 +142,7 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> CreateHomework(Guid id, [FromBody] HomeworkRequest request)
+        public async Task<ActionResult<HomeworkResponse>> CreateHomework(Guid id, [FromBody] HomeworkRequest request)
         {
             var user = getUser();
 
@@ -147,6 +174,10 @@ namespace HWS.Controllers
                 throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
             }
             catch (StudentNumberMisMatchException e)
+            {
+                throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
+            }
+            catch (InvalidDateException e)
             {
                 throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
             }

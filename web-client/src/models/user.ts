@@ -6,3 +6,10 @@ export interface IUser {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface IUserResponse {
+  id: string;
+  userName: string;
+  userFullName: string;
+  role: string;
+}

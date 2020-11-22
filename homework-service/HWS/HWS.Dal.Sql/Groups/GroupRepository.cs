@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HWS.Dal.Common;
 using HWS.Dal.Mongo.Users;
+using HWS.Dal.Sql.Comments.DbEntities;
 using HWS.Dal.Sql.Groups.DbEntities;
 using HWS.Dal.Sql.Homeworks.DbEntities;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace HWS.Dal.Sql.Groups
         private readonly HWSContext context;
 
         private DbSet<Group> _groups => context.Groups;
+        private DbSet<Comment> _comments => context.Comments;
 
         private IUserRepoitory userRepoitory;
 
@@ -93,6 +95,19 @@ namespace HWS.Dal.Sql.Groups
             group.Homeworks = homeworks;
 
             return group;
+        }
+
+        public async Task<Domain.Comment> InsertComment(Domain.User user, Domain.Group group, Domain.Comment comment)
+        {
+            var dbComment = CommentConverter.ToGroupDalNew(comment);
+            dbComment.GroupId = group._id;
+
+            _comments.Add(dbComment);
+            await context.SaveChangesAsync();
+
+            var newComment = CommentConverter.ToGroupDomain(dbComment);
+
+            return newComment;
         }
 
         public async Task<Domain.Homework> InsertHomework(Guid groupId, Domain.Homework homework)

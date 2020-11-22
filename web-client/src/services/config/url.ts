@@ -6,3 +6,4 @@ const hwsServiceBaseUrl = `https://localhost:${hwsServicePort}/api`;
 export const assignmentServiceUrl = `${hwsServiceBaseUrl}/assignments`;
 export const groupServiceUrl = `${hwsServiceBaseUrl}/groups`;
 export const homeworkServiceUrl = `${hwsServiceBaseUrl}/homeworks`;
+export const userServiceUrl = `${hwsServiceBaseUrl}/users`;

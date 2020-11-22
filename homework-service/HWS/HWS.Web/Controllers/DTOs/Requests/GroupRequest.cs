@@ -1,6 +1,7 @@
 ﻿using HWS.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace HWS.Controllers.DTOs.Requests
 {
@@ -17,8 +18,14 @@ namespace HWS.Controllers.DTOs.Requests
             this.teachers = teachers;
         }
 
+        [Required]
+        [MinLength(length: 3)]
         public string Name { get; set; }
+        [Required]
+
         public ICollection<Guid> students { get; set; }
+
+        [Required]
         public ICollection<Guid> teachers { get; set; }
 
         public Group ToNew()

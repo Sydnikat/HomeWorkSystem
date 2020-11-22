@@ -4,15 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using HWS.Controllers.DTOs.Requests;
 using HWS.Controllers.DTOs.Responses;
+using HWS.Domain;
+using HWS.Middlewares.Config;
 using HWS.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static HWS.Middlewares.ErrorHandlerMiddleware;
 
 namespace HWS.Controllers
 {
-    // ToDo: JWT
     [Route("api/homeworks")]
     [ApiController]
+    [Authorize]
     public class HomeworkController : ControllerBase
     {
         private readonly IGroupService groupService;
@@ -26,13 +29,27 @@ namespace HWS.Controllers
             this.homeworkService = homeworkService;
         }
 
+        private User getUser() => (User)HttpContext?.Items["User"];
+
         [HttpGet("{id}/comments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<CommentResponse>>> GetHomeworkComments(Guid id)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            var user = getUser();
+
+            var homework = await homeworkService.GetHomework(id).ConfigureAwait(false);
+
+            if (homework == null)
+                throw new HWSException("Homework not found", StatusCodes.Status404NotFound);
+
+            if (!homeworkService.UserIsAppliedToHomework(user, homework))
+                throw new HWSException("User is not applied to the homework", StatusCodes.Status403Forbidden);
+
+            var commentsResponse = homework.Comments.Select(comment => new CommentResponse(comment));
+
+            return Ok(commentsResponse);
         }
 
         [HttpPost("{id}/comments")]
@@ -42,7 +59,22 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> CreateHomeworkComment(Guid id, [FromBody] CommentRequest request)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            var user = getUser();
+
+            if (request == null)
+                throw new HWSException("Request body cannot be null", StatusCodes.Status400BadRequest);
+
+            var homework = await homeworkService.GetHomework(id).ConfigureAwait(false);
+
+            if (homework == null)
+                throw new HWSException("Homework not found", StatusCodes.Status404NotFound);
+
+            if (!homeworkService.UserIsAppliedToHomework(user, homework))
+                throw new HWSException("User is not applied to the homework", StatusCodes.Status403Forbidden);
+
+            var savedHomeworkComment = await homeworkService.CreateComment(user, homework, request.Content).ConfigureAwait(false);
+
+            return Created(nameof(CreateHomeworkComment), new CommentResponse(savedHomeworkComment));
         }
 
         [HttpPost("{id}")]

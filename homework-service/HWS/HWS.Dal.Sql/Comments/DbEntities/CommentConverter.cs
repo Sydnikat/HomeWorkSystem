@@ -30,8 +30,9 @@ namespace HWS.Dal.Sql.Comments.DbEntities
         public static Func<Domain.Comment, GroupComment> ToGroupDalNew => comment
             => new GroupComment(
                 _id: 0,
+                groupId: 0,
                 group: null,
-                id: Guid.Empty,
+                id: comment.Id,
                 creationDate: comment.CreationDate,
                 createdBy: comment.CreatedBy,
                 content: comment.Content
@@ -40,8 +41,9 @@ namespace HWS.Dal.Sql.Comments.DbEntities
         public static Func<Domain.Comment, HomeworkComment> ToHomeworkDalNew => comment
             => new HomeworkComment(
                 _id: 0,
+                homeworkId: 0,
                 homework: null,
-                id: Guid.Empty,
+                id: comment.Id,
                 creationDate: comment.CreationDate,
                 createdBy: comment.CreatedBy,
                 content: comment.Content

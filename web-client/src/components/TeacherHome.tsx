@@ -14,6 +14,7 @@ import { Link, Route } from "react-router-dom";
 import TeacherGroups from "./TeacherGroups";
 import Grading from "./Grading";
 import NewGroup from "./modals/NewGroup";
+import { setGroups } from '../store/groupStore';
 
 const TeacherHome: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const TeacherHome: React.FC = () => {
 
   const onSignout = () => {
     dispatch(setUser({} as IUser));
+    dispatch(setGroups([]));
   };
 
   return (
