@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Modal, Row } from "react-bootstrap/";
+import { Button, Col, Form, Modal, Row, Spinner } from "react-bootstrap/";
+import { useDispatch } from "react-redux";
+import { groupService } from "../../services/groupService";
+import { addNewGroup } from "../../store/groupStore";
 import CommonAlert from "../CommonAlert";
 
 interface JoinGroupProps {
@@ -11,15 +14,26 @@ const JoinGroup: React.FC<JoinGroupProps> = ({
   showJoinGroup,
   setShowJoinGroup,
 }) => {
+  const dispatch = useDispatch();
   const [code, setCode] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [joinError, setJoinError] = useState<boolean>(false);
 
   const onFormControlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCode(event.target.value);
   };
 
-  const onJoinClick = () => {
-    setJoinError(true);
+  const onJoinClick = async () => {
+    setJoinError(false);
+    setLoading(true);
+    const joinedGroup = await groupService.joinGroup(code);
+    setLoading(false);
+    if (joinedGroup !== null) {
+      dispatch(addNewGroup(joinedGroup));
+      setShowJoinGroup(false);
+    } else {
+      setJoinError(true);
+    }
   };
 
   const handleClose = () => {
@@ -47,7 +61,12 @@ const JoinGroup: React.FC<JoinGroupProps> = ({
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Row className="w-100">
+        <Row>
+          {loading && (
+            <div className="mr-2">
+              <Spinner animation="border" variant="primary" />
+            </div>
+          )}
           <Button className="ml-auto" onClick={onJoinClick}>
             Csatlakozás
           </Button>

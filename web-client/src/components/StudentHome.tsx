@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,19 +6,26 @@ import {
   faUsers,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/userStore";
 import { IUser } from "../models/user";
 import StudentGroup from "./StudentGroup";
 import { IGroupResponse } from "../models/group";
 import JoinGroup from "./modals/JoinGroup";
 import { useAssignments, useGroups } from "../shared/hooks";
+import { setGroups } from "../store/groupStore";
+import { RootState } from "../store/rootReducer";
 
 const StudentHome: React.FC = () => {
   const dispatch = useDispatch();
-  const { groups, groupsLoading } = useGroups();
+  const groups = useSelector((state: RootState) => state.groupReducer.groups);
+  const { groups: fetchedGroups, groupsLoading } = useGroups();
   const { assignments, assignmentsLoading } = useAssignments();
   const [showJoinGroup, setShowJoinGroup] = useState<boolean>(false);
+
+  useEffect(() => {
+    dispatch(setGroups(fetchedGroups));
+  }, [fetchedGroups, dispatch]);
 
   const onSignout = () => {
     dispatch(setUser({} as IUser));
