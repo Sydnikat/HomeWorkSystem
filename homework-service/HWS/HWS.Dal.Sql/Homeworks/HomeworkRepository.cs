@@ -46,7 +46,7 @@ namespace HWS.Dal.Sql.Homeworks
 
             await context.SaveChangesAsync();
 
-            var newAssigment = dbAssignment.ToDomainOrNull(AssingmentConverter.toDomain);
+            var newAssigment = dbAssignment.ToDomainOrNull(AssingmentConverter.ToDomain);
             newAssigment.Student = assignment.Student;
             newAssigment.ReservedBy = null;
             newAssigment.Homework = homework.ToDomainOrNull(HomeworkConverter.ToDomain);
@@ -76,7 +76,7 @@ namespace HWS.Dal.Sql.Homeworks
             await context.SaveChangesAsync();
 
             return dbAssignments.Select(a => {
-                var newAssigment = a.ToDomainOrNull(AssingmentConverter.toDomain);
+                var newAssigment = a.ToDomainOrNull(AssingmentConverter.ToDomain);
                 newAssigment.Student = assignments.First(assignment => assignment.Id == a.Id)?.Student;
                 newAssigment.ReservedBy = null;
                 newAssigment.Homework = homework.ToDomainOrNull(HomeworkConverter.ToDomain);

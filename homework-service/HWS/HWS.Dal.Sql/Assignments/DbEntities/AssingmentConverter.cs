@@ -12,7 +12,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
 {
     public static class AssingmentConverter
     {
-        public static Func<Assignment, Domain.Assignment> toDomain => assignment
+        public static Func<Assignment, Domain.Assignment> ToDomain => assignment
             => new Domain.Assignment(
                 id: assignment.Id,
                 group: null,
