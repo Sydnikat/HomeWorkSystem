@@ -94,10 +94,12 @@ namespace HWS.Controllers
             if (group == null)
                 throw new HWSException("Group not found", StatusCodes.Status404NotFound);
 
-            if (!userIsMemberOfGroup(user, group))
+            if (!groupService.UserIsMemberOfGroup(user, group))
                 throw new HWSException("User is not a member of the group", StatusCodes.Status403Forbidden);
 
-            return Ok(group.Comments);
+            var commentsResponse = group.Comments.Select(comment => new CommentResponse(comment));
+
+            return Ok(commentsResponse);
         }
 
         [HttpPost("{id}/comments")]
@@ -117,7 +119,7 @@ namespace HWS.Controllers
             if (group == null)
                 throw new HWSException("Group not found", StatusCodes.Status404NotFound);
 
-            if (!userIsMemberOfGroup(user, group))
+            if (!groupService.UserIsMemberOfGroup(user, group))
                 throw new HWSException("User is not a member of the group", StatusCodes.Status403Forbidden);
 
             var savedGroupComment = await groupService.CreateGroupComment(user, group, request.Content).ConfigureAwait(false);
@@ -135,7 +137,7 @@ namespace HWS.Controllers
             return StatusCode(StatusCodes.Status501NotImplemented);
         }
 
-        [HttpPost("{id}/homework")]
+        [HttpPost("{id}/homeworks")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -176,26 +178,6 @@ namespace HWS.Controllers
                 throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
             }
             
-        }
-
-        private bool userIsMemberOfGroup(User user, Group group)
-        {
-            switch (user.Role)
-            {
-                case Domain.User.UserRole.Student:
-                    if (group.Students.Any(student => student.Id == user.Id))
-                        return true;
-                    break;
-                case Domain.User.UserRole.Teacher:
-                    if (group.Teachers.Any(teacher => teacher.Id == user.Id))
-                        return true;
-                    break;
-                case Domain.User.UserRole.Unknown:
-                default:
-                    return false;
-            }
-
-            return false;
         }
     }
 }

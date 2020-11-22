@@ -8,6 +8,8 @@ namespace HWS.Services
 {
     public interface IHomeworkService
     {
+        bool UserIsAppliedToHomework(User user, Homework homework);
+
         Task<Homework> GetHomework(Guid id);
 
         Task<Assignment> CreateHomework(Homework homework, Assignment newAssignment);

@@ -28,7 +28,35 @@ namespace HWS.Services
 
         public async Task<Comment> CreateComment(User user, Homework homework, string content)
         {
-            return await homeworkRepository.InsertComment(user, homework, content);
+            var comment = new Comment(
+                _id: 0,
+                id: Guid.NewGuid(),
+                creationDate: DateTime.Now,
+                createdBy: user.UserFullName,
+                content: content
+            );
+
+            return await homeworkRepository.InsertComment(user, homework, comment).ConfigureAwait(false);
+        }
+
+        public bool UserIsAppliedToHomework(User user, Homework homework)
+        {
+            switch (user.Role)
+            {
+                case User.UserRole.Student:
+                    if (homework.Students.Any(student => student.Id == user.Id))
+                        return true;
+                    break;
+                case User.UserRole.Teacher:
+                    if (homework.Graders.Any(grader => grader.Id == user.Id))
+                        return true;
+                    break;
+                case User.UserRole.Unknown:
+                default:
+                    return false;
+            }
+
+            return false;
         }
     }
 }

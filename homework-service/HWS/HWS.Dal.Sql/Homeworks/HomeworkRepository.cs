@@ -80,24 +80,17 @@ namespace HWS.Dal.Sql.Homeworks
             return newAssigment;
         }
 
-        public async Task<Domain.Comment> InsertComment(Domain.User user, Domain.Homework homework, string content)
+        public async Task<Domain.Comment> InsertComment(Domain.User user, Domain.Homework homework, Domain.Comment comment)
         {
-            var dbComment = new HomeworkComment
-            {
-                _id = 0,
-                Id = Guid.NewGuid(),
-                CreatedBy = user.UserFullName,
-                HomeworkId = homework._id,
-                CreationDate = DateTime.Now,
-                Content = content,
-            };
+            var dbComment = CommentConverter.ToHomeworkDalNew(comment);
+            dbComment.HomeworkId = homework._id;
 
             _comments.Add(dbComment);
             await context.SaveChangesAsync();
 
-            var comment = CommentConverter.ToHomeworkDomain(dbComment);
+            var newComment = CommentConverter.ToHomeworkDomain(dbComment);
 
-            return comment;
+            return newComment;
         }
     }
 }

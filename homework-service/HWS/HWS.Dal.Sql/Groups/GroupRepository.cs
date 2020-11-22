@@ -94,24 +94,17 @@ namespace HWS.Dal.Sql.Groups
             return group;
         }
 
-        public async Task<Domain.Comment> InsertComment(Domain.User user, Domain.Group group, string content)
+        public async Task<Domain.Comment> InsertComment(Domain.User user, Domain.Group group, Domain.Comment comment)
         {
-            var dbComment = new GroupComment
-            {
-                _id = 0,
-                Id = Guid.NewGuid(),
-                CreatedBy = user.UserFullName,
-                GroupId = group._id,
-                CreationDate = DateTime.Now,
-                Content = content,
-            };
+            var dbComment = CommentConverter.ToGroupDalNew(comment);
+            dbComment.GroupId = group._id;
 
             _comments.Add(dbComment);
             await context.SaveChangesAsync();
 
-            var comment = CommentConverter.ToGroupDomain(dbComment);
+            var newComment = CommentConverter.ToGroupDomain(dbComment);
 
-            return comment;
+            return newComment;
         }
 
         public async Task<Domain.Homework> InsertHomework(Guid groupId, Domain.Homework homework)

@@ -44,10 +44,12 @@ namespace HWS.Controllers
             if (homework == null)
                 throw new HWSException("Homework not found", StatusCodes.Status404NotFound);
 
-            if (!userIsAppliedToHomework(user, homework))
+            if (!homeworkService.UserIsAppliedToHomework(user, homework))
                 throw new HWSException("User is not applied to the homework", StatusCodes.Status403Forbidden);
 
-            return Ok(homework.Comments);
+            var commentsResponse = homework.Comments.Select(comment => new CommentResponse(comment));
+
+            return Ok(commentsResponse);
         }
 
         [HttpPost("{id}/comments")]
@@ -67,7 +69,7 @@ namespace HWS.Controllers
             if (homework == null)
                 throw new HWSException("Homework not found", StatusCodes.Status404NotFound);
 
-            if (!userIsAppliedToHomework(user, homework))
+            if (!homeworkService.UserIsAppliedToHomework(user, homework))
                 throw new HWSException("User is not applied to the homework", StatusCodes.Status403Forbidden);
 
             var savedHomeworkComment = await homeworkService.CreateComment(user, homework, request.Content).ConfigureAwait(false);
@@ -82,26 +84,6 @@ namespace HWS.Controllers
         public async Task<ActionResult> ApplyToHomework(Guid id)
         {
             return StatusCode(StatusCodes.Status501NotImplemented);
-        }
-
-        private bool userIsAppliedToHomework(User user, Homework homework)
-        {
-            switch (user.Role)
-            {
-                case Domain.User.UserRole.Student:
-                    if (homework.Students.Any(student => student.Id == user.Id))
-                        return true;
-                    break;
-                case Domain.User.UserRole.Teacher:
-                    if (homework.Graders.Any(grader => grader.Id == user.Id))
-                        return true;
-                    break;
-                case Domain.User.UserRole.Unknown:
-                default:
-                    return false;
-            }
-
-            return false;
         }
     }
 }

@@ -43,7 +43,15 @@ namespace HWS.Services
 
         public async Task<Comment> CreateGroupComment(User user, Group group, string content)
         {
-            return await groupRepository.InsertComment(user, group, content);
+            var comment = new Comment(
+                _id: 0,
+                id: Guid.NewGuid(),
+                creationDate: DateTime.Now,
+                createdBy: user.UserFullName,
+                content: content
+            );
+
+            return await groupRepository.InsertComment(user, group, comment).ConfigureAwait(false);
         }
 
         public async Task<Homework> CreateHomework(Group group, Homework newHomework, ICollection<Guid> students, ICollection<Guid> graders)
@@ -100,6 +108,26 @@ namespace HWS.Services
         public bool CanCreateGroup(User user)
         {
             return user.Role == User.UserRole.Teacher;
+        }
+
+        public bool UserIsMemberOfGroup(User user, Group group)
+        {
+            switch (user.Role)
+            {
+                case User.UserRole.Student:
+                    if (group.Students.Any(student => student.Id == user.Id))
+                        return true;
+                    break;
+                case User.UserRole.Teacher:
+                    if (group.Teachers.Any(teacher => teacher.Id == user.Id))
+                        return true;
+                    break;
+                case User.UserRole.Unknown:
+                default:
+                    return false;
+            }
+
+            return false;
         }
 
         private string generateCode()

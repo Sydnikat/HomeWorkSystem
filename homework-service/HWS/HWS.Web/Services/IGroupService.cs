@@ -10,6 +10,8 @@ namespace HWS.Services
     {
         bool CanCreateGroup(User user);
 
+        bool UserIsMemberOfGroup(User user, Group group);
+
         Task<Group> GetGroup(Guid id);
 
         Task<ICollection<Group>> GetGroupsForStudent(User student);
