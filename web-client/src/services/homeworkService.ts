@@ -1,10 +1,14 @@
+import { AxiosError } from "axios";
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { axiosInstance } from "./config/axios";
 import { homeworkServiceUrl } from "./config/url";
 
 interface HomeworkService {
   getComments(homeworkId: string): Promise<ICommentResponse[]>;
-  sendComment(homeworkId: string, comment: ICommentRequest): Promise<void>;
+  sendComment(
+    homeworkId: string,
+    comment: ICommentRequest
+  ): Promise<ICommentResponse | null>;
 }
 
 export const homeworkService: HomeworkService = {
@@ -27,11 +31,16 @@ export const homeworkService: HomeworkService = {
     try {
       const response = await axiosInstance.post(
         `${homeworkServiceUrl}/${homeworkId}/comments`,
-        { comment }
+        comment
       );
-      console.log(response);
+      if (response.status === 201) {
+        return response.data as ICommentResponse;
+      }
+      return null;
     } catch (err) {
       console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return null;
     }
   },
 };

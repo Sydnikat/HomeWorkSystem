@@ -1,17 +1,23 @@
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { IGroupRequest, IGroupResponse } from "../models/group";
-import {IHomeworkRequest, IHomeworkResponse} from "../models/homework";
+import { IHomeworkRequest, IHomeworkResponse } from "../models/homework";
 import { axiosInstance } from "./config/axios";
 import { groupServiceUrl } from "./config/url";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 
 export interface GroupService {
   getGroups(): Promise<IGroupResponse[]>;
   createGroup(group: IGroupRequest): Promise<IGroupResponse | null>;
   getComments(groupId: string): Promise<ICommentResponse[]>;
-  sendComment(groupId: string, comment: ICommentRequest): Promise<void>;
+  sendComment(
+    groupId: string,
+    comment: ICommentRequest
+  ): Promise<ICommentResponse | null>;
   joinGroup(groupId: string, code: string): Promise<void>;
-  createHomework(groupId: string, homework: IHomeworkRequest): Promise<IHomeworkResponse | null>;
+  createHomework(
+    groupId: string,
+    homework: IHomeworkRequest
+  ): Promise<IHomeworkResponse | null>;
 }
 
 export const groupService: GroupService = {
@@ -61,11 +67,16 @@ export const groupService: GroupService = {
     try {
       const response = await axiosInstance.post(
         `${groupServiceUrl}/${groupId}/comments`,
-        { comment }
+        comment
       );
-      console.log(response);
+      if (response.status === 201) {
+        return response.data as ICommentResponse;
+      }
+      return null;
     } catch (err) {
       console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return null;
     }
   },
 
@@ -84,7 +95,8 @@ export const groupService: GroupService = {
   async createHomework(groupId: string, homework: IHomeworkRequest) {
     try {
       const response = await axiosInstance.post(
-        `${groupServiceUrl}/${groupId}/homeworks`, homework
+        `${groupServiceUrl}/${groupId}/homeworks`,
+        homework
       );
       if (response.status === 201) {
         return response.data as IHomeworkResponse;
