@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { axiosInstance } from "./config/axios";
 import { homeworkServiceUrl } from "./config/url";
-import {IAssignmentResponse} from "../models/assignment";
+import { IAssignmentResponse } from "../models/assignment";
 
 interface HomeworkService {
   getComments(homeworkId: string): Promise<ICommentResponse[]>;
@@ -56,7 +56,7 @@ export const homeworkService: HomeworkService = {
         return response.data as IAssignmentResponse;
       }
       return null;
-    }  catch (err) {
+    } catch (err) {
       console.log(err);
       console.log((err as AxiosError)?.response?.data);
       return null;

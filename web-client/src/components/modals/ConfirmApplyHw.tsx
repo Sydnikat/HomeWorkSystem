@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import CommonAlert from "../CommonAlert";
-import {useDispatch} from "react-redux";
-import {setAssignment} from "../../store/assignmentStore";
-import {homeworkService} from "../../services/homeworkService";
+import { useDispatch } from "react-redux";
+import { setAssignment } from "../../store/assignmentStore";
+import { homeworkService } from "../../services/homeworkService";
 
 interface ConfirmApplyHwProps {
   showConfirmApplyHw: boolean;
@@ -20,8 +20,7 @@ const ConfirmApplyHw: React.FC<ConfirmApplyHwProps> = ({
   const [applyError, setApplyError] = useState<boolean>(false);
 
   const onApplyClick = async () => {
-    if (homeworkId === "")
-      return;
+    if (homeworkId === "") return;
 
     setApplyError(false);
     const assignment = await homeworkService.createAssignment(homeworkId);

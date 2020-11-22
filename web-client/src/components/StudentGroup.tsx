@@ -33,14 +33,19 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
   const [scopeId, setScopeId] = useState<string>("");
   const furtherHomeworks = useMemo(() => {
     return group.homeworks.filter(
-      (h) => !assignments.some((a) => a.homeworkId === h.id) && h.currentNumberOfStudents < h.maximumNumberOfStudents
+      (h) =>
+        !assignments.some((a) => a.homeworkId === h.id) &&
+        h.currentNumberOfStudents < h.maximumNumberOfStudents
     );
   }, [group, assignments]);
   const [showFurtherHomeworks, setShowFurtherHomeworks] = useState<boolean>(
     false
   );
   const [showConfirmApplyHw, setShowConfirmApplyHw] = useState<boolean>(false);
-  const [homeworkToApply, setHomeworkToApply] = useState<IHomeworkResponse | null>(null);
+  const [
+    homeworkToApply,
+    setHomeworkToApply,
+  ] = useState<IHomeworkResponse | null>(null);
 
   const onDetailsClick = (homeworkId: string) => () => {
     const homeworkToShow = group.homeworks.find((h) => h.id === homeworkId);

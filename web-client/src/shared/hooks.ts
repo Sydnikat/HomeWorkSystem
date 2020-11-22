@@ -6,8 +6,8 @@ import { assignmentService } from "../services/assignmentService";
 import { groupService } from "../services/groupService";
 import { homeworkService } from "../services/homeworkService";
 import { CommentScope } from "./enums";
-import {IUserResponse} from "../models/user";
-import {userService} from "../services/userService";
+import { IUserResponse } from "../models/user";
+import { userService } from "../services/userService";
 
 export const useUsers = (): {
   users: IUserResponse[];
@@ -26,8 +26,7 @@ export const useUsers = (): {
           setUsers(fetchedUsers);
           setUsersLoading(false);
         }
-      }
-      catch (e) {
+      } catch (e) {
         console.log(e);
       }
     };
@@ -36,7 +35,7 @@ export const useUsers = (): {
 
     return () => {
       isSubscribed = false;
-    }
+    };
   }, []);
 
   return { users, usersLoading };

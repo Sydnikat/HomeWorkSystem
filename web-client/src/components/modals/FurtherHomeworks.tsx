@@ -7,7 +7,9 @@ interface FurtherHomeworksProps {
   setShowFurtherHomeworks: React.Dispatch<React.SetStateAction<boolean>>;
   furtherHomeworks: IHomeworkResponse[];
   setShowConfirmApplyHw: React.Dispatch<React.SetStateAction<boolean>>;
-  setHomeworkToApply: React.Dispatch<React.SetStateAction<IHomeworkResponse | null>>;
+  setHomeworkToApply: React.Dispatch<
+    React.SetStateAction<IHomeworkResponse | null>
+  >;
 }
 
 const FurtherHomeworks: React.FC<FurtherHomeworksProps> = ({

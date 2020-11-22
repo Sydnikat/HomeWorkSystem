@@ -1,7 +1,7 @@
 import { IAssignmentResponse } from "../models/assignment";
 import { axiosInstance } from "./config/axios";
 import { assignmentServiceUrl } from "./config/url";
-import {AxiosError} from "axios";
+import { AxiosError } from "axios";
 
 export interface AssignmentService {
   getAssignments(): Promise<IAssignmentResponse[]>;

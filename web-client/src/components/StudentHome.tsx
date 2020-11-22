@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,13 +6,13 @@ import {
   faUsers,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import {useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/userStore";
 import { IUser } from "../models/user";
 import StudentGroup from "./StudentGroup";
 import { IGroupResponse } from "../models/group";
 import JoinGroup from "./modals/JoinGroup";
-import {setAssignments} from "../store/assignmentStore";
+import { setAssignments } from "../store/assignmentStore";
 import { useAssignments, useGroups } from "../shared/hooks";
 import { setGroups } from "../store/groupStore";
 import { RootState } from "../store/rootReducer";
@@ -21,9 +21,14 @@ const StudentHome: React.FC = () => {
   const dispatch = useDispatch();
   const groups = useSelector((state: RootState) => state.groupReducer.groups);
   const { groups: fetchedGroups, groupsLoading } = useGroups();
-  const { assignments: fetchedAssignments, assignmentsLoading } = useAssignments();
+  const {
+    assignments: fetchedAssignments,
+    assignmentsLoading,
+  } = useAssignments();
   const [showJoinGroup, setShowJoinGroup] = useState<boolean>(false);
-  const assignments = useSelector((state: RootState) => state.assignmentReducer.assignments);
+  const assignments = useSelector(
+    (state: RootState) => state.assignmentReducer.assignments
+  );
 
   useEffect(() => {
     dispatch(setAssignments(fetchedAssignments));
