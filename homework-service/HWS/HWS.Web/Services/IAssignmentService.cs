@@ -19,5 +19,7 @@ namespace HWS.Services
         Task<bool> ReserveAssignment(User grader, Assignment assignment);
 
         Task<bool> FreeAssignment(User grader, Assignment assignment);
+
+        Task<bool> ChangeAssignmentFile(Assignment assignment, string fileName);
     }
 }

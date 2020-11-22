@@ -158,10 +158,26 @@ namespace HWS.Dal.Sql.Assignments
             return true;
         }
 
+        public async Task<bool> UpdateFileName(Guid assignmentId, string fileName)
+        {
+            if (fileName == null)
+                throw new ArgumentNullException(nameof(fileName));
+
+            var dbAssignment = await findByIdWithTracking(assignmentId);
+
+            if (dbAssignment == null)
+                return false;
+
+            dbAssignment.FileName = fileName;
+
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+
         private async Task<Assignment> findByIdWithTracking(Guid id) 
             => await _assignments
                .Where(a => a.Id == id)
                .SingleOrDefaultAsync();
-       
     }
 }

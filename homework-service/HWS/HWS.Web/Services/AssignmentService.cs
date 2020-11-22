@@ -61,6 +61,11 @@ namespace HWS.Services
             return await assignmentRepository.UpdateReservedBy(assignment.Id, Guid.Empty).ConfigureAwait(false);
         }
 
+        public async Task<bool> ChangeAssignmentFile(Assignment assignment, string fileName)
+        {
+            return await assignmentRepository.UpdateFileName(assignment.Id, fileName).ConfigureAwait(false);
+        }
+
         public async Task<ICollection<Assignment>> GetAssignmentsForStudent(User student)
         {
             return (await assignmentRepository.FindAllByStudent(student).ConfigureAwait(false)).ToList();
