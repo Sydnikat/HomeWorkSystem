@@ -13,5 +13,11 @@ namespace HWS.Services
         Task<ICollection<Assignment>> GetAssignmentsForTeacher(User teacher);
 
         Task<Assignment> GetAssignment(Guid id);
+
+        Task<bool> GradeAssignment(User grader, Assignment assignment, string grade);
+
+        Task<bool> ReserveAssignment(User grader, Assignment assignment);
+
+        Task<bool> FreeAssignment(User grader, Assignment assignment);
     }
 }

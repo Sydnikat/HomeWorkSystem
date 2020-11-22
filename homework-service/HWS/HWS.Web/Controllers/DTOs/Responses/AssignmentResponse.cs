@@ -8,7 +8,7 @@ namespace HWS.Controllers.DTOs.Responses
     public class AssignmentResponse
     {
         public Guid Id { get; }
-        public Guid HomeWorkId { get; }
+        public Guid HomeworkId { get; }
         public Guid GroupId { get; }
         public string Grade { get; }
         public DateTime? TurnInDate { get; }
@@ -22,7 +22,7 @@ namespace HWS.Controllers.DTOs.Responses
 
         public AssignmentResponse(
             Guid id,
-            Guid homeWorkId,
+            Guid homeworkId,
             Guid groupId,
             string grade,
             DateTime? turnInDate,
@@ -35,7 +35,7 @@ namespace HWS.Controllers.DTOs.Responses
             string groupName)
         {
             Id = id;
-            HomeWorkId = homeWorkId;
+            HomeworkId = homeworkId;
             GroupId = groupId;
             Grade = grade;
             TurnInDate = turnInDate;
@@ -64,7 +64,7 @@ namespace HWS.Controllers.DTOs.Responses
 
             return new AssignmentResponse(
                 id: assignment.Id,
-                homeWorkId: assignment.Homework.Id,
+                homeworkId: assignment.Homework.Id,
                 groupId: assignment.Group.Id,
                 grade: assignment.Grade,
                 turnInDate: turnInDate,

@@ -12,7 +12,7 @@ namespace HWS.Services
 
         Task<Homework> GetHomework(Guid id);
 
-        Task<Assignment> CreateAssignment(Homework homework, Assignment newAssignment);
+        Task<Assignment> CreateAssignment(User student, Group group, Homework homework);
 
         Task<Comment> CreateComment(User user, Homework homework, string content);
     }
