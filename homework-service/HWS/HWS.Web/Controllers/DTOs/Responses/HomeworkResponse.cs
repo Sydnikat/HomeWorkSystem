@@ -49,6 +49,10 @@ namespace HWS.Controllers.DTOs.Responses
 
         public static HomeworkResponse ForTeacher(Homework homework)
         {
+            DateTime? applicationDeadline = homework.ApplicationDeadline;
+            if (homework.SubmissionDeadline < applicationDeadline)
+                applicationDeadline = null;
+
             return new HomeworkResponse(
                 id: homework.Id,
                 title: homework.Title,
@@ -56,7 +60,7 @@ namespace HWS.Controllers.DTOs.Responses
                 maxFileSize: homework.MaxFileSize,
                 groupId: homework.Group.Id,
                 submissionDeadline: homework.SubmissionDeadline,
-                applicationDeadline: homework.ApplicationDeadline,
+                applicationDeadline: applicationDeadline,
                 maximumNumberOfStudents: homework.MaximumNumberOfStudents,
                 currentNumberOfStudents: homework.Students.Count,
                 graders: homework.Graders.Select(g => new UserResponse(g)),
@@ -66,12 +70,9 @@ namespace HWS.Controllers.DTOs.Responses
 
         public static HomeworkResponse ForStudent(Homework homework)
         {
-            DateTime? applicationDueDate = homework.ApplicationDeadline;
-
-            if (applicationDueDate > homework.SubmissionDeadline)
-            {
-                applicationDueDate = null;
-            }
+            DateTime? applicationDeadline = homework.ApplicationDeadline;
+            if (homework.SubmissionDeadline < applicationDeadline)
+                applicationDeadline = null;
 
             return new HomeworkResponse(
                 id: homework.Id,
@@ -80,7 +81,7 @@ namespace HWS.Controllers.DTOs.Responses
                 maxFileSize: homework.MaxFileSize,
                 groupId: homework.Group.Id,
                 submissionDeadline: homework.SubmissionDeadline,
-                applicationDeadline: applicationDueDate,
+                applicationDeadline: applicationDeadline,
                 maximumNumberOfStudents: homework.MaximumNumberOfStudents,
                 currentNumberOfStudents: homework.Students.Count,
                 graders: homework.Graders.Select(g => new UserResponse(g)),

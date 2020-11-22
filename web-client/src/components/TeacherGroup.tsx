@@ -118,7 +118,7 @@ const TeacherGroup: React.FC<TeacherGroupProps> = ({ group }) => {
         <NewHomework
           showNewHomework={showNewHomework}
           setShowNewHomework={setShowNewHomework}
-          groupId={group.id}
+          group={group}
         />
       )}
       {showHomeworkDetails && (

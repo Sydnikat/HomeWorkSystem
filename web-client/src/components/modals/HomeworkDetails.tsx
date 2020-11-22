@@ -27,6 +27,9 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
           <b>Határidő:</b> {homework.submissionDeadline}
         </div>
         <div>
+          <b>Jelentkezési határidő:</b> {homework.applicationDeadline ?? "Nincs"}
+        </div>
+        <div>
           <b>Létszám:</b> {homework.currentNumberOfStudents}
         </div>
         <div>
@@ -42,7 +45,20 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
             </span>
           ))}
         </div>
-        <p className="mt-2">{homework.description}</p>
+        <div>
+          <b>Leírás:</b>
+        </div>
+        <p className="my-2 ml-1">{homework.description}</p>
+        <div hidden={homework.students.length === 0}>
+          <b>Hallgatók:</b>{" "}
+          {homework.students.map((g: string) => (
+            <span key={g}>
+              {g}
+              {homework.students.indexOf(g) !== homework.students.length - 1 &&
+              ", "}
+            </span>
+          ))}
+        </div>
       </Modal.Body>
     </Modal>
   );

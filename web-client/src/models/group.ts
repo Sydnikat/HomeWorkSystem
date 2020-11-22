@@ -1,4 +1,5 @@
 import { IHomeworkResponse } from "./homework";
+import {IUserResponse} from "./user";
 
 export interface IGroupResponse {
   id: string;
@@ -6,8 +7,8 @@ export interface IGroupResponse {
   code: string;
   ownerId: string;
   ownerFullName: string;
-  students: string[];
-  teachers: string[];
+  students: IUserResponse[];
+  teachers: IUserResponse[];
   homeworks: IHomeworkResponse[];
 }
 

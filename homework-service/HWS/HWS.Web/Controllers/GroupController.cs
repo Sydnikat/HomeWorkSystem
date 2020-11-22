@@ -142,7 +142,7 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> CreateHomework(Guid id, [FromBody] HomeworkRequest request)
+        public async Task<ActionResult<HomeworkResponse>> CreateHomework(Guid id, [FromBody] HomeworkRequest request)
         {
             var user = getUser();
 
@@ -174,6 +174,10 @@ namespace HWS.Controllers
                 throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
             }
             catch (StudentNumberMisMatchException e)
+            {
+                throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
+            }
+            catch (InvalidDateException e)
             {
                 throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
             }

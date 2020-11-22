@@ -27,8 +27,13 @@ namespace HWS.Services
             newGroup.Code = generateCode();
             newGroup.Id = Guid.NewGuid();
 
-            IReadOnlyCollection<User> studentList = await userService.GetUsers(students).ConfigureAwait(false);
-            IReadOnlyCollection<User> teacherList = await userService.GetUsers(teachers).ConfigureAwait(false);
+            if (teachers.FirstOrDefault(t => t == owner.Id) == Guid.Empty)
+            {
+                teachers.Add(owner.Id);
+            }
+
+            IReadOnlyCollection<User> studentList = await userService.GetUsers(students.Distinct()).ConfigureAwait(false);
+            IReadOnlyCollection<User> teacherList = await userService.GetUsers(teachers.Distinct()).ConfigureAwait(false);
 
             newGroup.Students = studentList.ToList();
             newGroup.Teachers = teacherList.ToList();
@@ -56,8 +61,13 @@ namespace HWS.Services
 
         public async Task<Homework> CreateHomework(Group group, Homework newHomework, ICollection<Guid> students, ICollection<Guid> graders)
         {
-            IReadOnlyCollection<User> studentList = await userService.GetUsers(students).ConfigureAwait(false);
-            IReadOnlyCollection<User> graderList = await userService.GetUsers(graders).ConfigureAwait(false);
+            if (graders.FirstOrDefault(t => t == group.Owner.Id) == Guid.Empty)
+            {
+                graders.Add(group.Owner.Id);
+            }
+
+            IReadOnlyCollection<User> studentList = await userService.GetUsers(students.Distinct()).ConfigureAwait(false);
+            IReadOnlyCollection<User> graderList = await userService.GetUsers(graders.Distinct()).ConfigureAwait(false);
 
             if (studentList.Any(student => !group.Students.Select(s => s.Id).Contains(student.Id)))
                 throw new IllegalStudentException("Student not in group");
@@ -70,6 +80,12 @@ namespace HWS.Services
 
             if (studentList.Count != 0 && newHomework.MaximumNumberOfStudents != studentList.Count)
                 throw new StudentNumberMisMatchException("Number of found and expected students are not the same");
+
+            if (newHomework.SubmissionDeadline < DateTime.Now)
+                throw new InvalidDateException("Submission date must be a future date");
+
+            if (newHomework.ApplicationDeadline < DateTime.Now)
+                throw new InvalidDateException("Application date must be a future date");
 
             newHomework.CurrentNumberOfStudents = newHomework.Students.Count;
 
