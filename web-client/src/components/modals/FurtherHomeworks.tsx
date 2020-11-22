@@ -7,6 +7,7 @@ interface FurtherHomeworksProps {
   setShowFurtherHomeworks: React.Dispatch<React.SetStateAction<boolean>>;
   furtherHomeworks: IHomeworkResponse[];
   setShowConfirmApplyHw: React.Dispatch<React.SetStateAction<boolean>>;
+  setHomeworkToApply: React.Dispatch<React.SetStateAction<IHomeworkResponse | null>>;
 }
 
 const FurtherHomeworks: React.FC<FurtherHomeworksProps> = ({
@@ -14,8 +15,10 @@ const FurtherHomeworks: React.FC<FurtherHomeworksProps> = ({
   setShowFurtherHomeworks,
   furtherHomeworks,
   setShowConfirmApplyHw,
+  setHomeworkToApply,
 }) => {
-  const onApplyClick = () => {
+  const onApplyClick = (homework: IHomeworkResponse) => () => {
+    setHomeworkToApply(homework);
     setShowFurtherHomeworks(false);
     setShowConfirmApplyHw(true);
   };
@@ -52,7 +55,7 @@ const FurtherHomeworks: React.FC<FurtherHomeworksProps> = ({
                 </div>
                 <p className="mt-2">{f.description}</p>
                 <div>
-                  <Button size="sm" onClick={onApplyClick}>
+                  <Button size="sm" onClick={onApplyClick(f)}>
                     Jelentkezés
                   </Button>
                 </div>

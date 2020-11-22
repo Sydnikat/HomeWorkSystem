@@ -59,13 +59,39 @@ export const assignment = createSlice({
         state.assignments[index] = newAssignment;
       }
     },
+
+    gradeAssignment(
+      state: AssignmentState,
+      action: PayloadAction<{ assignmentId: string; grade: string }>
+    ) {
+      const { assignmentId, grade } = action.payload;
+      const index = state.assignments.findIndex((a) => a.id === assignmentId);
+
+      if (index !== -1) {
+        const assignment = state.assignments[index];
+        const newAssignment: IAssignmentResponse = {
+          ...assignment,
+          grade: grade,
+        };
+        state.assignments[index] = newAssignment;
+      }
+    },
+
+    setAssignment(
+      state: AssignmentState,
+      action: PayloadAction<IAssignmentResponse>
+    ) {
+      state.assignments.push(action.payload);
+    },
   },
 });
 
 export const {
   setAssignments,
+  setAssignment,
   setFilteredAssignments,
   freeAssignment,
   reserveAssignment,
+  gradeAssignment,
 } = assignment.actions;
 export const assignmentReducer = assignment.reducer;
