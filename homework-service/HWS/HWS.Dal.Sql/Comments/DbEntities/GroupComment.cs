@@ -11,10 +11,10 @@ namespace HWS.Dal.Sql.Comments.DbEntities
         {
         }
 
-        public GroupComment(long _id, long groupId, Group group, Guid id, DateTime creationDate, string createdBy, string content) 
+        public GroupComment(long _id, Group group, Guid id, DateTime creationDate, string createdBy, string content) 
             : base(_id, id, creationDate, createdBy, content)
         {
-            GroupId = groupId;
+            GroupId = group._id;
             Group = group;
         }
 

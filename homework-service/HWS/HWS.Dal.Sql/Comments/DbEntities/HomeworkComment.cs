@@ -11,10 +11,10 @@ namespace HWS.Dal.Sql.Comments.DbEntities
         {
         }
 
-        public HomeworkComment(long _id, long homeworkId, Homework homework, Guid id, DateTime creationDate, string createdBy, string content)
+        public HomeworkComment(long _id, Homework homework, Guid id, DateTime creationDate, string createdBy, string content)
             : base(_id, id, creationDate, createdBy, content)
         {
-            HomeworkId = homeworkId;
+            HomeworkId = homework._id;
             Homework = homework;
         }
         public long HomeworkId { get; set; }
