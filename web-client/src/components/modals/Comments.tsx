@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, Modal, Row, Spinner } from "react-bootstrap/";
@@ -7,6 +7,9 @@ import { groupService } from "../../services/groupService";
 import { homeworkService } from "../../services/homeworkService";
 import { CommentScope } from "../../shared/enums";
 import { useComments } from "../../shared/hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewComment, setComments } from "../../store/commentStore";
+import { RootState } from "../../store/rootReducer";
 
 interface CommentsProps {
   showComments: boolean;
@@ -21,22 +24,45 @@ const Comments: React.FC<CommentsProps> = ({
   scope,
   scopeId,
 }) => {
-  const { comments, commentsLoading } = useComments(scope, scopeId);
+  const dispatch = useDispatch();
+  const comments = useSelector(
+    (state: RootState) => state.commentReducer.comments
+  );
+  const { comments: fetchedComments, commentsLoading } = useComments(
+    scope,
+    scopeId
+  );
   const [newComment, setNewComment] = useState<string>("");
+  const [sending, setSending] = useState<boolean>(false);
+
+  useEffect(() => {
+    dispatch(setComments(fetchedComments));
+  }, [fetchedComments, dispatch]);
 
   const onFormControlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewComment(event.target.value);
   };
 
   const onSendClick = async () => {
+    setSending(true);
     const comment: ICommentRequest = { content: newComment };
     switch (scope) {
       case CommentScope.GROUP: {
-        await groupService.sendComment(scopeId, comment);
+        const newComment = await groupService.sendComment(scopeId, comment);
+        setSending(false);
+        if (newComment !== null) {
+          setNewComment("");
+          dispatch(addNewComment(newComment));
+        }
         break;
       }
       case CommentScope.HOMEWORK: {
-        await homeworkService.sendComment(scopeId, comment);
+        const newComment = await homeworkService.sendComment(scopeId, comment);
+        setSending(false);
+        if (newComment !== null) {
+          setNewComment("");
+          dispatch(addNewComment(newComment));
+        }
         break;
       }
       default:
@@ -46,6 +72,7 @@ const Comments: React.FC<CommentsProps> = ({
 
   const handleClose = () => {
     setShowComments(false);
+    dispatch(setComments([]));
   };
 
   return (
@@ -84,7 +111,12 @@ const Comments: React.FC<CommentsProps> = ({
             </Form>
           </Row>
           <Row>
-            <Button size="sm" onClick={onSendClick}>
+            {sending && (
+              <div className="mr-2">
+                <Spinner animation="border" variant="primary" />
+              </div>
+            )}
+            <Button size="sm" onClick={onSendClick} disabled={sending}>
               <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
               Küldés
             </Button>
