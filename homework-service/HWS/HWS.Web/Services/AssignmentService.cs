@@ -16,6 +16,11 @@ namespace HWS.Services
             this.assignmentRepository = assignmentRepository;
         }
 
+        public async Task<Assignment> GetAssignment(Guid id)
+        {
+            return await assignmentRepository.FindById(id).ConfigureAwait(false);
+        }
+
         public async Task<ICollection<Assignment>> GetAssignmentsForStudent(User student)
         {
             return (await assignmentRepository.FindAllByStudent(student).ConfigureAwait(false)).ToList();

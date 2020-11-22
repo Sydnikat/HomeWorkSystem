@@ -11,5 +11,7 @@ namespace HWS.Services
         Task<ICollection<Assignment>> GetAssignmentsForStudent(User student);
 
         Task<ICollection<Assignment>> GetAssignmentsForTeacher(User teacher);
+
+        Task<Assignment> GetAssignment(Guid id);
     }
 }
