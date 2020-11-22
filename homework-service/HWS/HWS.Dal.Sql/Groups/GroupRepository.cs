@@ -66,6 +66,9 @@ namespace HWS.Dal.Sql.Groups
 
             var group = query.ToDomainOrNull(GroupConverter.ToDomain);
 
+            if (group == null)
+                return null;
+
             var studentIds = query.Students.Select(gsj => gsj.Student.UserId);
             var teacherIds = query.Teachers.Select(gtj => gtj.Teacher.UserId);
 

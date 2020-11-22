@@ -38,7 +38,7 @@ namespace HWS.Services
 
         public async Task<Group> GetGroup(Guid id)
         {
-            return await groupRepository.FindById(id);
+            return await groupRepository.FindById(id).ConfigureAwait(false);
         }
 
         public async Task<Homework> CreateHomework(Group group, Homework newHomework, ICollection<Guid> students, ICollection<Guid> graders)
