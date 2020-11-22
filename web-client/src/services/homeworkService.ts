@@ -3,7 +3,6 @@ import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { axiosInstance } from "./config/axios";
 import { homeworkServiceUrl } from "./config/url";
 import {IAssignmentResponse} from "../models/assignment";
-import {AxiosError} from "axios";
 
 interface HomeworkService {
   getComments(homeworkId: string): Promise<ICommentResponse[]>;
