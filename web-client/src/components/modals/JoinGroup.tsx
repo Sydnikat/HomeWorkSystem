@@ -16,7 +16,7 @@ const JoinGroup: React.FC<JoinGroupProps> = ({
 }) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [inTransaction, setInTransaction] = useState<boolean>(false);
   const [joinError, setJoinError] = useState<boolean>(false);
 
   const onFormControlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,9 +25,10 @@ const JoinGroup: React.FC<JoinGroupProps> = ({
 
   const onJoinClick = async () => {
     setJoinError(false);
-    setLoading(true);
+    setInTransaction(true);
     const joinedGroup = await groupService.joinGroup(code);
-    setLoading(false);
+    setInTransaction(false);
+
     if (joinedGroup !== null) {
       dispatch(addNewGroup(joinedGroup));
       setShowJoinGroup(false);
@@ -62,7 +63,7 @@ const JoinGroup: React.FC<JoinGroupProps> = ({
       </Modal.Body>
       <Modal.Footer>
         <Row>
-          {loading && (
+          {inTransaction && (
             <div className="mr-2">
               <Spinner animation="border" variant="primary" />
             </div>

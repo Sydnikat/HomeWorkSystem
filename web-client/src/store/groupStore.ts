@@ -30,7 +30,10 @@ export const group = createSlice({
       const index = state.groups.findIndex((g) => g.id === homework.groupId);
 
       if (index !== -1) {
-        state.groups[index].homeworks.push(homework);
+        state.groups[index].homeworks = [
+          ...state.groups[index].homeworks,
+          homework,
+        ];
       }
     },
   },
