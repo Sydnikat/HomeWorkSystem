@@ -14,6 +14,10 @@ namespace HWS.Services
 
         Task<Group> GetGroup(Guid id);
 
+        Task<Group> GetGroup(string code);
+
+        Task<bool> JoinGroup(User user, Group group);
+
         Task<ICollection<Group>> GetGroupsForStudent(User student);
 
         Task<ICollection<Group>> GetGroupsForTeacher(User teacher);
