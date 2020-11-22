@@ -5,13 +5,13 @@ import {InputGroup} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
 
-interface Props {
+interface UserSelectorProps {
   title: string;
   listOfUsers: IUserResponse[];
   onSelectUser: (user: IUserResponse) => void;
 }
 
-const UserSelector: React.FC<Props> = (props: Props) => {
+const UserSelector: React.FC<UserSelectorProps> = (props: UserSelectorProps) => {
   const {
     title,
     listOfUsers,
@@ -26,25 +26,25 @@ const UserSelector: React.FC<Props> = (props: Props) => {
     setDropdownOpen(isDropdownCaptured);
   }, [isDropdownCaptured]);
 
-  const searchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterStr(event.target.value.toLocaleLowerCase());
   };
 
-  const searchInputEnter = () => {
+  const onSearchInputEnter = () => {
     setDropdownOpen(listOfUsers.length > 0);
   };
 
-  const searchInputLeave = () => {
+  const onSearchInputLeave = () => {
     if (!isDropdownCaptured) {
       setDropdownOpen(false);
     }
   };
 
-  const captureDropdown = () => {
+  const onCaptureDropdown = () => {
     setIsDropdownCaptured(true);
   };
 
-  const leaveDropdown = () => {
+  const onLeaveDropdown = () => {
     setIsDropdownCaptured(false);
   };
 
@@ -59,9 +59,9 @@ const UserSelector: React.FC<Props> = (props: Props) => {
         </div>
         <InputGroup>
           <input
-            onChange={searchChange}
-            onFocus={searchInputEnter}
-            onBlur={searchInputLeave}
+            onChange={onSearchChange}
+            onFocus={onSearchInputEnter}
+            onBlur={onSearchInputLeave}
             name="search"
             type="text"
             autoComplete="off"
@@ -78,8 +78,8 @@ const UserSelector: React.FC<Props> = (props: Props) => {
       <Dropdown drop="down" show={dropdownOpen}>
         <Dropdown.Toggle as={"div"} bsPrefix={"hidden"}  />
         <Dropdown.Menu
-          onMouseOver={captureDropdown}
-          onMouseLeave={leaveDropdown}
+          onMouseOver={onCaptureDropdown}
+          onMouseLeave={onLeaveDropdown}
         >
           {listOfUsers.length > 0 && listOfUsers
             .filter(u => u.userFullName.toLocaleLowerCase().includes(filterStr) || u.userName.toLocaleLowerCase().includes(filterStr))

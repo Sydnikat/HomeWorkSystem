@@ -7,7 +7,7 @@ import UserSelector from "./UserSelector";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes, faTrash} from "@fortawesome/free-solid-svg-icons";
 
-interface Props {
+interface UserListAssembleProps {
   listTitle: string;
   selectedListTitle: string;
   notSelectedListTitle: string;
@@ -16,7 +16,7 @@ interface Props {
   setSelectedUsers: (list: IUserResponse[]) => void;
 }
 
-const UserListAssemble: React.FC<Props> = (props: Props) => {
+const UserListAssemble: React.FC<UserListAssembleProps> = (props: UserListAssembleProps) => {
   const {
     listTitle,
     selectedListTitle,
@@ -47,7 +47,7 @@ const UserListAssemble: React.FC<Props> = (props: Props) => {
     setPreSelectedUserList(preSelectedUserList.filter(u => u.id !== user.id));
   };
 
-  const submitPreselectedUsers = () => {
+  const onSubmitPreselectedUsersClick = () => {
     const list: IUserResponse[] = [];
     list.push(...selectedUsers);
     preSelectedUserList.forEach(preSelected => {
@@ -82,7 +82,7 @@ const UserListAssemble: React.FC<Props> = (props: Props) => {
 
           </div>
           <div className="mx-2 mb-2 mt-auto">
-            <Button size="sm" onClick={submitPreselectedUsers}>
+            <Button size="sm" onClick={onSubmitPreselectedUsersClick}>
               Kiválasztás
             </Button>
           </div>
