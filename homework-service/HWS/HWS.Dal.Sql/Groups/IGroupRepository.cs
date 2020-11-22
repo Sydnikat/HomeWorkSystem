@@ -14,6 +14,10 @@ namespace HWS.Dal.Sql.Groups
 
         Task<Group> FindById(Guid id);
 
+        Task<Group> FindByCode(string code);
+
+        Task<bool> UpdateUsers(Guid groupId, User user);
+
         Task<Group> Insert(Group group);
 
         Task<Comment> InsertComment(User user, Group group, Comment comment);

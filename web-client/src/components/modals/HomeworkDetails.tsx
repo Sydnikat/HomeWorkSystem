@@ -27,7 +27,8 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
           <b>Határidő:</b> {homework.submissionDeadline}
         </div>
         <div>
-          <b>Jelentkezési határidő:</b> {homework.applicationDeadline ?? "Nincs"}
+          <b>Jelentkezési határidő:</b>{" "}
+          {homework.applicationDeadline ?? "Nincs"}
         </div>
         <div>
           <b>Létszám:</b> {homework.currentNumberOfStudents}
@@ -55,7 +56,7 @@ const HomeworkDetails: React.FC<HomeworkDetailsProps> = ({
             <span key={g}>
               {g}
               {homework.students.indexOf(g) !== homework.students.length - 1 &&
-              ", "}
+                ", "}
             </span>
           ))}
         </div>

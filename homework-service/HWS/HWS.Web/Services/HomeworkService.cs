@@ -1,5 +1,6 @@
 ﻿using HWS.Dal.Sql.Homeworks;
 using HWS.Domain;
+using HWS.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,32 @@ namespace HWS.Services
 
         public async Task<Homework> GetHomework(Guid id)
         {
-            return await homeworkRepository.FindById(id);
+            return await homeworkRepository.FindById(id).ConfigureAwait(false);
         }
 
-        public async Task<Assignment> CreateHomework(Homework homework, Assignment newAssignment)
+        public async Task<Assignment> CreateAssignment(User student, Group group, Homework homework)
         {
+            if (group.Students.FirstOrDefault(s => s.Id == student.Id) == null)
+                throw new IllegalStudentException("Student not in group");
+
+            if (homework.Students.Any(s => s.Id == student.Id))
+                throw new IllegalStudentException("Student is already on this homework");
+
+            if (homework.CurrentNumberOfStudents == homework.MaximumNumberOfStudents)
+                throw new HomeworkIsFullException("Student cannot fit in homework");
+
+            var newAssignment = new Assignment(
+                _id: 0,
+                id: Guid.NewGuid(),
+                group: homework.Group,
+                homework: homework,
+                submissionDeadline: homework.SubmissionDeadline,
+                turnInDate: DateTime.MaxValue,
+                fileName: "",
+                student: student,
+                reservedBy: null,
+                grade: "");
+
             return await homeworkRepository.InsertAssignment(homework.Id, newAssignment).ConfigureAwait(false);
         }
 

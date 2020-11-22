@@ -14,6 +14,7 @@ namespace HWS.Services.Config
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IHomeworkService, HomeworkService>();
+            services.AddTransient<IAssignmentService, AssignmentService>();
         }
     }
 }

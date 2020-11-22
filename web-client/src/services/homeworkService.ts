@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { ICommentRequest, ICommentResponse } from "../models/comment";
 import { axiosInstance } from "./config/axios";
 import { homeworkServiceUrl } from "./config/url";
+import { IAssignmentResponse } from "../models/assignment";
 
 interface HomeworkService {
   getComments(homeworkId: string): Promise<ICommentResponse[]>;
@@ -9,6 +10,7 @@ interface HomeworkService {
     homeworkId: string,
     comment: ICommentRequest
   ): Promise<ICommentResponse | null>;
+  createAssignment(homeworkId: string): Promise<IAssignmentResponse | null>;
 }
 
 export const homeworkService: HomeworkService = {
@@ -20,10 +22,10 @@ export const homeworkService: HomeworkService = {
       if (response.status === 200) {
         return response.data as ICommentResponse[];
       }
-      return exampleComments;
+      return [];
     } catch (err) {
       console.log(err);
-      return exampleComments;
+      return [];
     }
   },
 
@@ -43,19 +45,21 @@ export const homeworkService: HomeworkService = {
       return null;
     }
   },
-};
 
-const exampleComments: ICommentResponse[] = [
-  {
-    id: "c3",
-    createdBy: "hallgato1",
-    creationDate: "2020. 11. 16.",
-    content: "Lesz házi megbeszélés?",
+  async createAssignment(homeworkId: string) {
+    try {
+      const response = await axiosInstance.post(
+        `${homeworkServiceUrl}/${homeworkId}`,
+        {}
+      );
+      if (response.status === 201) {
+        return response.data as IAssignmentResponse;
+      }
+      return null;
+    } catch (err) {
+      console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return null;
+    }
   },
-  {
-    id: "c4",
-    createdBy: "hallgato2",
-    creationDate: "2020. 11. 17.",
-    content: "Igen, jövőhéten.",
-  },
-];
+};

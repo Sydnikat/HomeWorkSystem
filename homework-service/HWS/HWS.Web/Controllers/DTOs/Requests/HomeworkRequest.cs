@@ -38,6 +38,8 @@ namespace HWS.Controllers.DTOs.Requests
         public string Title { get; set; }
 
         [Required]
+        [MinLength(length: 2)]
+        [MaxLength(length: 1023)]
         public string Description { get; set; }
 
         [Required]

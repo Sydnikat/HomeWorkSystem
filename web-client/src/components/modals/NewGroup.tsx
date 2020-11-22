@@ -1,19 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {
-  Button,
-  Container,
-  Form,
-  Modal
-} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Container, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { groupService } from "../../services/groupService";
 import { IGroupRequest } from "../../models/group";
 import { IUserResponse } from "../../models/user";
-import {useUsers} from "../../shared/hooks";
+import { useUsers } from "../../shared/hooks";
 import UserListAssemble from "../UserListAssemble";
-import {useDispatch} from "react-redux";
-import {addNewGroup} from "../../store/groupStore";
+import { useDispatch } from "react-redux";
+import { addNewGroup } from "../../store/groupStore";
 import CommonAlert from "../CommonAlert";
 
 interface NewGroupProps {
@@ -37,8 +32,8 @@ const NewGroup: React.FC<NewGroupProps> = ({
 
   useEffect(() => {
     if (!usersLoading) {
-      setStudents(users.filter((u => u.role == "Student")));
-      setTeachers(users.filter((u => u.role == "Teacher")));
+      setStudents(users.filter((u) => u.role == "Student"));
+      setTeachers(users.filter((u) => u.role == "Teacher"));
     }
   }, [usersLoading]);
 
@@ -49,8 +44,8 @@ const NewGroup: React.FC<NewGroupProps> = ({
   const onSaveClick = async () => {
     const group: IGroupRequest = {
       name: groupName,
-      students: selectedStudents.map(s => s.id),
-      teachers: selectedTeachers.map(t => t.id)
+      students: selectedStudents.map((s) => s.id),
+      teachers: selectedTeachers.map((t) => t.id),
     };
 
     setApplyError(false);
@@ -81,7 +76,6 @@ const NewGroup: React.FC<NewGroupProps> = ({
         <Container fluid>
           <Form>
             <Form.Group controlId="newGroup">
-
               <Form.Label>Csoport Neve</Form.Label>
               <Form.Control
                 type="text"
@@ -115,7 +109,6 @@ const NewGroup: React.FC<NewGroupProps> = ({
               <CommonAlert variant="danger" text="Hiba a mentés közben" />
             </div>
           )}
-
         </Container>
       </Modal.Body>
       <Modal.Footer>

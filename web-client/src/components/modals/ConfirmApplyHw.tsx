@@ -1,22 +1,36 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import CommonAlert from "../CommonAlert";
+import { useDispatch } from "react-redux";
+import { setAssignment } from "../../store/assignmentStore";
+import { homeworkService } from "../../services/homeworkService";
 
 interface ConfirmApplyHwProps {
   showConfirmApplyHw: boolean;
   setShowConfirmApplyHw: React.Dispatch<React.SetStateAction<boolean>>;
-  groupId: string;
+  homeworkId: string;
 }
 
 const ConfirmApplyHw: React.FC<ConfirmApplyHwProps> = ({
   showConfirmApplyHw,
   setShowConfirmApplyHw,
-  groupId,
+  homeworkId,
 }) => {
+  const dispatch = useDispatch();
   const [applyError, setApplyError] = useState<boolean>(false);
 
-  const onApplyClick = () => {
-    console.log("apply hw - call homework  api with groupId", groupId);
+  const onApplyClick = async () => {
+    if (homeworkId === "") return;
+
+    setApplyError(false);
+    const assignment = await homeworkService.createAssignment(homeworkId);
+
+    if (assignment !== null) {
+      dispatch(setAssignment(assignment));
+      setShowConfirmApplyHw(false);
+    } else {
+      setApplyError(true);
+    }
   };
 
   const handleClose = () => {
@@ -33,7 +47,7 @@ const ConfirmApplyHw: React.FC<ConfirmApplyHwProps> = ({
         <p>Biztos, hogy jelentkezel a házi feladatra?</p>
       </Modal.Body>
       {applyError && (
-        <div>
+        <div className="m-2">
           <CommonAlert variant="danger" text="Hiba a jelentkezés közben" />
         </div>
       )}

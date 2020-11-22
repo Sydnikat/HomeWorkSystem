@@ -8,12 +8,14 @@ namespace HWS.Dal.Sql.Assignments
 {
     public interface IAssignmentRepository
     {
+        Task<Assignment> FindById(Guid id);
+
         Task<IEnumerable<Assignment>> FindAllByStudent(User student);
 
         Task<IEnumerable<Assignment>> FindAllByUserInGraders(User grader);
 
-        Task<Assignment> Insert(Assignment assignment);
+        Task<bool> UpdateGrade(Guid assignmentId, string grade);
 
-        Task<IEnumerable<Assignment>> InsertAll(ICollection<Assignment> assignments);
+        Task<bool> UpdateReservedBy(Guid assignmentId, Guid reservedBy);
     }
 }

@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
-import {IUserResponse} from "../models/user";
-import {InputGroup} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import { IUserResponse } from "../models/user";
+import { InputGroup } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 interface UserSelectorProps {
   title: string;
@@ -11,12 +11,10 @@ interface UserSelectorProps {
   onSelectUser: (user: IUserResponse) => void;
 }
 
-const UserSelector: React.FC<UserSelectorProps> = (props: UserSelectorProps) => {
-  const {
-    title,
-    listOfUsers,
-    onSelectUser
-  } = props;
+const UserSelector: React.FC<UserSelectorProps> = (
+  props: UserSelectorProps
+) => {
+  const { title, listOfUsers, onSelectUser } = props;
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [isDropdownCaptured, setIsDropdownCaptured] = useState<boolean>(false);
@@ -50,7 +48,6 @@ const UserSelector: React.FC<UserSelectorProps> = (props: UserSelectorProps) => 
 
   return (
     <div>
-
       <div>
         <div className="d-flex justify-content-between">
           <label htmlFor="search" className="col-form-label">
@@ -76,31 +73,32 @@ const UserSelector: React.FC<UserSelectorProps> = (props: UserSelectorProps) => 
       </div>
 
       <Dropdown drop="down" show={dropdownOpen}>
-        <Dropdown.Toggle as={"div"} bsPrefix={"hidden"}  />
+        <Dropdown.Toggle as={"div"} bsPrefix={"hidden"} />
         <Dropdown.Menu
           onMouseOver={onCaptureDropdown}
           onMouseLeave={onLeaveDropdown}
         >
-          {listOfUsers.length > 0 && listOfUsers
-            .filter(u => u.userFullName.toLocaleLowerCase().includes(filterStr) || u.userName.toLocaleLowerCase().includes(filterStr))
-            .map((user: IUserResponse) => (
-            <Dropdown.Item
-              key={user.id}
-              as="div"
-            >
-              <div
-                aria-hidden
-                role="button"
-                className="d-flex"
-                onClick={() => {
-                  onSelectUser(user);
-                }}
-              >
-                {`${user.userFullName} (${user.userName})`}
-              </div>
-
-            </Dropdown.Item>
-          ))}
+          {listOfUsers.length > 0 &&
+            listOfUsers
+              .filter(
+                (u) =>
+                  u.userFullName.toLocaleLowerCase().includes(filterStr) ||
+                  u.userName.toLocaleLowerCase().includes(filterStr)
+              )
+              .map((user: IUserResponse) => (
+                <Dropdown.Item key={user.id} as="div">
+                  <div
+                    aria-hidden
+                    role="button"
+                    className="d-flex"
+                    onClick={() => {
+                      onSelectUser(user);
+                    }}
+                  >
+                    {`${user.userFullName} (${user.userName})`}
+                  </div>
+                </Dropdown.Item>
+              ))}
         </Dropdown.Menu>
       </Dropdown>
     </div>

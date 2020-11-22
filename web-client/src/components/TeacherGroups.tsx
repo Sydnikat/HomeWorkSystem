@@ -1,8 +1,8 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGroups } from "../shared/hooks";
-import { setGroups } from '../store/groupStore';
+import { setGroups } from "../store/groupStore";
 import { RootState } from "../store/rootReducer";
 import TeacherGroup from "./TeacherGroup";
 

@@ -12,6 +12,7 @@ import { IUser } from "../models/user";
 import StudentGroup from "./StudentGroup";
 import { IGroupResponse } from "../models/group";
 import JoinGroup from "./modals/JoinGroup";
+import { setAssignments } from "../store/assignmentStore";
 import { useAssignments, useGroups } from "../shared/hooks";
 import { setGroups } from "../store/groupStore";
 import { RootState } from "../store/rootReducer";
@@ -20,8 +21,18 @@ const StudentHome: React.FC = () => {
   const dispatch = useDispatch();
   const groups = useSelector((state: RootState) => state.groupReducer.groups);
   const { groups: fetchedGroups, groupsLoading } = useGroups();
-  const { assignments, assignmentsLoading } = useAssignments();
+  const {
+    assignments: fetchedAssignments,
+    assignmentsLoading,
+  } = useAssignments();
   const [showJoinGroup, setShowJoinGroup] = useState<boolean>(false);
+  const assignments = useSelector(
+    (state: RootState) => state.assignmentReducer.assignments
+  );
+
+  useEffect(() => {
+    dispatch(setAssignments(fetchedAssignments));
+  }, [fetchedAssignments, dispatch]);
 
   useEffect(() => {
     dispatch(setGroups(fetchedGroups));

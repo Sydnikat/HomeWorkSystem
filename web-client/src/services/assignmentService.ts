@@ -1,10 +1,11 @@
 import { IAssignmentResponse } from "../models/assignment";
 import { axiosInstance } from "./config/axios";
 import { assignmentServiceUrl } from "./config/url";
+import { AxiosError } from "axios";
 
 export interface AssignmentService {
   getAssignments(): Promise<IAssignmentResponse[]>;
-  grade(assignmentId: string, grade: string): Promise<void>;
+  grade(assignmentId: string, grade: string): Promise<boolean>;
   reserve(assignmentId: string): Promise<boolean>;
   free(assignmentId: string): Promise<boolean>;
   download(): string;
@@ -18,10 +19,11 @@ export const assignmentService: AssignmentService = {
       if (response.status === 200) {
         return response.data as IAssignmentResponse[];
       }
-      return exampleAssignments;
+      return [];
     } catch (err) {
       console.log(err);
-      return exampleAssignments;
+      console.log((err as AxiosError)?.response?.data);
+      return [];
     }
   },
 
@@ -31,9 +33,11 @@ export const assignmentService: AssignmentService = {
         `${assignmentServiceUrl}/${assignmentId}/grade`,
         { grade }
       );
-      console.log(response);
+      return response.status === 200;
     } catch (err) {
       console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return false;
     }
   },
 
@@ -82,69 +86,3 @@ export const assignmentService: AssignmentService = {
     }
   },
 };
-
-const exampleAssignments: IAssignmentResponse[] = [
-  {
-    id: "a1",
-    homeworkId: "h1",
-    groupId: "g1",
-    grade: "5",
-    submissionDeadline: "2020. 11. 12.",
-    fileName: "házifájlnév",
-    userName: "hallgato1",
-    userFullName: "Hallgató1",
-    homeworkTitle: "Házi feladat beadó rendszer",
-    groupName: "Csoport1",
-    reservedBy: "8ab2c6a8-ab4a-42dc-97e2-668e273b5837",
-    turnInDate: "2020. 11. 11.",
-  },
-  {
-    id: "a2",
-    homeworkId: "h2",
-    groupId: "g2",
-    grade: "Jeles. Szép munka! Ez egy hosszú értékelés.",
-    submissionDeadline: "2020. 11. 12.",
-    fileName: "házifájlnév2",
-    userName: "hallgato1",
-    userFullName: "Hallgató1",
-    homeworkTitle: "Nagy házi feladat",
-    groupName: "Csoport2",
-  },
-  {
-    id: "a3",
-    homeworkId: "h2",
-    groupId: "g2",
-    grade: "",
-    submissionDeadline: "2020. 11. 12.",
-    fileName: "házifájlnév3",
-    userName: "hallgato3",
-    userFullName: "Hallgató3",
-    homeworkTitle: "Nagy házi feladat",
-    groupName: "Csoport2",
-  },
-  {
-    id: "a4",
-    homeworkId: "h2",
-    groupId: "g2",
-    grade: "",
-    submissionDeadline: "2020. 11. 12.",
-    fileName: "házifájlnév4",
-    userName: "hallgato4",
-    userFullName: "Hallgató4",
-    homeworkTitle: "Nagy házi feladat",
-    groupName: "Csoport2",
-  },
-  {
-    id: "a5",
-    homeworkId: "h2",
-    groupId: "g2",
-    grade: "",
-    submissionDeadline: "2020. 11. 12.",
-    fileName: "házifájlnév5",
-    userName: "hallgato5",
-    userFullName: "Hallgató5",
-    homeworkTitle: "Nagy házi feladat",
-    groupName: "Csoport2",
-    reservedBy: "8ab2c6a8-ab4a-42dc-97e2-668e273b5837",
-  },
-];

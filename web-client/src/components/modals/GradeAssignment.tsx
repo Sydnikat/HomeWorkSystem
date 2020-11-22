@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faSave } from "@fortawesome/free-solid-svg-icons";
 import { IAssignmentResponse } from "../../models/assignment";
 import { assignmentService } from "../../services/assignmentService";
+import { gradeAssignment } from "../../store/assignmentStore";
+import { useDispatch } from "react-redux";
 
 interface GradeAssignmentProps {
   showGradeAssignment: boolean;
@@ -16,6 +18,7 @@ const GradeAssignment: React.FC<GradeAssignmentProps> = ({
   setShowGradeAssignment,
   assignment,
 }) => {
+  const dispatch = useDispatch();
   const [grade, setGrade] = useState<string>("");
 
   const onGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +30,10 @@ const GradeAssignment: React.FC<GradeAssignmentProps> = ({
   };
 
   const onSaveClick = async () => {
-    await assignmentService.grade(assignment.id, grade);
+    const success = await assignmentService.grade(assignment.id, grade);
+    if (success) {
+      dispatch(gradeAssignment({ assignmentId: assignment.id, grade: grade }));
+    }
     setShowGradeAssignment(false);
   };
 

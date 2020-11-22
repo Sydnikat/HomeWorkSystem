@@ -12,7 +12,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
 {
     public static class AssingmentConverter
     {
-        public static Func<Assignment, Domain.Assignment> toDomain => assignment
+        public static Func<Assignment, Domain.Assignment> ToDomain => assignment
             => new Domain.Assignment(
                 id: assignment.Id,
                 group: null,
@@ -35,7 +35,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,
-                student: assignment.Student!.Id,
+                student: assignment.Student.Id,
                 reservedBy: Guid.Empty,
                 grade: assignment.Grade
             );
@@ -49,7 +49,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,
-                student: assignment.Student!.Id,
+                student: assignment.Student.Id,
                 reservedBy: assignment.ReservedBy.Id,
                 grade: assignment.Grade
             );

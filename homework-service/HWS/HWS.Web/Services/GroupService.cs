@@ -43,7 +43,7 @@ namespace HWS.Services
 
         public async Task<Group> GetGroup(Guid id)
         {
-            return await groupRepository.FindById(id);
+            return await groupRepository.FindById(id).ConfigureAwait(false);
         }
 
         public async Task<Comment> CreateGroupComment(User user, Group group, string content)
@@ -159,6 +159,22 @@ namespace HWS.Services
             }
 
             return sb.ToString();
+        }
+
+        public async Task<Group> GetGroup(string code)
+        {
+            return await groupRepository.FindByCode(code).ConfigureAwait(false);
+        }
+
+        public async Task<bool> JoinGroup(User user, Group group)
+        {
+            if (group.Students.Any(s => s.Id == user.Id))
+                return false;
+
+            if (group.Teachers.Any(t => t.Id == user.Id))
+                return false;
+
+            return await groupRepository.UpdateUsers(group.Id, user).ConfigureAwait(false);
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using HWS.Dal.Common;
 using HWS.Dal.Mongo.Users;
 using HWS.Dal.Sql.Assignments.DbEntities;
-using HWS.Domain;
+using HWS.Dal.Sql.Groups.DbEntities;
+using HWS.Dal.Sql.Homeworks.DbEntities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace HWS.Dal.Sql.Assignments
     {
         private readonly HWSContext context;
 
-        private DbSet<DbEntities.Assignment> _assignments => context.Assignments;
+        private DbSet<Assignment> _assignments => context.Assignments;
 
         private IUserRepoitory userRepoitory;
 
@@ -25,7 +26,42 @@ namespace HWS.Dal.Sql.Assignments
             this.context = context;
             this.userRepoitory = userRepoitory;
         }
-        public async Task<IEnumerable<Domain.Assignment>> FindAllByStudent(User student)
+
+        public async Task<Domain.Assignment> FindById(Guid id)
+        {
+            var query = await _assignments.AsNoTracking()
+                .Include(a => a.Homework)
+                    .ThenInclude(h => h.Group)
+                .Include(a => a.Homework)
+                    .ThenInclude(h => h.Students)
+                        .ThenInclude(hj => hj.Student)
+                .Include(a => a.Homework)
+                    .ThenInclude(h => h.Graders)
+                        .ThenInclude(hj => hj.Grader)
+                .Where(a => a.Id == id)
+                .SingleOrDefaultAsync();
+
+            var assignment = query.ToDomainOrNull(AssingmentConverter.ToDomain);
+
+            if (assignment == null)
+                return null;
+
+            assignment.Student = await userRepoitory.FindById(query.Student).ConfigureAwait(false);
+            var reservedBy = await userRepoitory.FindById(query.ReservedBy).ConfigureAwait(false);
+            assignment.ReservedBy = reservedBy != null ? reservedBy : new Domain.User();
+
+            assignment.Homework = query.Homework.ToDomainOrNull(HomeworkConverter.ToDomain);
+            var studentIds = query.Homework.Students.Select(hsj => hsj.Student.UserId);
+            var graderIds = query.Homework.Graders.Select(hgj => hgj.Grader.UserId);
+            assignment.Homework.Students = (await userRepoitory.FindAllById(studentIds).ConfigureAwait(false)).ToList();
+            assignment.Homework.Graders = (await userRepoitory.FindAllById(graderIds).ConfigureAwait(false)).ToList();
+
+            assignment.Group = query.Homework.Group.ToDomainOrNull(GroupConverter.ToDomain);
+
+            return assignment;
+        }
+
+        public async Task<IEnumerable<Domain.Assignment>> FindAllByStudent(Domain.User student)
         {
             if (student == null)
                 throw new ArgumentNullException(nameof(student));
@@ -33,26 +69,29 @@ namespace HWS.Dal.Sql.Assignments
             var query = await _assignments.AsNoTracking()
                 .Include(a => a.Homework)
                     .ThenInclude(h => h.Group)
-                .Include(a => a.Student)
-                .Include(a => a.ReservedBy)
                 .Where(a => a.Student == student.Id)
                 .ToListAsync();
 
             var assignmentTasks = query.Select(async a => 
             {
-                var assignment = a.ToDomainOrNull(AssingmentConverter.toDomain);
+                var assignment = a.ToDomainOrNull(AssingmentConverter.ToDomain);
+
+                assignment.Homework = a.Homework.ToDomainOrNull(HomeworkConverter.ToDomain);
+                assignment.Group = a.Homework.Group.ToDomainOrNull(GroupConverter.ToDomain);
                 assignment.Student = await userRepoitory.FindById(a.Student).ConfigureAwait(false);
-                assignment.ReservedBy = await userRepoitory.FindById(a.ReservedBy).ConfigureAwait(false);
+                var reservedBy = await userRepoitory.FindById(a.ReservedBy).ConfigureAwait(false);
+
+                assignment.ReservedBy = reservedBy != null ? reservedBy : new Domain.User();
 
                 return assignment;
             });
 
-            var assignments = Task.WhenAll(assignmentTasks);
+            var assignments = await Task.WhenAll(assignmentTasks);
 
-            return await assignments;
+            return assignments;
         }
 
-        public async Task<IEnumerable<Domain.Assignment>> FindAllByUserInGraders(User grader)
+        public async Task<IEnumerable<Domain.Assignment>> FindAllByUserInGraders(Domain.User grader)
         {
             if (grader == null)
                 throw new ArgumentNullException(nameof(grader));
@@ -63,58 +102,66 @@ namespace HWS.Dal.Sql.Assignments
                 .Include(a => a.Homework)
                     .ThenInclude(h => h.Graders)
                         .ThenInclude(g => g.Grader)
-                .Include(a => a.Student)
-                .Include(a => a.ReservedBy)
                 .Where(a => a.Homework.Graders.FirstOrDefault(gj => gj.Grader.UserId == grader.Id) != null)
                 .ToListAsync();
 
-            var assignments = query.Select(async a =>
+            var assignmentTasks = query.Select(async a =>
             {
-                var assignment = a.ToDomainOrNull(AssingmentConverter.toDomain);
+                var assignment = a.ToDomainOrNull(AssingmentConverter.ToDomain);
+
+                assignment.Homework = a.Homework.ToDomainOrNull(HomeworkConverter.ToDomain);
+                assignment.Group = a.Homework.Group.ToDomainOrNull(GroupConverter.ToDomain);
                 assignment.Student = await userRepoitory.FindById(a.Student).ConfigureAwait(false);
-                assignment.ReservedBy = await userRepoitory.FindById(a.ReservedBy).ConfigureAwait(false);
+                var reservedBy = await userRepoitory.FindById(a.ReservedBy).ConfigureAwait(false);
+
+                assignment.ReservedBy = reservedBy != null ? reservedBy : new Domain.User();
 
                 return assignment;
             });
 
-            var task = Task.WhenAll(assignments);
+            var assignments = await Task.WhenAll(assignmentTasks);
 
-            return await task;
+            return assignments;
         }
 
-        public async Task<Domain.Assignment> Insert(Domain.Assignment assignment)
+        public async Task<bool> UpdateGrade(Guid assignmentId, string grade)
         {
-            if (assignment == null)
-                throw new ArgumentNullException(nameof(assignment));
+            if (grade == null)
+                throw new ArgumentNullException(nameof(grade));
 
-            var dbAssignment = assignment.ToDalOrNull(AssingmentConverter.ToDalNew);
+            var dbAssignment = await findByIdWithTracking(assignmentId);
 
-            await _assignments.AddAsync(dbAssignment);
+            if (dbAssignment == null)
+                return false;
+
+            dbAssignment.Grade = grade;
 
             await context.SaveChangesAsync();
 
-            var newAssignment = dbAssignment.ToDomainOrNull(AssingmentConverter.toDomain);
-            newAssignment.Student = assignment.Student;
-
-            return newAssignment;
+            return true;
         }
 
-        public async Task<IEnumerable<Domain.Assignment>> InsertAll(ICollection<Domain.Assignment> assignments)
+        public async Task<bool> UpdateReservedBy(Guid assignmentId, Guid reservedBy)
         {
-            if (assignments == null)
-                throw new ArgumentNullException(nameof(assignments));
+            if (reservedBy == null)
+                throw new ArgumentNullException(nameof(reservedBy));
 
-            var dbAssignments = assignments.Select(a => a.ToDalOrNull(AssingmentConverter.ToDalNew)).ToList();
+            var dbAssignment = await findByIdWithTracking(assignmentId);
 
-            await _assignments.AddRangeAsync(dbAssignments);
+            if (dbAssignment == null)
+                return false;
+
+            dbAssignment.ReservedBy = reservedBy;
 
             await context.SaveChangesAsync();
 
-            return dbAssignments.Select(a => {
-                var assignment = a.ToDomainOrNull(AssingmentConverter.toDomain);
-                assignment.Student = assignments.First(assignment => assignment.Id == a.Id).Student;
-                return assignment;
-             });
+            return true;
         }
+
+        private async Task<Assignment> findByIdWithTracking(Guid id) 
+            => await _assignments
+               .Where(a => a.Id == id)
+               .SingleOrDefaultAsync();
+       
     }
 }

@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import {Button, Container, Form, Modal} from "react-bootstrap";
+import { Button, Container, Form, Modal } from "react-bootstrap";
 import { IHomeworkRequest } from "../../models/homework";
 import { groupService } from "../../services/groupService";
 import UserListAssemble from "../UserListAssemble";
 import CommonAlert from "../CommonAlert";
-import {useDispatch} from "react-redux";
-import {IUserResponse} from "../../models/user";
-import {IGroupResponse} from "../../models/group";
-import {updateGroupHomeworks} from "../../store/groupStore";
+import { useDispatch } from "react-redux";
+import { IUserResponse } from "../../models/user";
+import { IGroupResponse } from "../../models/group";
+import { updateGroupHomeworks } from "../../store/groupStore";
 
 interface NewHomeworkProps {
   showNewHomework: boolean;
@@ -22,7 +22,6 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
   setShowNewHomework,
   group,
 }) => {
-
   const dispatch = useDispatch();
   const [students, setStudents] = useState<IUserResponse[]>(group.students);
   const [graders, setGraders] = useState<IUserResponse[]>(group.teachers);
@@ -32,8 +31,13 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
   const [homeworkDescription, setHomeworkDescription] = useState<string>("");
   const [homeworkFileSize, setHomeworkFileSize] = useState<number | null>(null);
   const [homeworkSubmissionDate, setHomeworkSubmission] = useState<string>("");
-  const [homeworkApplicationDate, setHomeworkApplicationDate] = useState<string>("");
-  const [customStudentSize, setCustomStudentSize] = useState<number | null>(null);
+  const [
+    homeworkApplicationDate,
+    setHomeworkApplicationDate,
+  ] = useState<string>("");
+  const [customStudentSize, setCustomStudentSize] = useState<number | null>(
+    null
+  );
   const [isCustom, setIsCustom] = useState<boolean>(true);
   const [inTransaction, setInTransaction] = useState<boolean>(false);
   const [applyError, setApplyError] = useState<boolean>(false);
@@ -49,34 +53,40 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
     } else {
       setSelectedStudents([]);
     }
-  },[isCustom]);
+  }, [isCustom]);
 
   const onHomeworkNameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setHomeworkTitle(event.target.value);
 
-  const onHomeworkDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setHomeworkDescription(event.target.value);
+  const onHomeworkDescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setHomeworkDescription(event.target.value);
 
-  const onHomeworkFileSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onHomeworkFileSizeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.value === "") {
-      setHomeworkFileSize(null)
+      setHomeworkFileSize(null);
     } else {
       setHomeworkFileSize(parseInt(event.target.value, 10));
     }
   };
 
-  const onHomeworkSubmissionDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setHomeworkSubmission(event.target.value);
+  const onHomeworkSubmissionDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setHomeworkSubmission(event.target.value);
 
-  const onSelectCustomChange = () =>
-    setIsCustom(!isCustom);
+  const onSelectCustomChange = () => setIsCustom(!isCustom);
 
-  const onHomeworkApplicationDateChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setHomeworkApplicationDate(event.target.value);
+  const onHomeworkApplicationDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setHomeworkApplicationDate(event.target.value);
 
-  const onHomeworkCustomStudentSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onHomeworkCustomStudentSizeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.value === "") {
-      setCustomStudentSize(null)
+      setCustomStudentSize(null);
     } else {
       setCustomStudentSize(parseInt(event.target.value, 10));
     }
@@ -97,10 +107,11 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
       maxFileSize: homeworkFileSize ?? 10,
       groupId: group.id,
       submissionDeadline: homeworkSubmissionDate,
-      applicationDeadline: homeworkApplicationDate !== "" ? homeworkApplicationDate : undefined,
+      applicationDeadline:
+        homeworkApplicationDate !== "" ? homeworkApplicationDate : undefined,
       maximumNumberOfStudents: maxSize,
-      graders: selectedGraders.map(g => g.id),
-      students: selectedStudents.map(s => s.id)
+      graders: selectedGraders.map((g) => g.id),
+      students: selectedStudents.map((s) => s.id),
     };
 
     setApplyError(false);
@@ -119,11 +130,13 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
   };
 
   const formInValid = (): boolean => {
-    return homeworkTitle === "" ||
+    return (
+      homeworkTitle === "" ||
       homeworkDescription === "" ||
       homeworkFileSize === null ||
       homeworkSubmissionDate === "" ||
-      (!isCustom && customStudentSize === null);
+      (!isCustom && customStudentSize === null)
+    );
   };
 
   const handleClose = () => {
@@ -131,7 +144,12 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
   };
 
   return (
-    <Modal size="lg" animation={false} show={showNewHomework} onHide={handleClose}>
+    <Modal
+      size="lg"
+      animation={false}
+      show={showNewHomework}
+      onHide={handleClose}
+    >
       <Modal.Header closeButton>
         <Modal.Title>Új házi feladat</Modal.Title>
       </Modal.Header>
@@ -191,7 +209,10 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
               />
             </Form.Group>
 
-            <Form.Group controlId="selectStudents" className="my-4 d-flex justify-content-start">
+            <Form.Group
+              controlId="selectStudents"
+              className="my-4 d-flex justify-content-start"
+            >
               <Form.Check
                 className="my-auto"
                 type="switch"
@@ -201,10 +222,9 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
                 onChange={onSelectCustomChange}
               />
             </Form.Group>
-
           </Form>
 
-          {isCustom ?
+          {isCustom ? (
             <UserListAssemble
               listTitle={"Tanulók listájának megadása"}
               selectedListTitle={"Kiválasztott hallgatók"}
@@ -213,7 +233,7 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
               selectedUsers={selectedStudents}
               setSelectedUsers={setSelectedStudents}
             />
-            :
+          ) : (
             <Form>
               <Form.Group controlId="customStudentSize">
                 <Form.Label>A maximális Létszám</Form.Label>
@@ -226,7 +246,7 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
                 />
               </Form.Group>
             </Form>
-          }
+          )}
 
           <UserListAssemble
             listTitle={"Javítók listájának megadása"}
@@ -242,11 +262,14 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
               <CommonAlert variant="danger" text="Hiba a mentés közben" />
             </div>
           )}
-
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button size="sm" disabled={formInValid() || inTransaction} onClick={onSaveClick}>
+        <Button
+          size="sm"
+          disabled={formInValid() || inTransaction}
+          onClick={onSaveClick}
+        >
           <FontAwesomeIcon icon={faSave} className="mr-2" />
           Mentés
         </Button>

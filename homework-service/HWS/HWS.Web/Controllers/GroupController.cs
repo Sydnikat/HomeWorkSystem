@@ -127,14 +127,48 @@ namespace HWS.Controllers
             return Created(nameof(CreateGroupComment), new CommentResponse(savedGroupComment));
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("join")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> JoinGroup(Guid id, [FromBody] string code)
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<GroupResponse>> JoinGroup([FromBody] JoinGroupRequest request)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            var user = getUser();
+
+            if (request == null)
+                throw new HWSException("Request body cannot be null", StatusCodes.Status400BadRequest);
+
+            var group = await groupService.GetGroup(request.Code).ConfigureAwait(false);
+
+            if (group == null)
+                throw new HWSException("Group not found", StatusCodes.Status404NotFound);
+
+            var success = await groupService.JoinGroup(user, group).ConfigureAwait(false);
+
+            if (success)
+            {
+                switch (user.Role)
+                {
+                    case Domain.User.UserRole.Student:
+
+                        group.Students.Add(user);
+                        return Ok(GroupResponse.ForStudent(group));
+
+                    case Domain.User.UserRole.Teacher:
+
+                        group.Teachers.Add(user);
+                        return Ok(GroupResponse.ForTeacher(group));
+
+                    case Domain.User.UserRole.Unknown:
+                    default:
+                        return BadRequest();
+                }
+            }
+            else
+                return Conflict();
+
+            
         }
 
         [HttpPost("{id}/homeworks")]

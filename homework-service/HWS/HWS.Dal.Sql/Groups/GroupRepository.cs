@@ -4,6 +4,7 @@ using HWS.Dal.Mongo.Users;
 using HWS.Dal.Sql.Comments.DbEntities;
 using HWS.Dal.Sql.Groups.DbEntities;
 using HWS.Dal.Sql.Homeworks.DbEntities;
+using HWS.Dal.Sql.MongoUsers.JoinTables;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -47,51 +48,14 @@ namespace HWS.Dal.Sql.Groups
             return newGroup;
         }
 
+        public async Task<Domain.Group> FindByCode(string code)
+        {
+            return await findByQuery(g => g.Code == code).ConfigureAwait(false);
+        }
+
         public async Task<Domain.Group> FindById(Guid id)
         {
-            var query = await _groups.AsNoTracking()
-                .Include(g => g.Students)
-                    .ThenInclude(gsj => gsj.Student)
-                .Include(g => g.Teachers)
-                    .ThenInclude(gtj => gtj.Teacher)
-                .Include(g => g.Homeworks)
-                    .ThenInclude(h => h.Students)
-                        .ThenInclude(hj => hj.Student)
-                .Include(g => g.Homeworks)
-                    .ThenInclude(h => h.Graders)
-                        .ThenInclude(hj => hj.Grader)
-                .Include(g => g.Homeworks)
-                    .ThenInclude(h => h.Comments)
-                .Include(g => g.Comments)
-                .Where(g => g.Id == id)
-                .SingleOrDefaultAsync();
-
-            var group = query.ToDomainOrNull(GroupConverter.ToDomain);
-
-            var studentIds = query.Students.Select(gsj => gsj.Student.UserId);
-            var teacherIds = query.Teachers.Select(gtj => gtj.Teacher.UserId);
-
-            group.Owner = await userRepoitory.FindById(query.Owner).ConfigureAwait(false);
-            group.Students = (await userRepoitory.FindAllById(studentIds).ConfigureAwait(false)).ToList();
-            group.Teachers = (await userRepoitory.FindAllById(teacherIds).ConfigureAwait(false)).ToList();
-
-            var homeworks = query.Homeworks.Select(h =>
-            {
-                var homework = h.ToDomainOrNull(HomeworkConverter.ToDomain);
-
-                var studentIds = h.Students.Select(hsj => hsj.Student.UserId);
-                var graderIds = h.Graders.Select(hgj => hgj.Grader.UserId);
-
-                homework.Students = group.Students.Where(s => studentIds.Contains(s.Id)).ToList();
-                homework.Graders = group.Teachers.Where(t => graderIds.Contains(t.Id)).ToList();
-                homework.Group = group;
-
-                return homework;
-            }).ToList();
-
-            group.Homeworks = homeworks;
-
-            return group;
+            return await findByQuery(g => g.Id == id).ConfigureAwait(false);
         }
 
         public async Task<Domain.Comment> InsertComment(Domain.User user, Domain.Group group, Domain.Comment comment)
@@ -105,6 +69,38 @@ namespace HWS.Dal.Sql.Groups
             var newComment = CommentConverter.ToGroupDomain(dbComment);
 
             return newComment;
+        }
+
+        public async Task<bool> UpdateUsers(Guid groupId, Domain.User user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            var group = await _groups
+                .Include(g => g.Students)
+                .Include(g => g.Teachers)
+                .Where(g => g.Id == groupId)
+                .SingleOrDefaultAsync();
+
+            if (group == null)
+                return false;
+
+            switch (user.Role)
+            {
+                case Domain.User.UserRole.Student:
+                    group.Students.Add(new GroupStudentJoin(user, group));
+                    break;
+                case Domain.User.UserRole.Teacher:
+                    group.Teachers.Add(new GroupTeacherJoin(user, group));
+                    break;
+                case Domain.User.UserRole.Unknown:
+                default:
+                    return false;
+            }
+
+            await context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<Domain.Homework> InsertHomework(Guid groupId, Domain.Homework homework)
@@ -142,6 +138,56 @@ namespace HWS.Dal.Sql.Groups
         public async Task<IReadOnlyCollection<Domain.Group>> FindAllByInTeachersOrIsOwner(Domain.User teacher)
         {
             return await findAllByQuery(g => g.Owner == teacher.Id || g.Teachers.Select(gtj => gtj.Teacher.UserId).Contains(teacher.Id)).ConfigureAwait(false);
+        }
+
+        private async Task<Domain.Group> findByQuery(System.Linq.Expressions.Expression<Func<Group, bool>> predicate)
+        {
+            var query = await _groups.AsNoTracking()
+                .Include(g => g.Students)
+                    .ThenInclude(gsj => gsj.Student)
+                .Include(g => g.Teachers)
+                    .ThenInclude(gtj => gtj.Teacher)
+                .Include(g => g.Homeworks)
+                    .ThenInclude(h => h.Students)
+                        .ThenInclude(hj => hj.Student)
+                .Include(g => g.Homeworks)
+                    .ThenInclude(h => h.Graders)
+                        .ThenInclude(hj => hj.Grader)
+                .Include(g => g.Homeworks)
+                    .ThenInclude(h => h.Comments)
+                .Include(g => g.Comments)
+                .Where(predicate)
+                .SingleOrDefaultAsync();
+
+            var group = query.ToDomainOrNull(GroupConverter.ToDomain);
+
+            if (group == null)
+                return null;
+
+            var studentIds = query.Students.Select(gsj => gsj.Student.UserId);
+            var teacherIds = query.Teachers.Select(gtj => gtj.Teacher.UserId);
+
+            group.Owner = await userRepoitory.FindById(query.Owner).ConfigureAwait(false);
+            group.Students = (await userRepoitory.FindAllById(studentIds).ConfigureAwait(false)).ToList();
+            group.Teachers = (await userRepoitory.FindAllById(teacherIds).ConfigureAwait(false)).ToList();
+
+            var homeworks = query.Homeworks.Select(h =>
+            {
+                var homework = h.ToDomainOrNull(HomeworkConverter.ToDomain);
+
+                var studentIds = h.Students.Select(hsj => hsj.Student.UserId);
+                var graderIds = h.Graders.Select(hgj => hgj.Grader.UserId);
+
+                homework.Students = group.Students.Where(s => studentIds.Contains(s.Id)).ToList();
+                homework.Graders = group.Teachers.Where(t => graderIds.Contains(t.Id)).ToList();
+                homework.Group = group;
+
+                return homework;
+            }).ToList();
+
+            group.Homeworks = homeworks;
+
+            return group;
         }
 
         private async Task<IReadOnlyCollection<Domain.Group>> findAllByQuery(System.Linq.Expressions.Expression<Func<Group, bool>> predicate)

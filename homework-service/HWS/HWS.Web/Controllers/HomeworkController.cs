@@ -7,6 +7,7 @@ using HWS.Controllers.DTOs.Responses;
 using HWS.Domain;
 using HWS.Middlewares.Config;
 using HWS.Services;
+using HWS.Services.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static HWS.Middlewares.ErrorHandlerMiddleware;
@@ -57,7 +58,7 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> CreateHomeworkComment(Guid id, [FromBody] CommentRequest request)
+        public async Task<ActionResult<CommentResponse>> CreateHomeworkComment(Guid id, [FromBody] CommentRequest request)
         {
             var user = getUser();
 
@@ -78,12 +79,39 @@ namespace HWS.Controllers
         }
 
         [HttpPost("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> ApplyToHomework(Guid id)
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<AssignmentResponse>> ApplyToHomework(Guid id)
         {
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            var user = getUser();
+
+            var homework = await homeworkService.GetHomework(id).ConfigureAwait(false);
+
+            if (homework == null)
+                throw new HWSException("Homework not found", StatusCodes.Status404NotFound);
+
+            var group = await groupService.GetGroup(homework.Group.Id).ConfigureAwait(false);
+
+            if (group == null)
+                throw new HWSException("Group not found", StatusCodes.Status500InternalServerError);
+
+            try
+            {
+                var newAssignment = await homeworkService.CreateAssignment(user, group, homework).ConfigureAwait(false);
+
+                return Created(nameof(ApplyToHomework), AssignmentResponse.Of(newAssignment));
+            }
+            catch (IllegalStudentException e)
+            {
+                throw new HWSException(e.Message, StatusCodes.Status400BadRequest);
+            }
+            catch (HomeworkIsFullException e)
+            {
+                throw new HWSException(e.Message, StatusCodes.Status409Conflict);
+            }
         }
     }
 }

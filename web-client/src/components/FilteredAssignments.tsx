@@ -15,9 +15,10 @@ const FilteredAssignments: React.FC = () => {
   const filteredAssignments = useSelector(
     (state: RootState) => state.assignmentReducer.filteredAssignments
   );
-  const [assignmentToGrade, setAssignmentToGrade] = useState<
-    IAssignmentResponse
-  >({} as IAssignmentResponse);
+  const [
+    assignmentToGrade,
+    setAssignmentToGrade,
+  ] = useState<IAssignmentResponse>({} as IAssignmentResponse);
   const [showGradeAssignment, setShowGradeAssignment] = useState<boolean>(
     false
   );

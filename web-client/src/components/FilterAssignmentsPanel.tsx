@@ -24,19 +24,21 @@ const FilterAssignmentPanel: React.FC = () => {
   const assignments = useSelector(
     (state: RootState) => state.assignmentReducer.assignments
   );
-  const [isFreeAssignmentsSelected, setIsFreeAssignmentsSelected] = useState<
-    boolean
-  >(true);
+  const [
+    isFreeAssignmentsSelected,
+    setIsFreeAssignmentsSelected,
+  ] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
-  const [isAllAssignmentsSelected, setIsAllAssignmentsSelected] = useState<
-    boolean
-  >(true);
+  const [
+    isAllAssignmentsSelected,
+    setIsAllAssignmentsSelected,
+  ] = useState<boolean>(true);
 
   useEffect(() => {
     const filteredAssignments = assignments
       .filter((a) =>
         isFreeAssignmentsSelected
-          ? a.reservedBy === undefined
+          ? a.reservedBy === null || a.reservedBy === undefined
           : a.reservedBy === user?.id
       )
       .filter(
@@ -46,7 +48,7 @@ const FilterAssignmentPanel: React.FC = () => {
           a.userFullName.toLowerCase().includes(search.toLowerCase()) ||
           a.grade.toLowerCase().includes(search.toLowerCase())
       )
-      .filter((a) => (!isAllAssignmentsSelected ? a.grade === "" : a));
+      .filter((a) => (isAllAssignmentsSelected ? true : a.grade === ""));
 
     dispatch(setFilteredAssignments(filteredAssignments));
   }, [

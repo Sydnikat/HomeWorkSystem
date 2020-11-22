@@ -13,5 +13,7 @@ namespace HWS.Dal.Sql.Homeworks
         Task<Assignment> InsertAssignment(Guid homeworkId, Assignment assignment);
 
         Task<Comment> InsertComment(User user, Homework homework, Comment comment);
+
+        Task<ICollection<Assignment>> InsertAllAssignment(Guid homeworkId, ICollection<Assignment> assignments);
     }
 }
