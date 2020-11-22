@@ -13,7 +13,7 @@ interface UserListAssembleProps {
   notSelectedListTitle: string;
   userList: IUserResponse[];
   selectedUsers: IUserResponse[];
-  setSelectedUsers: (list: IUserResponse[]) => void;
+  setSelectedUsers: React.Dispatch<React.SetStateAction<IUserResponse[]>>;
 }
 
 const UserListAssemble: React.FC<UserListAssembleProps> = (props: UserListAssembleProps) => {

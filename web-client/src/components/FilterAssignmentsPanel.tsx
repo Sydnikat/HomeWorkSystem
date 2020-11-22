@@ -36,7 +36,7 @@ const FilterAssignmentPanel: React.FC = () => {
     const filteredAssignments = assignments
       .filter((a) =>
         isFreeAssignmentsSelected
-          ? a.reservedBy === null
+          ? (a.reservedBy === null || a.reservedBy === undefined )
           : a.reservedBy === user?.id
       )
       .filter(
