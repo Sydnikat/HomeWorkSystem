@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import CommonAlert from "../CommonAlert";
 import { useDispatch } from "react-redux";
-import { setAssignment } from "../../store/assignmentStore";
+import { addAssignment } from "../../store/assignmentStore";
 import { homeworkService } from "../../services/homeworkService";
 
 interface ConfirmApplyHwProps {
@@ -17,16 +17,19 @@ const ConfirmApplyHw: React.FC<ConfirmApplyHwProps> = ({
   homeworkId,
 }) => {
   const dispatch = useDispatch();
+  const [inTransaction, setInTransaction] = useState<boolean>(false);
   const [applyError, setApplyError] = useState<boolean>(false);
 
   const onApplyClick = async () => {
     if (homeworkId === "") return;
 
+    setInTransaction(true);
     setApplyError(false);
     const assignment = await homeworkService.createAssignment(homeworkId);
+    setInTransaction(false);
 
     if (assignment !== null) {
-      dispatch(setAssignment(assignment));
+      dispatch(addAssignment(assignment));
       setShowConfirmApplyHw(false);
     } else {
       setApplyError(true);
@@ -52,7 +55,14 @@ const ConfirmApplyHw: React.FC<ConfirmApplyHwProps> = ({
         </div>
       )}
       <Modal.Footer>
-        <Button onClick={onApplyClick}>Jelentkezem</Button>
+        {inTransaction && (
+          <div className="mr-2">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        )}
+        <Button onClick={onApplyClick} disabled={inTransaction}>
+          Jelentkezem
+        </Button>
       </Modal.Footer>
     </Modal>
   );

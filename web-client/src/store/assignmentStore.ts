@@ -77,18 +77,18 @@ export const assignment = createSlice({
       }
     },
 
-    setAssignment(
+    addAssignment(
       state: AssignmentState,
       action: PayloadAction<IAssignmentResponse>
     ) {
-      state.assignments.push(action.payload);
+      state.assignments = [...state.assignments, action.payload];
     },
   },
 });
 
 export const {
   setAssignments,
-  setAssignment,
+  addAssignment,
   setFilteredAssignments,
   freeAssignment,
   reserveAssignment,
