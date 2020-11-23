@@ -15,6 +15,8 @@ import FurtherHomeworks from "./modals/FurtherHomeworks";
 import HomeworkDetails from "./modals/HomeworkDetails";
 import Confirm from "./modals/ConfirmApplyHw";
 import { assignmentService } from "../services/assignmentService";
+import {useDispatch} from "react-redux";
+import {changeAssignmentFile} from "../store/assignmentStore";
 
 interface StudentGroupProps {
   group: IGroupResponse;
@@ -22,6 +24,7 @@ interface StudentGroupProps {
 }
 
 const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
+  const dispatch = useDispatch();
   const [showHomeworkDetails, setShowHomeworkDetails] = useState<boolean>(
     false
   );
@@ -46,6 +49,8 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
     homeworkToApply,
     setHomeworkToApply,
   ] = useState<IHomeworkResponse | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
 
   const onDetailsClick = (homeworkId: string) => () => {
     const homeworkToShow = group.homeworks.find((h) => h.id === homeworkId);
@@ -65,8 +70,33 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
     setShowFurtherHomeworks(true);
   };
 
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event === null || event.target === null || event.target.files === null)
+      return;
+
+    setSelectedFile(event.target.files[0]);
+    setSelectedFileName(event.target.files[0].name);
+  };
+
+  const onDownloadFileClick = (assignment: IAssignmentResponse) => async () => {
+    await assignmentService.download(assignment);
+  };
+
   const onUploadClick = (assignmentId: string) => async () => {
-    await assignmentService.upload(assignmentId);
+    if (selectedFile === null) {
+      return ;
+    }
+
+    const formData = new FormData();
+    formData.append("formFile", selectedFile);
+    formData.append("fileName", selectedFileName);
+
+    const fileName = await assignmentService.upload(assignmentId, formData);
+    if (fileName !== "") {
+      dispatch(
+        changeAssignmentFile({ assignmentId: assignmentId, fileName: fileName })
+      );
+    }
   };
 
   return (
@@ -128,9 +158,15 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
               </td>
               <td style={colStyle.deadline}>{a.submissionDeadline}</td>
               <td style={colStyle.file}>
-                <div>{a.fileName}</div>
+                <Button
+                  variant={"link"}
+                  className={"ml-0 pl-0"}
+                  onClick={onDownloadFileClick(a)}
+                >
+                  {a.fileName}
+                </Button>
                 <div>
-                  <input type="file" />
+                  <input type="file" onChange={onFileChange}/>
                 </div>
                 <div>
                   <Button
