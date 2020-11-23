@@ -9,17 +9,17 @@ namespace HWS.Controllers.DTOs.Responses
 {
     public class HomeworkResponse
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public int MaxFileSize { get; set; }
-        public Guid GroupId { get; set; }
-        public DateTime SubmissionDeadline { get; set; }
-        public DateTime? ApplicationDeadline { get; set; }
-        public int MaximumNumberOfStudents { get; set; }
-        public int CurrentNumberOfStudents { get; set; }
-        public IEnumerable<string> Graders { get; set; }
-        public IEnumerable<string> Students { get; set; }
+        public Guid Id { get; }
+        public string Title { get; }
+        public string Description { get; }
+        public int MaxFileSize { get; }
+        public Guid GroupId { get; }
+        public DateTime SubmissionDeadline { get; }
+        public DateTime? ApplicationDeadline { get; }
+        public int MaximumNumberOfStudents { get; }
+        public int CurrentNumberOfStudents { get; }
+        public IEnumerable<string> Graders { get; }
+        public IEnumerable<string> Students { get; }
 
         public HomeworkResponse(
             Guid id,
