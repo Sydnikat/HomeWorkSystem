@@ -18,6 +18,6 @@ namespace HWS.Dal.Sql.Assignments
 
         Task<bool> UpdateReservedBy(Guid assignmentId, Guid reservedBy);
 
-        Task<bool> UpdateFileName(Guid assignmentId, string fileName);
+        Task<bool> UpdateFileName(Guid assignmentId, string fileName, Guid fileId);
     }
 }

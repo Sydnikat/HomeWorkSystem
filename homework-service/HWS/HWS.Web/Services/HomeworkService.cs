@@ -41,6 +41,7 @@ namespace HWS.Services
                 submissionDeadline: homework.SubmissionDeadline,
                 turnInDate: DateTime.MaxValue,
                 fileName: "",
+                fileId: Guid.Empty,
                 student: student,
                 reservedBy: null,
                 grade: "");

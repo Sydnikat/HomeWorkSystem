@@ -1,8 +1,11 @@
 ﻿using HWS.Dal.Sql.Assignments;
 using HWS.Domain;
+using HWS.Services.Config;
 using HWS.Services.Exceptions;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,10 +14,12 @@ namespace HWS.Services
     public class AssignmentService : IAssignmentService
     {
         private readonly IAssignmentRepository assignmentRepository;
+        private readonly IFileSettings settings;
 
-        public AssignmentService(IAssignmentRepository assignmentRepository)
+        public AssignmentService(IAssignmentRepository assignmentRepository, IFileSettings settings)
         {
             this.assignmentRepository = assignmentRepository;
+            this.settings = settings;
         }
 
         public async Task<Assignment> GetAssignment(Guid id)
@@ -61,9 +66,62 @@ namespace HWS.Services
             return await assignmentRepository.UpdateReservedBy(assignment.Id, Guid.Empty).ConfigureAwait(false);
         }
 
-        public async Task<bool> ChangeAssignmentFile(Assignment assignment, string fileName)
+        public async Task<string> ChangeAssignmentFile(Assignment assignment, string fileName, IFormFile file)
         {
-            return await assignmentRepository.UpdateFileName(assignment.Id, fileName).ConfigureAwait(false);
+            var timeStamp = DateTime.Now.ToString(settings.TimeStampFormat);
+            var newFileName = timeStamp + fileName;
+            string path = Path.Combine(Directory.GetCurrentDirectory(), settings.FileDirectory);
+            var newFileId = Guid.NewGuid();
+
+            try
+            {
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                if (assignment.FileId != Guid.Empty)
+                {
+                    var oldFilePath = Path.Combine(path, assignment.FileId.ToString());
+                    if (File.Exists(oldFilePath))
+                        File.Delete(oldFilePath);
+                }
+
+                using (Stream stream = new FileStream(Path.Combine(path, newFileId.ToString()), FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FileHandlingFailedException($"Saving the new file was unsuccessful. Cause: ${e.Message}");
+            }
+
+            var success = await assignmentRepository.UpdateFileName(assignment.Id, newFileName, newFileId).ConfigureAwait(false);
+
+            if (success)
+                return newFileName;
+            else
+                return null;
+        }
+
+        public async Task<MemoryStream> GetFile(Assignment assignment)
+        {
+            try
+            {
+                string path = Path.Combine(Directory.GetCurrentDirectory(), settings.FileDirectory, assignment.FileId.ToString());
+                var memory = new MemoryStream();
+                using (var stream = new FileStream(path, FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+                return memory;
+            }
+            catch (Exception e)
+            {
+                throw new FileHandlingFailedException($"Saving the new file was unsuccessful. Cause: ${e.Message}");
+            }
         }
 
         public async Task<ICollection<Assignment>> GetAssignmentsForStudent(User student)

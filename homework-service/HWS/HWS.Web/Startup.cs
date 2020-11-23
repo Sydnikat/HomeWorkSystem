@@ -39,7 +39,7 @@ namespace HWS
 
             services.AddAppConfiguration(this.Configuration);
 
-            services.AddServices();
+            services.AddServices(this.Configuration);
 
             services.AddCors(options =>
             {
