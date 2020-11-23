@@ -26,6 +26,9 @@ namespace HWS.Dal.Sql.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid>("FileId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
 

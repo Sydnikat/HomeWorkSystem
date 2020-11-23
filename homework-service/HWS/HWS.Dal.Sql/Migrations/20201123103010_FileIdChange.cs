@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HWS.Dal.Sql.Migrations
 {
-    public partial class SQLEntities : Migration
+    public partial class FileIdChange : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -123,6 +123,7 @@ namespace HWS.Dal.Sql.Migrations
                     SubmissionDeadline = table.Column<DateTime>(nullable: false),
                     TurnInDate = table.Column<DateTime>(nullable: false),
                     FileName = table.Column<string>(nullable: true),
+                    FileId = table.Column<Guid>(nullable: false),
                     Student = table.Column<Guid>(nullable: false),
                     ReservedBy = table.Column<Guid>(nullable: false),
                     Grade = table.Column<string>(nullable: true)
