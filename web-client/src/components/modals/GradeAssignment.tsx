@@ -25,8 +25,8 @@ const GradeAssignment: React.FC<GradeAssignmentProps> = ({
     setGrade(event.target.value);
   };
 
-  const onDownloadClick = () => {
-    assignmentService.download();
+  const onDownloadClick = async () => {
+    await assignmentService.download(assignment);
   };
 
   const onSaveClick = async () => {

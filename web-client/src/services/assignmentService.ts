@@ -8,8 +8,8 @@ export interface AssignmentService {
   grade(assignmentId: string, grade: string): Promise<boolean>;
   reserve(assignmentId: string): Promise<boolean>;
   free(assignmentId: string): Promise<boolean>;
-  download(): string;
-  upload(assignmentId: string): Promise<void>;
+  download(assignment: IAssignmentResponse): Promise<void>;
+  upload(assignmentId: string, file: FormData): Promise<string>;
 }
 
 export const assignmentService: AssignmentService = {
@@ -71,18 +71,43 @@ export const assignmentService: AssignmentService = {
     }
   },
 
-  download() {
-    return "download";
-  },
-
-  async upload(assignmentId: string) {
+  async download(assignment: IAssignmentResponse) {
     try {
-      const response = await axiosInstance.post(
-        `${assignmentServiceUrl}/${assignmentId}/file`
+      const response = await axiosInstance.get(
+        `${assignmentServiceUrl}/${assignment.id}/file`,
+        { method: "GET", responseType: "blob" }
       );
-      console.log(response);
+      if (response.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `${assignment.fileName ?? "file"}`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
     } catch (err) {
       console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+    }
+  },
+
+  async upload(assignmentId: string, file: FormData) {
+    try {
+      const response = await axiosInstance.post(
+        `${assignmentServiceUrl}/${assignmentId}/file`, file
+      );
+      if (response.status === 200) {
+        return response.data as string;
+      }
+      return "";
+    } catch (err) {
+      console.log(err);
+      console.log((err as AxiosError)?.response?.data);
+      return "";
     }
   },
 };

@@ -5,10 +5,10 @@ namespace HWS.Controllers.DTOs.Responses
 {
     public class CommentResponse
     {
-        public Guid Id { get; set; }
-        public DateTime CreationDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string Content { get; set; }
+        public Guid Id { get; }
+        public DateTime CreationDate { get; }
+        public string CreatedBy { get; }
+        public string Content { get; }
 
         public CommentResponse(Comment comment)
         {

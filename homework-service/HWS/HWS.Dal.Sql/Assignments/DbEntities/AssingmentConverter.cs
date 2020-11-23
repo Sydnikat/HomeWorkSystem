@@ -20,6 +20,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,
+                fileId: assignment.FileId,
                 student: null,
                 reservedBy: null,
                 grade: assignment.Grade,
@@ -35,6 +36,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,
+                fileId: assignment.FileId,
                 student: assignment.Student.Id,
                 reservedBy: Guid.Empty,
                 grade: assignment.Grade
@@ -49,6 +51,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
                 submissionDeadline: assignment.SubmissionDeadline,
                 turnInDate: assignment.TurnInDate,
                 fileName: assignment.FileName,
+                fileId: assignment.FileId,
                 student: assignment.Student.Id,
                 reservedBy: assignment.ReservedBy.Id,
                 grade: assignment.Grade

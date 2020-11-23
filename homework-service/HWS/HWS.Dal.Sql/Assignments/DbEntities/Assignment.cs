@@ -14,7 +14,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
         {
         }
 
-        public Assignment(long _id, Guid id, long homeworkId, Homework homework, DateTime submissionDeadline, DateTime turnInDate, string fileName, Guid student, Guid reservedBy, string grade)
+        public Assignment(long _id, Guid id, long homeworkId, Homework homework, DateTime submissionDeadline, DateTime turnInDate, string fileName, Guid fileId, Guid student, Guid reservedBy, string grade)
         {
             this._id = _id;
             this.Id = id;
@@ -23,6 +23,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
             this.SubmissionDeadline = submissionDeadline;
             this.TurnInDate = turnInDate;
             this.FileName = fileName;
+            this.FileId = fileId;
             this.Student = student;
             this.ReservedBy = reservedBy;
             this.Grade = grade;
@@ -37,6 +38,7 @@ namespace HWS.Dal.Sql.Assignments.DbEntities
         public DateTime SubmissionDeadline { get; set; }
         public DateTime TurnInDate { get; set; }
         public string FileName { get; set; }
+        public Guid FileId { get; set; }
         public Guid Student { get; set; }
         public Guid ReservedBy { get; set; }
         public string Grade { get; set; }

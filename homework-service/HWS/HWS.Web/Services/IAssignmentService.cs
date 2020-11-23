@@ -1,6 +1,8 @@
 ﻿using HWS.Domain;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,5 +21,9 @@ namespace HWS.Services
         Task<bool> ReserveAssignment(User grader, Assignment assignment);
 
         Task<bool> FreeAssignment(User grader, Assignment assignment);
+
+        Task<string> ChangeAssignmentFile(Assignment assignment, string fileName, IFormFile file);
+
+        Task<MemoryStream> GetFile(Assignment assignment);
     }
 }

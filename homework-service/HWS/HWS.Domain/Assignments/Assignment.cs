@@ -7,7 +7,7 @@ namespace HWS.Domain
 {
     public class Assignment
     {
-        public Assignment(long _id, Guid id, Group group, Homework homework, DateTime submissionDeadline, DateTime turnInDate, string fileName, User student, User reservedBy, string grade)
+        public Assignment(long _id, Guid id, Group group, Homework homework, DateTime submissionDeadline, DateTime turnInDate, string fileName, Guid fileId, User student, User reservedBy, string grade)
         {
             this._id = _id;
             this.Id = id;
@@ -16,6 +16,7 @@ namespace HWS.Domain
             this.SubmissionDeadline = submissionDeadline;
             this.TurnInDate = turnInDate;
             this.FileName = fileName;
+            this.FileId = fileId;
             this.Student = student;
             this.ReservedBy = reservedBy;
             this.Grade = grade;
@@ -28,6 +29,7 @@ namespace HWS.Domain
         public DateTime SubmissionDeadline { get; set; }
         public DateTime TurnInDate { get; set; }
         public string FileName { get; set; }
+        public Guid FileId { get; set; }
         public User Student { get; set; }
         public User ReservedBy { get; set; }
         public string Grade { get; set; }

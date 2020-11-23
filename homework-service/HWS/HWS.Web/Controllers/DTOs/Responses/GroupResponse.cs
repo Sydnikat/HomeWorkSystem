@@ -7,45 +7,63 @@ namespace HWS.Controllers.DTOs.Responses
 {
     public class GroupResponse
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; }
         public string Name { get; set; }
-        public IEnumerable<UserResponse> students { get; set; }
-        public IEnumerable<UserResponse> teachers { get; set; }
-        public string Code { get; set; }
-        public Guid OwnerId { get; set; }
-        public string OwnerFullName { get; set; }
-        public IEnumerable<HomeworkResponse> Homeworks { get; set; }
+        public IEnumerable<UserResponse> students { get; }
+        public IEnumerable<UserResponse> teachers { get; }
+        public string Code { get; }
+        public Guid OwnerId { get; }
+        public string OwnerFullName { get; }
+        public IEnumerable<HomeworkResponse> Homeworks { get; }
 
         public GroupResponse() { }
 
+        public GroupResponse(
+            Guid id, 
+            string name,
+            IEnumerable<UserResponse> students,
+            IEnumerable<UserResponse> teachers, 
+            string code, 
+            Guid ownerId,
+            string ownerFullName,
+            IEnumerable<HomeworkResponse> homeworks)
+        {
+            Id = id;
+            Name = name;
+            this.students = students;
+            this.teachers = teachers;
+            Code = code;
+            OwnerId = ownerId;
+            OwnerFullName = ownerFullName;
+            Homeworks = homeworks;
+        }
+
         public static GroupResponse ForTeacher(Group group)
         {
-            return new GroupResponse()
-            {
-                Id = group.Id,
-                Name = group.Name,
-                students = group.Students.Select(s => new UserResponse(s)),
-                teachers = group.Teachers.Select(t => new UserResponse(t)),
-                Code = group.Code,
-                OwnerId = group.Owner.Id,
-                OwnerFullName = group.Owner.UserFullName,
-                Homeworks = group.Homeworks.Select(HomeworkResponse.ForTeacher)
-            };
+            return new GroupResponse(
+                id: group.Id,
+                name: group.Name,
+                students: group.Students.Select(s => new UserResponse(s)),
+                teachers: group.Teachers.Select(t => new UserResponse(t)),
+                code: group.Code,
+                ownerId: group.Owner.Id,
+                ownerFullName: group.Owner.UserFullName,
+                homeworks: group.Homeworks.Select(HomeworkResponse.ForTeacher)
+                );
         }
 
         public static GroupResponse ForStudent(Group group)
         {
-            return new GroupResponse()
-            {
-                Id = group.Id,
-                Name = group.Name,
-                students = new List<UserResponse>(),
-                teachers = group.Teachers.Select(t => new UserResponse(t)),
-                Code = group.Code,
-                OwnerId = group.Owner.Id,
-                OwnerFullName = group.Owner.UserFullName,
-                Homeworks = group.Homeworks.Select(HomeworkResponse.ForStudent)
-            };
+            return new GroupResponse(
+                id: group.Id,
+                name: group.Name,
+                students: new List<UserResponse>(),
+                teachers: group.Teachers.Select(t => new UserResponse(t)),
+                code: group.Code,
+                ownerId: group.Owner.Id,
+                ownerFullName: group.Owner.UserFullName,
+                homeworks: group.Homeworks.Select(HomeworkResponse.ForStudent)
+                );
         }
     }
 }
