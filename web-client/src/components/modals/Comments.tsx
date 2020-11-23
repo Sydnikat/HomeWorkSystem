@@ -33,7 +33,7 @@ const Comments: React.FC<CommentsProps> = ({
     scopeId
   );
   const [newComment, setNewComment] = useState<string>("");
-  const [sending, setSending] = useState<boolean>(false);
+  const [inTransaction, setInTransaction] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(setComments(fetchedComments));
@@ -44,12 +44,13 @@ const Comments: React.FC<CommentsProps> = ({
   };
 
   const onSendClick = async () => {
-    setSending(true);
+    setInTransaction(true);
     const comment: ICommentRequest = { content: newComment };
     switch (scope) {
       case CommentScope.GROUP: {
         const newComment = await groupService.sendComment(scopeId, comment);
-        setSending(false);
+        setInTransaction(false);
+
         if (newComment !== null) {
           setNewComment("");
           dispatch(addNewComment(newComment));
@@ -58,7 +59,8 @@ const Comments: React.FC<CommentsProps> = ({
       }
       case CommentScope.HOMEWORK: {
         const newComment = await homeworkService.sendComment(scopeId, comment);
-        setSending(false);
+        setInTransaction(false);
+
         if (newComment !== null) {
           setNewComment("");
           dispatch(addNewComment(newComment));
@@ -68,6 +70,10 @@ const Comments: React.FC<CommentsProps> = ({
       default:
         break;
     }
+  };
+
+  const formInValid = (): boolean => {
+    return newComment.length < 2 || newComment.length > 255;
   };
 
   const handleClose = () => {
@@ -111,12 +117,16 @@ const Comments: React.FC<CommentsProps> = ({
             </Form>
           </Row>
           <Row>
-            {sending && (
+            {inTransaction && (
               <div className="mr-2">
                 <Spinner animation="border" variant="primary" />
               </div>
             )}
-            <Button size="sm" onClick={onSendClick} disabled={sending}>
+            <Button
+              size="sm"
+              onClick={onSendClick}
+              disabled={formInValid() || inTransaction}
+            >
               <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
               Küldés
             </Button>

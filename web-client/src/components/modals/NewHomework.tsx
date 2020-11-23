@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { Button, Container, Form, Modal } from "react-bootstrap";
+import { Button, Container, Form, Modal, Spinner } from "react-bootstrap";
 import { IHomeworkRequest } from "../../models/homework";
 import { groupService } from "../../services/groupService";
 import UserListAssemble from "../UserListAssemble";
@@ -131,8 +131,8 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
 
   const formInValid = (): boolean => {
     return (
-      homeworkTitle === "" ||
-      homeworkDescription === "" ||
+      homeworkTitle.length < 3 ||
+      homeworkDescription.length < 2 ||
       homeworkFileSize === null ||
       homeworkSubmissionDate === "" ||
       (!isCustom && customStudentSize === null)
@@ -265,6 +265,11 @@ const NewHomework: React.FC<NewHomeworkProps> = ({
         </Container>
       </Modal.Body>
       <Modal.Footer>
+        {inTransaction && (
+          <div className="mr-2">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        )}
         <Button
           size="sm"
           disabled={formInValid() || inTransaction}

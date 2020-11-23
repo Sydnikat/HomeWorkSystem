@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container, Form, Modal } from "react-bootstrap";
+import { Button, Container, Form, Modal, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { groupService } from "../../services/groupService";
@@ -63,6 +63,10 @@ const NewGroup: React.FC<NewGroupProps> = ({
     }
   };
 
+  const formInValid = (): boolean => {
+    return groupName.length < 3;
+  };
+
   const handleClose = () => {
     setShowNewGroup(false);
   };
@@ -112,7 +116,16 @@ const NewGroup: React.FC<NewGroupProps> = ({
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button size="sm" disabled={inTransaction} onClick={onSaveClick}>
+        {inTransaction && (
+          <div className="mr-2">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        )}
+        <Button
+          size="sm"
+          disabled={formInValid() || inTransaction}
+          onClick={onSaveClick}
+        >
           <FontAwesomeIcon icon={faSave} className="mr-2" />
           Mentés
         </Button>
