@@ -5,7 +5,7 @@ const axiosInstance: AxiosInstance = axios.create();
 
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
   const accessToken = store.getState().userReducer.user?.accessToken || "";
-  if (accessToken != "") {
+  if (accessToken !== "") {
     request.headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
