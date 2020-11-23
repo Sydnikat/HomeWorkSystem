@@ -15,6 +15,8 @@ import TeacherGroups from "./TeacherGroups";
 import Grading from "./Grading";
 import NewGroup from "./modals/NewGroup";
 import { setGroups } from "../store/groupStore";
+import {setAssignments, setFilteredAssignments} from "../store/assignmentStore";
+import {setComments} from "../store/commentStore";
 
 const TeacherHome: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,6 +30,9 @@ const TeacherHome: React.FC = () => {
   const onSignout = () => {
     dispatch(setUser({} as IUser));
     dispatch(setGroups([]));
+    dispatch(setAssignments([]));
+    dispatch(setFilteredAssignments([]));
+    dispatch(setComments([]));
   };
 
   return (

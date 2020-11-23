@@ -12,10 +12,11 @@ import { IUser } from "../models/user";
 import StudentGroup from "./StudentGroup";
 import { IGroupResponse } from "../models/group";
 import JoinGroup from "./modals/JoinGroup";
-import { setAssignments } from "../store/assignmentStore";
+import {setAssignments, setFilteredAssignments} from "../store/assignmentStore";
 import { useAssignments, useGroups } from "../shared/hooks";
 import { setGroups } from "../store/groupStore";
 import { RootState } from "../store/rootReducer";
+import {setComments} from "../store/commentStore";
 
 const StudentHome: React.FC = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,10 @@ const StudentHome: React.FC = () => {
 
   const onSignout = () => {
     dispatch(setUser({} as IUser));
+    dispatch(setGroups([]));
+    dispatch(setAssignments([]));
+    dispatch(setFilteredAssignments([]));
+    dispatch(setComments([]));
   };
 
   const onJoinClick = () => {
