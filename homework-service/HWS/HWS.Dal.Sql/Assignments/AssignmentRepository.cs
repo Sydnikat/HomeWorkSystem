@@ -170,6 +170,7 @@ namespace HWS.Dal.Sql.Assignments
 
             dbAssignment.FileName = fileName;
             dbAssignment.FileId = fileId;
+            dbAssignment.TurnInDate = DateTime.Now;
 
             await context.SaveChangesAsync();
 
