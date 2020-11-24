@@ -7,6 +7,7 @@ import {
   DropdownButton,
   Form,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,6 +37,7 @@ const Signup: React.FC = () => {
   const [role, setRole] = useState<{ value: string; name: string }>(
     roles.student
   );
+  const [inTransaction, setInTransaction] = useState<boolean>(false);
   const [signupError, setSignupError] = useState<boolean>(false);
 
   const onFormControlChange = (type: InputType) => (
@@ -66,11 +68,12 @@ const Signup: React.FC = () => {
     setRole(selectedRole);
   };
 
-  const onBack = () => {
+  const onBackClick = () => {
     history.goBack();
   };
 
-  const onSignup = async () => {
+  const onSignupClick = async () => {
+    setInTransaction(true);
     const success = await authService.signup(
       userName,
       password,
@@ -78,6 +81,7 @@ const Signup: React.FC = () => {
       userFullName,
       role.value
     );
+    setInTransaction(false);
 
     if (!success) {
       setSignupError(true);
@@ -89,12 +93,7 @@ const Signup: React.FC = () => {
   return (
     <Container fluid>
       <Row>
-        <Col md={4} className="mt-2">
-          <Button size="sm" onClick={onBack}>
-            <FontAwesomeIcon icon={faArrowCircleLeft} />
-          </Button>
-        </Col>
-        <Col md={4}>
+        <Col md={{ span: 4, offset: 4 }}>
           <h1>Regisztráció</h1>
         </Col>
       </Row>
@@ -143,7 +142,12 @@ const Signup: React.FC = () => {
                     onChange={onFormControlChange(InputType.USERFULLNAME)}
                   />
                 </Form.Group>
-                <DropdownButton size="sm" id="role" title={role.name}>
+                <DropdownButton
+                  variant="info"
+                  size="sm"
+                  id="role"
+                  title={role.name}
+                >
                   <Dropdown.Item onSelect={onRoleSelect(roles.student)}>
                     {roles.student.name}
                   </Dropdown.Item>
@@ -151,9 +155,38 @@ const Signup: React.FC = () => {
                     {roles.teacher.name}
                   </Dropdown.Item>
                 </DropdownButton>
-                <Button size="sm" className="mt-2" onClick={onSignup}>
-                  Regisztráció
-                </Button>
+                <Row className="mt-2">
+                  <Col>
+                    <Button
+                      size="sm"
+                      className="mt-2"
+                      onClick={onSignupClick}
+                      disabled={inTransaction}
+                    >
+                      Regisztráció
+                    </Button>
+                    {inTransaction && (
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        variant="primary"
+                        size="sm"
+                        className="ml-2"
+                      />
+                    )}
+                  </Col>
+                </Row>
+                <Row className="mt-2">
+                  <Col>
+                    <Button variant="secondary" size="sm" onClick={onBackClick}>
+                      <FontAwesomeIcon
+                        icon={faArrowCircleLeft}
+                        className="mr-2"
+                      />
+                      Vissza
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
             </Col>
           </Row>

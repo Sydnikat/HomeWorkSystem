@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowCircleRight } from "@fortawesome/free-solid-svg-icons";
 import { authService } from "../services/authService";
 import { setUser } from "../store/userStore";
 import CommonAlert from "./CommonAlert";
@@ -17,6 +19,7 @@ const Signin: React.FC = () => {
 
   const [userName, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [inTransaction, setInTransaction] = useState<boolean>(false);
   const [signinError, setSigninError] = useState<boolean>(false);
 
   const onFormControlChange = (type: inputType) => (
@@ -34,8 +37,11 @@ const Signin: React.FC = () => {
     }
   };
 
-  const onSignin = async () => {
+  const onSigninClick = async () => {
+    setInTransaction(true);
     const user = await authService.signin(userName, password);
+    setInTransaction(false);
+
     if (user) {
       dispatch(setUser(user));
       user.role === "Student"
@@ -46,7 +52,7 @@ const Signin: React.FC = () => {
     }
   };
 
-  const onSignup = () => {
+  const onSignupClick = () => {
     history.push("signup");
   };
   return (
@@ -81,9 +87,44 @@ const Signin: React.FC = () => {
                     onChange={onFormControlChange(inputType.PASSWORD)}
                   />
                 </Form.Group>
-                <Button size="sm" onClick={onSignin}>
-                  Bejelentkezés
-                </Button>
+                <Row className="mt-2">
+                  <Col>
+                    <Button
+                      size="sm"
+                      onClick={onSigninClick}
+                      disabled={inTransaction}
+                    >
+                      Bejelentkezés
+                    </Button>
+                    {inTransaction && (
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        variant="primary"
+                        size="sm"
+                        className="ml-2"
+                      />
+                    )}
+                  </Col>
+                </Row>
+                <Row className="mt-2">
+                  <Col>Nincs még felhasználói fiókja?</Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={onSignupClick}
+                    >
+                      Regisztráció
+                      <FontAwesomeIcon
+                        icon={faArrowCircleRight}
+                        className="ml-2"
+                      />
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
             </Col>
           </Row>
@@ -97,17 +138,6 @@ const Signin: React.FC = () => {
               </Col>
             </Row>
           )}
-          <br />
-          <Row>
-            <Col>Nincs még felhasználói fiókja?</Col>
-          </Row>
-          <Row>
-            <Col>
-              <Button size="sm" onClick={onSignup}>
-                Regisztráció
-              </Button>
-            </Col>
-          </Row>
         </Col>
       </Row>
     </Container>
