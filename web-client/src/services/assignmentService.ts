@@ -3,13 +3,18 @@ import { axiosInstance } from "./config/axios";
 import { assignmentServiceUrl } from "./config/url";
 import { AxiosError } from "axios";
 
+interface AssignmentResult {
+  assignment: IAssignmentResponse | null;
+  errorMessage: string;
+}
+
 export interface AssignmentService {
   getAssignments(): Promise<IAssignmentResponse[]>;
   grade(assignmentId: string, grade: string): Promise<boolean>;
   reserve(assignmentId: string): Promise<boolean>;
   free(assignmentId: string): Promise<boolean>;
   download(assignment: IAssignmentResponse): Promise<void>;
-  upload(assignmentId: string, file: FormData): Promise<string>;
+  upload(assignmentId: string, file: FormData): Promise<AssignmentResult>;
 }
 
 export const assignmentService: AssignmentService = {
@@ -101,13 +106,26 @@ export const assignmentService: AssignmentService = {
         `${assignmentServiceUrl}/${assignmentId}/file`, file
       );
       if (response.status === 200) {
-        return response.data as string;
+        const result: AssignmentResult = {
+          assignment: response.data as IAssignmentResponse,
+          errorMessage: ""
+        };
+        return result;
       }
-      return "";
+      const result: AssignmentResult = {
+        assignment: null,
+        errorMessage: "Hiba a feltöltés közben"
+      };
+      return result;
     } catch (err) {
       console.log(err);
       console.log((err as AxiosError)?.response?.data);
-      return "";
+      const res = (err as AxiosError)?.response?.data as {message: string, statusCode: number};
+      const result: AssignmentResult = {
+        assignment: null,
+        errorMessage: res.message
+      };
+      return result;
     }
   },
 };

@@ -60,18 +60,19 @@ export const assignment = createSlice({
       }
     },
 
-    changeAssignmentFile(
+    changeAssignment(
       state: AssignmentState,
-      action: PayloadAction<{ assignmentId: string; fileName: string }>
+      action: PayloadAction<IAssignmentResponse>
     ) {
-      const { assignmentId, fileName } = action.payload;
-      const index = state.assignments.findIndex((a) => a.id === assignmentId);
+      const { id, fileName, turnInDate } = action.payload;
+      const index = state.assignments.findIndex((a) => a.id === id );
 
       if (index !== -1) {
         const assignment = state.assignments[index];
         const newAssignment: IAssignmentResponse = {
           ...assignment,
           fileName: fileName,
+          turnInDate: turnInDate
         };
         state.assignments[index] = newAssignment;
       }
@@ -110,6 +111,6 @@ export const {
   freeAssignment,
   reserveAssignment,
   gradeAssignment,
-  changeAssignmentFile,
+  changeAssignment,
 } = assignment.actions;
 export const assignmentReducer = assignment.reducer;

@@ -52,8 +52,9 @@ const FilteredAssignments: React.FC = () => {
             <th style={colStyle.group}>Csoport</th>
             <th style={colStyle.hw}>Házi feladat</th>
             <th style={colStyle.student}>Hallgató</th>
+            <th style={colStyle.turnInDate}>Beadva</th>
             <th style={colStyle.grade}>Eredmény</th>
-            <th style={colStyle.buttons}></th>
+            <th style={colStyle.buttons} />
           </tr>
         </thead>
         <tbody>
@@ -64,6 +65,7 @@ const FilteredAssignments: React.FC = () => {
               <td style={colStyle.student}>
                 {a.userFullName} ({a.userName})
               </td>
+              <td style={colStyle.turnInDate}>{a.turnInDate !== null ? a.turnInDate : ""}</td>
               <td style={colStyle.grade}>{a.grade}</td>
               <td style={colStyle.buttons}>
                 {a.reservedBy === user?.id ? (
@@ -127,15 +129,19 @@ const colStyle = {
     wordBreak: "break-word",
   } as React.CSSProperties,
   student: {
-    width: "20%",
+    width: "15%",
     wordBreak: "break-word",
   } as React.CSSProperties,
   grade: {
-    width: "20%",
+    width: "15%",
     wordBreak: "break-word",
   } as React.CSSProperties,
   buttons: {
     width: "20%",
+    wordBreak: "break-word",
+  } as React.CSSProperties,
+  turnInDate: {
+    width: "10%",
     wordBreak: "break-word",
   } as React.CSSProperties,
 };

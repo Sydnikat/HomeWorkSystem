@@ -22,7 +22,7 @@ namespace HWS.Services
 
         Task<bool> FreeAssignment(User grader, Assignment assignment);
 
-        Task<string> ChangeAssignmentFile(Assignment assignment, string fileName, IFormFile file);
+        Task<Assignment> ChangeAssignmentFile(Assignment assignment, string fileName, IFormFile file);
 
         Task<MemoryStream> GetFile(Assignment assignment);
     }
