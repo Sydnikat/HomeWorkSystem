@@ -158,7 +158,7 @@ namespace HWS.Dal.Sql.Assignments
             return true;
         }
 
-        public async Task<bool> UpdateFileName(Guid assignmentId, string fileName, Guid fileId)
+        public async Task<bool> UpdateFileName(Guid assignmentId, string fileName, Guid fileId, DateTime turnInDate)
         {
             if (fileName == null)
                 throw new ArgumentNullException(nameof(fileName));
@@ -170,7 +170,7 @@ namespace HWS.Dal.Sql.Assignments
 
             dbAssignment.FileName = fileName;
             dbAssignment.FileId = fileId;
-            dbAssignment.TurnInDate = DateTime.Now;
+            dbAssignment.TurnInDate = turnInDate;
 
             await context.SaveChangesAsync();
 
