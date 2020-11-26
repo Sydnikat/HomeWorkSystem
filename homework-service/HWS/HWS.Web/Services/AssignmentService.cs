@@ -66,12 +66,13 @@ namespace HWS.Services
             return await assignmentRepository.UpdateReservedBy(assignment.Id, Guid.Empty).ConfigureAwait(false);
         }
 
-        public async Task<string> ChangeAssignmentFile(Assignment assignment, string fileName, IFormFile file)
+        public async Task<Assignment> ChangeAssignmentFile(Assignment assignment, string fileName, IFormFile file)
         {
             var timeStamp = DateTime.Now.ToString(settings.TimeStampFormat);
             var newFileName = timeStamp + fileName;
             string path = Path.Combine(Directory.GetCurrentDirectory(), settings.FileDirectory);
             var newFileId = Guid.NewGuid();
+            var newTurnInDate = DateTime.Now;
 
             try
             {
@@ -97,10 +98,15 @@ namespace HWS.Services
                 throw new FileHandlingFailedException($"Saving the new file was unsuccessful. Cause: ${e.Message}");
             }
 
-            var success = await assignmentRepository.UpdateFileName(assignment.Id, newFileName, newFileId).ConfigureAwait(false);
+            var success = await assignmentRepository.UpdateFileName(assignment.Id, newFileName, newFileId, newTurnInDate).ConfigureAwait(false);
 
             if (success)
-                return newFileName;
+            {
+                assignment.TurnInDate = newTurnInDate;
+                assignment.FileName = newFileName;
+                assignment.FileId = newFileId;
+                return assignment;
+            }
             else
                 return null;
         }

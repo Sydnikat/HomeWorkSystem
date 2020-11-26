@@ -173,7 +173,7 @@ namespace HWS.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<string>> ChangeAssignmentFile(Guid id, [FromForm] FileModel file)
+        public async Task<ActionResult<AssignmentResponse>> ChangeAssignmentFile(Guid id, [FromForm] FileModel file)
         {
             var user = getUser();
 
@@ -200,10 +200,12 @@ namespace HWS.Controllers
 
             try
             {
-                var newFileName = await assignmentService.ChangeAssignmentFile(assignment, file.FileName, file.FormFile);
+                var savedAssignment = await assignmentService
+                    .ChangeAssignmentFile(assignment, file.FileName, file.FormFile)
+                    .ConfigureAwait(false);
 
-                if (newFileName != null)
-                    return Ok(newFileName);
+                if (savedAssignment != null)
+                    return Ok(AssignmentResponse.Of(savedAssignment));
                 else
                     return Conflict();
             }
@@ -236,7 +238,7 @@ namespace HWS.Controllers
 
             try
             {
-                var memory = await assignmentService.GetFile(assignment);
+                var memory = await assignmentService.GetFile(assignment).ConfigureAwait(false);
                 return File(memory, getContentType(assignment.FileName), assignment.FileName);
             } 
             catch (Exception e)

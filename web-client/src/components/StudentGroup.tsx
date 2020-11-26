@@ -16,11 +16,17 @@ import HomeworkDetails from "./modals/HomeworkDetails";
 import Confirm from "./modals/ConfirmApplyHw";
 import { assignmentService } from "../services/assignmentService";
 import {useDispatch} from "react-redux";
-import {changeAssignmentFile} from "../store/assignmentStore";
+import {changeAssignment} from "../store/assignmentStore";
+import CommonAlert from "./CommonAlert";
 
 interface StudentGroupProps {
   group: IGroupResponse;
   assignments: IAssignmentResponse[];
+}
+
+interface AssignmentError {
+  assignmentId: string;
+  message: string;
 }
 
 const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
@@ -51,6 +57,7 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
   ] = useState<IHomeworkResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<AssignmentError | null>(null);
 
   const onDetailsClick = (homeworkId: string) => () => {
     const homeworkToShow = group.homeworks.find((h) => h.id === homeworkId);
@@ -87,15 +94,19 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
       return ;
     }
 
+    setErrorMessage(null);
+
     const formData = new FormData();
     formData.append("formFile", selectedFile);
     formData.append("fileName", selectedFileName);
 
-    const fileName = await assignmentService.upload(assignmentId, formData);
-    if (fileName !== "") {
+    const {assignment, errorMessage} = await assignmentService.upload(assignmentId, formData);
+    if (assignment !== null) {
       dispatch(
-        changeAssignmentFile({ assignmentId: assignmentId, fileName: fileName })
+        changeAssignment(assignment)
       );
+    } else {
+      setErrorMessage({assignmentId: assignmentId, message: errorMessage});
     }
   };
 
@@ -178,6 +189,11 @@ const StudentGroup: React.FC<StudentGroupProps> = ({ group, assignments }) => {
                     Feltöltés
                   </Button>
                 </div>
+                {errorMessage !== null && errorMessage.assignmentId === a.id &&
+                <div className="m-1 mt-2">
+                    <CommonAlert variant="danger" text={errorMessage?.message} />
+                </div>
+                }
               </td>
               <td style={colStyle.grade}>{a.grade}</td>
             </tr>
